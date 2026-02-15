@@ -157,8 +157,8 @@ The project is organized into four development phases:
 - **Phase 2 (Months 4-6)**: Integration - WhatsApp API, real-time sync, media upload
 - **Phase 3 (Months 7-9)**: AI Enhancement - News aggregation, AI processing, article generation
 - **Phase 4 (Months 10-12)**: Optimization - Analytics, notifications, performance tuning
-
-For detailed implementation steps, see [`DOCS/SRS.md`](DOCS/SRS.md).
+- NOTE : we will building it will Ai Tools so it's could Boost the performance and may finish it with few months or maybe less than that.
+- For detailed implementation steps, see [`DOCS/SRS.md`](DOCS/SRS.md).
 
 ## - Documentation
 
