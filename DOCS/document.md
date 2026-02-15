@@ -283,7 +283,9 @@ The system uses NLP to understand context and extract information from free-form
 - **Budget Requests:** "Need BD 20 for parking" → Creates expense request for manager approval
 - **Obstacle Reporting:** "Security won't let me in" → Flags issue and alerts manager for intervention
 
-**Media Upload Integration:**
+**Media Upload Integration:** 
+## need to be Discussed - **important**
+
 Field journalists can send photos, videos, voice notes, and documents directly through WhatsApp:
 
 **Automatic Media Processing:** 
@@ -405,7 +407,7 @@ The entire backend infrastructure is built on Firebase, providing a unified, sca
   * Secure login for Managers, Editors, and Employees
   * Role-based access control (RBAC) with custom claims
   * Multi-factor authentication support
-  * OAuth integration (Google, Microsoft) for enterprise users
+  * OAuth integration (Googlet) for enterprise users
   * Session management and token refresh
 
 * **Database (Firestore):**
