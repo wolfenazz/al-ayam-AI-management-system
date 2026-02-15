@@ -2,7 +2,7 @@
 
 A next-generation news management ecosystem that bridges automated content intelligence with human editorial workflows. The system leverages Generative AI for real-time news aggregation and synthesis while utilizing WhatsApp Integration as the primary interface for distributed workforce management.
 
-## 📋 Table of Contents
+## - Table of Contents
 
 - [Overview](#overview)
 - [Key Features](#key-features)
@@ -13,7 +13,7 @@ A next-generation news management ecosystem that bridges automated content intel
 - [License](#license)
 - [Contact](#contact)
 
-## 🎯 Overview
+## - Overview
 
 The Al-Ayyam AI Platform is designed to automate the news cycle from discovery to publication draft, while streamlining employee task management through familiar instant messaging channels. The platform operates on a Google Cloud-Powered Architecture, utilizing Next.js for the frontend dashboard and Firebase for all backend services.
 
@@ -21,30 +21,30 @@ The Al-Ayyam AI Platform is designed to automate the news cycle from discovery t
 
 To automate the news cycle from discovery to publication draft, while streamlining employee task management through familiar instant messaging channels.
 
-## ✨ Key Features
+## # Key Features
 
-### 🤖 AI News Engine (Automated Aggregation)
+### - AI News Engine (Automated Aggregation)
 - **Automated Content Gathering**: 24/7 monitoring of RSS feeds, news APIs, and web scraping
 - **Intelligent Processing**: Multi-stage AI pipeline for fact extraction, sentiment analysis, and content synthesis
 - **Multi-Source Consolidation**: Automatic deduplication and merging of duplicate news coverage
 - **Professional Draft Generation**: AI-powered article creation following Al-Ayyam editorial standards
 - **Real-Time Detection**: Content detection within 5 minutes of publication
 
-### 💬 WhatsApp Task Command Center
+### - WhatsApp Task Command Center
 - **Bi-Directional Task Management**: Seamless sync between dashboard and WhatsApp conversations
 - **Smart Task Dispatch**: Automatic task assignment with formatted WhatsApp messages
 - **Natural Language Processing**: Parse employee responses and update task status automatically
 - **Media Upload Integration**: Process photos, videos, audio, and documents sent via WhatsApp
 - **Notification System**: Automated reminders, escalations, and deadline alerts
 
-### 📊 Dashboard & Analytics
+### - Dashboard & Analytics
 - **Article Review Interface**: Split-view comparison of source content and AI-generated drafts
 - **Task Management**: Kanban board and list views for comprehensive task tracking
 - **Performance Analytics**: Real-time metrics on response time, completion rate, and news volume
 - **Employee Directory**: Manage profiles, availability, and performance metrics
 - **Source Configuration**: Monitor and configure news sources with health tracking
 
-## 🛠 Tech Stack
+## - Tech Stack
 
 ### Frontend
 - **Framework**: Next.js 14+ (App Router)
@@ -89,7 +89,7 @@ al-ayam-AI-management-system/
     └── tests/            # Test files
 ```
 
-## 🚀 Getting Started
+## - Getting Started
 
 ### Prerequisites
 
@@ -160,14 +160,14 @@ The project is organized into four development phases:
 
 For detailed implementation steps, see [`DOCS/SRS.md`](DOCS/SRS.md).
 
-## 📚 Documentation
+## - Documentation
 
 - **[Technical Documentation](DOCS/document.md)** - Comprehensive technical architecture and system design
 - **[Software Requirements Specification](DOCS/SRS.md)** - IEEE 29148 compliant requirements document
 - **[Database Schema](DOCS/document.md#5-database-schema-structure-conceptual)** - Firestore database structure
 - **[API Documentation](DOCS/document.md#4-technical-stack-implementation-details)** - Integration APIs and endpoints
 
-## 📄 License
+## - License
 
 This project is proprietary software licensed exclusively to Al-Ayyam Company for internal use only.
 
@@ -182,10 +182,7 @@ This project is proprietary software licensed exclusively to Al-Ayyam Company fo
 
 See the [LICENSE](LICENSE) file for the full license text.
 
-## 📞 Contact
-
-For questions or support related to this project, please contact the Al-Ayyam Company development team.
 
 ---
 
-**Note**: This project is currently under active development. Features and documentation are subject to change.
+**Note**: Devloper : Naseem al-khlifat.
