@@ -57,15 +57,15 @@ To automate the news cycle from discovery to publication draft, while streamlini
 - **Database**: Firestore (NoSQL, real-time)
 - **Storage**: Firebase Cloud Storage (media files)
 - **Serverless**: Firebase Cloud Functions
-- **Hosting**: Firebase Hosting with global CDN
+- **Hosting**: Firebase Hosting with global CDN or Vercel
 - **Analytics**: Firebase Analytics
 - **Messaging**: Firebase Cloud Messaging (FCM)
 
 ### Integration APIs
 - **WhatsApp Business API**: Meta/Twilio for task distribution
 - **AI/LLM Services**: OpenAI API / Anthropic Claude / Google Vertex AI
-- **Speech-to-Text**: Google Cloud Speech API
-- **Translation**: Google Cloud Translation API
+- **Speech-to-Text**: Google Cloud Speech API (optional)
+- **Translation**: Google Cloud Translation API (optional)
 
 ### Development & Deployment
 - **CLI**: Firebase CLI
