@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { logout } from '@/lib/firebase/auth';
-import { mockNotifications } from '@/lib/mock-data';
+import { useNotifications } from '@/hooks/useNotifications';
 
 export default function Header() {
     const router = useRouter();
@@ -16,7 +16,7 @@ export default function Header() {
     const [showNotifications, setShowNotifications] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const userMenuRef = useRef<HTMLDivElement>(null);
-    const unreadCount = mockNotifications.filter((n) => n.status !== 'READ').length;
+    const { notifications, unreadCount } = useNotifications();
 
     // Close user menu when clicking outside
     useEffect(() => {
@@ -127,7 +127,7 @@ export default function Header() {
                                     </span>
                                 </div>
                                 <div className="max-h-80 overflow-y-auto scrollbar-thin">
-                                    {mockNotifications.map((notif) => (
+                                    {notifications.map((notif) => (
                                         <div
                                             key={notif.id}
                                             className={`px-4 py-3 hover:bg-surface transition-colors cursor-pointer border-b border-border/50 ${notif.status !== 'READ' ? 'bg-primary-light/30' : ''

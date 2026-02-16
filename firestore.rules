@@ -1,0 +1,135 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ────────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function hasRole(role) {
+      return get(/databases/$(database)/documents/employees/$(request.auth.uid)).data.role == role;
+    }
+
+    function isManagerOrAdmin() {
+      let emp = get(/databases/$(database)/documents/employees/$(request.auth.uid)).data;
+      return emp.role == 'Manager' || emp.role == 'Admin';
+    }
+
+    // ─── Employees Collection ────────────────────────────────────
+
+    match /employees/{employeeId} {
+      // Any authenticated user can read employee profiles
+      allow read: if isAuthenticated();
+
+      // Users can write their own profile
+      allow create, update: if isAuthenticated() && isOwner(employeeId);
+
+      // Managers and admins can update any employee
+      allow update: if isAuthenticated() && isManagerOrAdmin();
+
+      // Only admins can delete employees
+      allow delete: if isAuthenticated() && hasRole('Admin');
+    }
+
+    // ─── Tasks Collection ────────────────────────────────────────
+
+    match /tasks/{taskId} {
+      // Any authenticated user can read tasks
+      allow read: if isAuthenticated();
+
+      // Any authenticated user can create tasks
+      allow create: if isAuthenticated();
+
+      // Task creator, assignee, managers, and admins can update tasks
+      allow update: if isAuthenticated() && (
+        resource.data.creator_id == request.auth.uid ||
+        resource.data.assignee_id == request.auth.uid ||
+        isManagerOrAdmin()
+      );
+
+      // Only the creator, managers, and admins can delete tasks
+      allow delete: if isAuthenticated() && (
+        resource.data.creator_id == request.auth.uid ||
+        isManagerOrAdmin()
+      );
+    }
+
+    // ─── Task Messages Collection ────────────────────────────────
+
+    match /task_messages/{messageId} {
+      // Any authenticated user can read messages
+      allow read: if isAuthenticated();
+
+      // Any authenticated user can create messages
+      allow create: if isAuthenticated();
+
+      // Only the sender can update their own messages
+      allow update: if isAuthenticated() && resource.data.sender_id == request.auth.uid;
+
+      // Managers can delete any message
+      allow delete: if isAuthenticated() && isManagerOrAdmin();
+    }
+
+    // ─── Task Media Collection ───────────────────────────────────
+
+    match /task_media/{mediaId} {
+      // Any authenticated user can read media
+      allow read: if isAuthenticated();
+
+      // Any authenticated user can upload media
+      allow create: if isAuthenticated();
+
+      // Only the uploader or managers can update/delete media
+      allow update, delete: if isAuthenticated() && (
+        resource.data.uploader_id == request.auth.uid ||
+        isManagerOrAdmin()
+      );
+    }
+
+    // ─── Notifications Collection ────────────────────────────────
+
+    match /notifications/{notificationId} {
+      // Users can read their own notifications
+      allow read: if isAuthenticated() && resource.data.recipient_id == request.auth.uid;
+
+      // Managers and system can create notifications for anyone
+      allow create: if isAuthenticated();
+
+      // Users can update (mark read) their own notifications
+      allow update: if isAuthenticated() && resource.data.recipient_id == request.auth.uid;
+
+      // Only recipient can delete their notifications
+      allow delete: if isAuthenticated() && resource.data.recipient_id == request.auth.uid;
+    }
+
+    // ─── Task Templates Collection ───────────────────────────────
+
+    match /task_templates/{templateId} {
+      // Any authenticated user can read templates
+      allow read: if isAuthenticated();
+
+      // Only managers and admins can create/update/delete templates
+      allow create, update, delete: if isAuthenticated() && isManagerOrAdmin();
+    }
+
+    // ─── Performance Metrics Collection ──────────────────────────
+
+    match /performance_metrics/{metricId} {
+      // Any authenticated user can read metrics
+      allow read: if isAuthenticated();
+
+      // Only system (Cloud Functions) should write metrics
+      // For now, allow managers to write
+      allow create, update: if isAuthenticated() && isManagerOrAdmin();
+
+      allow delete: if isAuthenticated() && hasRole('Admin');
+    }
+  }
+}

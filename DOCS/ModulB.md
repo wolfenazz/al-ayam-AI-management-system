@@ -1232,28 +1232,34 @@ module.exports = {
 **Milestone 1.1: Project Setup (Week 1)**
 - [x] Initialize Next.js 14+ project with TypeScript
 - [x] Configure Tailwind CSS and UI component library (Tailwind v4 with custom theme tokens, Inter font, Material Symbols icons)
-- [ ] Set up Firebase project and configuration
-- [ ] Configure Firebase Authentication with custom claims
-- [ ] Set up Firestore database with security rules
-- [ ] Configure Firebase Storage for media files
+- [x] Set up Firebase project and configuration (`lib/firebase/config.ts`, `lib/firebase/app.ts`, `lib/firebase/index.ts`)
+- [x] Configure Firebase Authentication with Google Sign-In (`lib/firebase/auth.ts`, `lib/auth/AuthContext.tsx` with profile sync)
+- [x] Set up Firestore database with helper functions (`lib/firebase/firestore.ts` — CRUD, queries, real-time listeners)
+- [x] Configure Firebase Storage for media files (`lib/firebase/storage.ts` — upload, download, delete, progress tracking)
 - [x] Set up ESLint, Prettier, and Husky for code quality (ESLint configured via Next.js)
-- [ ] Configure environment variables and secrets management
+- [x] Configure environment variables and secrets management (`.env.local` with Firebase SDK credentials)
+- [ ] Configure Firebase Authentication with custom claims for RBAC
 
 **Milestone 1.2: Core Architecture (Week 2)**
 - [x] Create component directory structure (`components/ui/`, `components/layout/`, `components/shared/`, `stores/`, `types/`, `lib/`, `app/dashboard/tasks/components/`)
 - [x] Set up React Query for server state management (installed `@tanstack/react-query`)
 - [x] Configure Zustand for client state management (`stores/uiStore.ts` — sidebar, chat panel, filters, view mode)
-- [ ] Create custom hooks for Firebase operations
-- [ ] Set up real-time listeners for Firestore
+- [x] Create Firestore helper functions (`lib/firebase/firestore.ts` — getDocument, setDocument, queryDocuments, onSnapshotListener)
+- [ ] Create custom React hooks for Firebase operations (`useTasks`, `useEmployees`, `useNotifications`)
+- [ ] Set up real-time listeners for Firestore (helper ready, hooks pending)
 - [ ] Implement error boundaries and error handling
-- [x] Create reusable UI components (Badge with priority/status variants, Avatar with initials fallback & online status)
-- [x] Set up routing structure for dashboard (`/` → redirect → `/dashboard`)
+- [x] Create reusable UI components (Badge, Avatar, Iphone17Pro with foreignObject live content support)
+- [x] Set up routing structure for dashboard (`/` → redirect → `/dashboard`, `/dashboard/tasks`, `/dashboard/analytics`)
+- [x] Implement ProtectedRoute component (`components/auth/ProtectedRoute.tsx`)
+- [x] Set up AuthProvider with Google profile sync (avatar, name → Firestore employee profile)
 
 **Deliverables:**
 - ✅ Fully configured Next.js project with Tailwind CSS v4 design system
-- ⬜ Firebase integration with authentication (pending)
-- ✅ Core component library (Badge, Avatar, Header, Sidebar, TaskCard, WhatsAppPanel, CreateTaskModal)
+- ✅ Firebase integration with authentication (Google Sign-In, AuthContext, ProtectedRoute)
+- ✅ Firestore & Storage helper libraries ready
+- ✅ Core component library (Badge, Avatar, Iphone17Pro, Header, Sidebar, TaskCard, WhatsAppPanel, CreateTaskModal)
 - ✅ Development environment ready
+- ⬜ Custom claims RBAC (pending)
 
 ---
 
@@ -1293,6 +1299,7 @@ module.exports = {
 - [ ] Create task template system
 - [ ] Implement deliverables editor
 - [x] Build WhatsApp message generator with templates (live phone-frame preview of generated WhatsApp message)
+- [x] Wrap WhatsApp message preview in iPhone 17 Pro frame (`Iphone17Pro.tsx` with foreignObject + scale transform)
 - [ ] Implement task assignment workflow (frontend UI ready, backend logic pending)
 - [x] Add task preview before sending (WhatsApp message preview column in CreateTaskModal)
 - [ ] Implement task draft saving
@@ -1304,8 +1311,14 @@ module.exports = {
 - [x] Add search functionality for tasks (search bar in Header)
 - [ ] Implement bulk actions (approve, reject, assign)
 - [x] Create task statistics overview (StatCard row — Total Tasks, In Progress, Urgent, Completed)
+- [x] Create dashboard overview page with welcome message, key metrics, recent tasks, team status, and quick actions
+- [x] Create dedicated Analytics page with task performance metrics
+- [x] Refactor dashboard with reusable `DashboardLayout` (Header, Sidebar, ProtectedRoute, toggleable WhatsApp panel in iPhone frame)
+- [x] Implement Header navigation with Next.js Link components and active link highlighting
+- [x] Implement user profile dropdown in Header with Sign Out functionality
+- [x] Implement toggleable WhatsApp panel in dashboard sidebar (hidden by default, opens in iPhone 17 Pro frame)
 - [ ] Add task timeline view
-- [ ] Implement real-time updates for task status changes (pending Firebase integration)
+- [ ] Implement real-time updates for task status changes (pending Firebase hooks)
 
 **Milestone 3.3: Task Detail View (Week 7)**
 - [ ] Build task detail page with all task information
@@ -1318,10 +1331,12 @@ module.exports = {
 - [ ] Implement task version control
 
 **Deliverables:**
-- ✅ Task creation modal with employee selector and WhatsApp preview (UI complete)
+- ✅ Task creation modal with employee selector and WhatsApp preview in iPhone frame (UI complete)
 - ✅ Task list with grid/list views, filtering, and sorting (UI complete)
-- ⬜ Task detail view with all features (pending)
-- ⬜ Real-time task updates working (pending Firebase integration)
+- ✅ Dashboard overview, dedicated Tasks and Analytics pages
+- ✅ Dashboard layout with toggleable WhatsApp panel in iPhone 17 Pro frame
+- ⬜ Task detail view with all features (pending — **next priority**)
+- ⬜ Real-time task updates working (pending Firebase hooks)
 
 ---
 
@@ -1573,9 +1588,9 @@ module.exports = {
 
 | Phase | Start Date | End Date | Status | Completion % |
 |-------|-----------|----------|--------|--------------|
-| Phase 1: Foundation | Week 1 | Week 2 | In Progress | 55% |
+| Phase 1: Foundation | Week 1 | Week 2 | Nearly Complete | 85% |
 | Phase 2: Database & Backend | Week 3 | Week 4 | Not Started | 0% |
-| Phase 3: Task Management | Week 5 | Week 7 | In Progress | 40% |
+| Phase 3: Task Management | Week 5 | Week 7 | In Progress | 65% |
 | Phase 4: WhatsApp Integration | Week 8 | Week 10 | Not Started | 0% |
 | Phase 5: Notifications | Week 11 | Week 12 | Not Started | 0% |
 | Phase 6: Media Management | Week 13 | Week 14 | Not Started | 0% |
@@ -1683,9 +1698,9 @@ This plan provides a solid foundation for building a world-class WhatsApp-integr
 
 ---
 
-**Document Version:** 1.1  
+**Document Version:** 1.2  
 **Last Updated:** 2026-02-17  
-**Status:** In Progress - Phase 1 & 3 (UI) Underway
+**Status:** In Progress - Phase 1 (85%) & Phase 3 (65%), Task Detail View Next
 
 ---
 
@@ -1789,3 +1804,75 @@ website/
 - Connect UI to real Firestore data (replace mock data)
 - Task detail page (Phase 3.3)
 - WhatsApp Business API integration (Phase 4)
+
+#### 2026-02-17 — Dashboard Refactoring & iPhone Frame Integration
+
+**What was built:**
+
+1. **Firebase Integration (Phase 1 completion)**
+   - Firebase Auth configured with Google Sign-In (`lib/firebase/auth.ts`)
+   - AuthContext with automatic Google profile photo & name sync to Firestore employee profile
+   - ProtectedRoute component for access control
+   - Firestore helper library (`lib/firebase/firestore.ts`) — CRUD, queries, snapshots
+   - Storage helper library (`lib/firebase/storage.ts`) — upload with progress, download, delete
+   - Environment variables configured in `.env.local`
+
+2. **Dashboard Restructuring (Phase 3)**
+   - Created reusable `DashboardLayout` component (`app/dashboard/layout.tsx`) with Header, Sidebar, ProtectedRoute
+   - Refactored main dashboard as overview page with welcome message, key metrics, recent tasks, team status, quick actions
+   - Created dedicated Tasks page (`app/dashboard/tasks/page.tsx`)
+   - Created dedicated Analytics page (`app/dashboard/analytics/page.tsx`)
+   - Updated Sidebar with navigation links for Dashboard, Tasks, Analytics
+   - Updated Header with Next.js Link components, active link highlighting, user profile dropdown with Sign Out
+
+3. **iPhone 17 Pro Frame Component**
+   - Created `Iphone17Pro.tsx` (`components/ui/Iphone17Pro.tsx`) — SVG phone frame with `foreignObject` + CSS `scale(0.537)` transform for rendering live React content inside the screen
+   - WhatsApp dashboard panel now renders inside iPhone 17 Pro frame
+   - CreateTaskModal message preview now renders inside iPhone 17 Pro frame
+   - WhatsAppPanel made container-adaptive (`w-full h-full`) to fill any parent
+
+4. **WhatsApp Panel Toggle**
+   - Toggleable WhatsApp panel in dashboard (hidden by default, slides in/out from right)
+   - Floating action button: green WhatsApp FAB when hidden, white close button when open
+   - Panel visible only on large screens (`lg:` breakpoint)
+
+**Files created/modified:**
+```
+website/
+├── components/
+│   ├── auth/
+│   │   └── ProtectedRoute.tsx          [EXISTING]
+│   ├── ui/
+│   │   └── Iphone17Pro.tsx             [NEW] iPhone 17 Pro SVG frame with foreignObject
+│   ├── layout/
+│   │   ├── Header.tsx                  [MODIFIED] Active nav links, user dropdown, Sign Out
+│   │   └── Sidebar.tsx                 [MODIFIED] Updated navigation items
+│   └── shared/
+│       └── WhatsAppPanel.tsx           [MODIFIED] Container-adaptive (w-full h-full)
+├── app/
+│   └── dashboard/
+│       ├── layout.tsx                  [MODIFIED] DashboardLayout with iPhone-framed WhatsApp panel
+│       ├── page.tsx                    [MODIFIED] Dashboard overview page
+│       ├── tasks/
+│       │   ├── page.tsx                [NEW] Dedicated tasks page
+│       │   └── components/
+│       │       └── CreateTaskModal.tsx  [MODIFIED] Message preview in iPhone frame
+│       └── analytics/
+│           └── page.tsx                [NEW] Analytics page
+├── lib/
+│   ├── firebase/
+│   │   ├── auth.ts                     [EXISTING] Google Sign-In, logout
+│   │   ├── firestore.ts                [EXISTING] CRUD helpers
+│   │   └── storage.ts                  [EXISTING] Upload/download helpers
+│   └── auth/
+│       └── AuthContext.tsx             [EXISTING] Auth state + profile sync
+└── stores/
+    └── uiStore.ts                      [MODIFIED] chatPanelOpen defaults to false
+```
+
+**What's next (recommended priority order):**
+1. **Task Detail View** (Phase 3.3) — Build `/dashboard/tasks/[id]` with full task info, chat thread, media, timeline, actions
+2. **Custom React Hooks** (Phase 1 remaining) — `useTasks`, `useEmployees`, `useNotifications` hooks for Firestore data
+3. **Connect UI to Firestore** — Replace mock data with real Firestore queries
+4. **Firestore Security Rules & Indexes** (Phase 2) — Define collection schemas and access rules
+5. **WhatsApp Business API Integration** (Phase 4)

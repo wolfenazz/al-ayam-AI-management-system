@@ -5,28 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUIStore } from '@/stores/uiStore';
 import { TaskStatus, Priority } from '@/types/common';
-import { mockTasks } from '@/lib/mock-data';
-
-const statusOptions: { label: string; value: TaskStatus; count: number }[] = [
-    { label: 'In Progress', value: 'IN_PROGRESS', count: mockTasks.filter((t) => t.status === 'IN_PROGRESS').length },
-    { label: 'To Do', value: 'SENT', count: mockTasks.filter((t) => t.status === 'SENT' || t.status === 'DRAFT').length },
-    { label: 'In Review', value: 'REVIEW', count: mockTasks.filter((t) => t.status === 'REVIEW').length },
-];
-
-const priorityOptions: { label: string; value: Priority; color: string }[] = [
-    { label: 'Urgent', value: 'URGENT', color: 'bg-accent-red' },
-    { label: 'High', value: 'HIGH', color: 'bg-accent-orange' },
-    { label: 'Normal', value: 'NORMAL', color: 'bg-accent-green' },
-];
-
-const navItems = [
-    { href: '/dashboard', icon: 'dashboard', label: 'Dashboard', exact: true },
-    { href: '/dashboard/tasks', icon: 'assignment', label: 'Tasks', exact: false },
-    { href: '/dashboard/analytics', icon: 'bar_chart', label: 'Analytics', exact: false },
-];
+import { useTasks, useTaskStats } from '@/hooks/useTasks';
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const { tasks } = useTasks();
+    const stats = useTaskStats(tasks);
+
     const {
         sidebarOpen,
         statusFilters,
@@ -38,6 +23,24 @@ export default function Sidebar() {
     } = useUIStore();
 
     const isTasksPage = pathname === '/dashboard/tasks';
+
+    const statusOptions: { label: string; value: TaskStatus; count: number }[] = [
+        { label: 'In Progress', value: 'IN_PROGRESS', count: stats.inProgress },
+        { label: 'To Do', value: 'SENT', count: stats.sent + stats.draft },
+        { label: 'In Review', value: 'REVIEW', count: stats.review },
+    ];
+
+    const priorityOptions: { label: string; value: Priority; color: string }[] = [
+        { label: 'Urgent', value: 'URGENT', color: 'bg-accent-red' },
+        { label: 'High', value: 'HIGH', color: 'bg-accent-orange' },
+        { label: 'Normal', value: 'NORMAL', color: 'bg-accent-green' },
+    ];
+
+    const navItems = [
+        { href: '/dashboard', icon: 'dashboard', label: 'Dashboard', exact: true },
+        { href: '/dashboard/tasks', icon: 'assignment', label: 'Tasks', exact: false },
+        { href: '/dashboard/analytics', icon: 'bar_chart', label: 'Analytics', exact: false },
+    ];
 
     const isActive = (item: typeof navItems[0]) => {
         if (item.exact) return pathname === item.href;
@@ -92,7 +95,7 @@ export default function Sidebar() {
                             <span className="text-sm">{item.label}</span>
                             {item.label === 'Tasks' && (
                                 <span className="ml-auto text-xs bg-border px-1.5 py-0.5 rounded text-text-secondary">
-                                    {mockTasks.length}
+                                    {stats.total}
                                 </span>
                             )}
                         </Link>
