@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Al-Ayyam AI Platform Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e3fae",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                        "surface": "#ffffff",
+                        "text-main": "#0f172a",
+                        "text-sub": "#64748b",
+                        "accent-blue": "#0ea5e9",
+                        "accent-green": "#10b981",
+                        "accent-orange": "#f59e0b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main antialiased selection:bg-primary/20">
+<div class="flex min-h-screen w-full flex-row overflow-hidden">
+<!-- Sidebar -->
+<aside class="flex w-64 flex-col justify-between border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 hidden md:flex shrink-0">
+<div class="flex flex-col gap-6 p-4">
+<!-- Brand -->
+<div class="flex items-center gap-3 px-2">
+<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">auto_awesome</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-base font-bold leading-tight text-slate-900 dark:text-white">Al-Ayyam</h1>
+<p class="text-xs font-medium text-slate-500">AI Platform</p>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex flex-col gap-1">
+<a class="group flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">task_alt</span>
+<span class="text-sm font-medium">Tasks</span>
+</a>
+<a class="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">article</span>
+<span class="text-sm font-medium">Content Curation</span>
+</a>
+<a class="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">bar_chart</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+</nav>
+<!-- Filters Section -->
+<div class="flex flex-col gap-4 border-t border-slate-100 pt-4 dark:border-slate-800">
+<p class="px-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Filters</p>
+<div class="flex flex-col gap-3 px-2">
+<div class="flex flex-col gap-1">
+<label class="text-xs font-medium text-slate-600 dark:text-slate-400">Date Range</label>
+<select class="rounded border-slate-200 bg-white py-1.5 text-sm text-slate-700 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+<option>Last 24 Hours</option>
+<option selected="">Last 7 Days</option>
+<option>Last 30 Days</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-xs font-medium text-slate-600 dark:text-slate-400">Department</label>
+<select class="rounded border-slate-200 bg-white py-1.5 text-sm text-slate-700 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+<option>All Departments</option>
+<option>Editorial</option>
+<option>Curators</option>
+<option>AI Operations</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4">
+<a class="group flex items-center gap-3 rounded-lg px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<div class="mt-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800">
+<div class="h-8 w-8 overflow-hidden rounded-full bg-slate-200" data-alt="User profile picture placeholder">
+<img alt="User Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeuzFqbTsCKBJp4dRZef8z4qBt-ZAFF1y6VCXYFfDOySUYNjBpEuWrRvV66cPZKantkDHrcuKvo_jFZoVetgjX6jxigzszd7UsJiERDiRPucmcnPWoLXagm3oHib4YZ_vGWUmctGdsxKAP4GR_I974eT5rPmTVsaqJpfsy42WvCLoaNnZL7PCO4zqCAggSBka-RjQZooOUaE9bYgpXy35cRby7qQrywUxnob0u1Ew8yiItMY2Xs035aYKxZWGOahsGXdv0QRzF0s0"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<p class="truncate text-sm font-medium text-slate-900 dark:text-white">Layla Hassan</p>
+<p class="truncate text-xs text-slate-500">Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto bg-background-light p-4 dark:bg-background-dark md:p-8">
+<div class="mx-auto max-w-7xl flex flex-col gap-6">
+<!-- Header -->
+<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">Analytics Overview</h1>
+<p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Real-time performance metrics for editorial teams and AI agents.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined text-[20px]">cloud_download</span>
+<span>Export Report</span>
+</button>
+<button class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>New Task</span>
+</button>
+</div>
+</div>
+<!-- KPI Grid -->
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+<!-- KPI 1 -->
+<div class="relative overflow-hidden rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Completion Rate</p>
+<h3 class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">98.5%</h3>
+</div>
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-blue/10 text-accent-blue">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<span class="flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>
+                            +2.1%
+                        </span>
+<span class="text-xs text-slate-400">vs. last week</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="relative overflow-hidden rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Avg Response Time</p>
+<h3 class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">4m 12s</h3>
+</div>
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400">
+<span class="material-symbols-outlined">timer</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<span class="flex items-center text-xs font-semibold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>
+                            +12s
+                        </span>
+<span class="text-xs text-slate-400">vs. last week</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="relative overflow-hidden rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Active Tasks</p>
+<h3 class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">1,240</h3>
+</div>
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<span class="flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>
+                            +5%
+                        </span>
+<span class="text-xs text-slate-400">vs. last week</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="relative overflow-hidden rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+<div class="flex items-start justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">AI Accuracy Score</p>
+<h3 class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">94.2%</h3>
+</div>
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-2">
+<span class="flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>
+                            +0.8%
+                        </span>
+<span class="text-xs text-slate-400">vs. last week</span>
+</div>
+</div>
+</div>
+<!-- Charts Section 1: Task Volume Over Time -->
+<div class="rounded-xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+<div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+<div>
+<h2 class="text-lg font-bold text-slate-900 dark:text-white">Task Volume Over Time</h2>
+<div class="flex items-center gap-2 text-sm text-slate-500">
+<span>Total: <span class="font-semibold text-slate-900 dark:text-slate-200">15,430 Tasks</span></span>
+<span class="h-1 w-1 rounded-full bg-slate-300"></span>
+<span class="text-emerald-600 font-medium">+12.5% Growth</span>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2 text-xs">
+<span class="h-3 w-3 rounded-full bg-primary"></span>
+<span class="font-medium text-slate-600 dark:text-slate-400">AI Generated</span>
+</div>
+<div class="flex items-center gap-2 text-xs">
+<span class="h-3 w-3 rounded-full bg-slate-300"></span>
+<span class="font-medium text-slate-600 dark:text-slate-400">Human Edited</span>
+</div>
+</div>
+</div>
+<!-- Custom SVG Chart -->
+<div class="relative h-64 w-full">
+<svg class="h-full w-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 250">
+<defs>
+<lineargradient id="gradientPrimary" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#1e3fae" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#1e3fae" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#e2e8f0" stroke-width="1" x1="0" x2="1000" y1="250" y2="250"></line>
+<line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="1000" y1="187.5" y2="187.5"></line>
+<line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="1000" y1="125" y2="125"></line>
+<line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="1000" y1="62.5" y2="62.5"></line>
+<!-- Area Fill -->
+<path d="M0,200 C150,200 200,80 350,120 C500,160 550,40 700,60 C850,80 900,150 1000,130 V250 H0 Z" fill="url(#gradientPrimary)"></path>
+<!-- Line Path Primary -->
+<path d="M0,200 C150,200 200,80 350,120 C500,160 550,40 700,60 C850,80 900,150 1000,130" fill="none" stroke="#1e3fae" stroke-linecap="round" stroke-width="3"></path>
+<!-- Line Path Secondary -->
+<path d="M0,230 C150,230 200,180 350,190 C500,200 550,150 700,170 C850,190 900,210 1000,200" fill="none" stroke="#cbd5e1" stroke-dasharray="5 5" stroke-linecap="round" stroke-width="2"></path>
+<!-- Data Points -->
+<circle cx="350" cy="120" fill="white" r="4" stroke="#1e3fae" stroke-width="2"></circle>
+<circle cx="700" cy="60" fill="white" r="4" stroke="#1e3fae" stroke-width="2"></circle>
+</svg>
+<!-- X-Axis Labels -->
+<div class="mt-2 flex justify-between px-2 text-xs font-medium text-slate-400">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+</div>
+</div>
+<!-- Charts Grid: Lower Section -->
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+<!-- 1. Employee Performance (Bar Chart) -->
+<div class="flex flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+<h3 class="mb-4 text-base font-bold text-slate-900 dark:text-white">Employee Performance</h3>
+<div class="flex flex-col gap-5">
+<!-- Item 1 -->
+<div class="group relative">
+<div class="mb-1 flex justify-between text-xs font-medium">
+<span class="text-slate-700 dark:text-slate-200">Sarah J.</span>
+<span class="text-slate-500">450 tasks</span>
+</div>
+<div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+<div class="h-full w-[85%] rounded-full bg-primary transition-all group-hover:bg-primary/90"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group relative">
+<div class="mb-1 flex justify-between text-xs font-medium">
+<span class="text-slate-700 dark:text-slate-200">Mike T.</span>
+<span class="text-slate-500">380 tasks</span>
+</div>
+<div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+<div class="h-full w-[70%] rounded-full bg-accent-blue transition-all group-hover:bg-accent-blue/90"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="group relative">
+<div class="mb-1 flex justify-between text-xs font-medium">
+<span class="text-slate-700 dark:text-slate-200">Ahmed K.</span>
+<span class="text-slate-500">320 tasks</span>
+</div>
+<div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+<div class="h-full w-[60%] rounded-full bg-accent-orange transition-all group-hover:bg-accent-orange/90"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="group relative">
+<div class="mb-1 flex justify-between text-xs font-medium">
+<span class="text-slate-700 dark:text-slate-200">Lisa R.</span>
+<span class="text-slate-500">210 tasks</span>
+</div>
+<div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+<div class="h-full w-[40%] rounded-full bg-slate-400 transition-all group-hover:bg-slate-500"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. Task Distribution (Donut Chart) -->
+<div class="flex flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+<h3 class="mb-4 text-base font-bold text-slate-900 dark:text-white">Task Distribution</h3>
+<div class="flex items-center justify-center py-2">
+<div class="relative h-48 w-48">
+<svg class="h-full w-full rotate-[-90deg]" viewbox="0 0 36 36">
+<!-- Background Circle -->
+<path class="text-slate-100 dark:text-slate-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<!-- Segment 1: Politics -->
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="40, 100" stroke-width="4"></path>
+<!-- Segment 2: Sports (Offset 40) -->
+<path class="text-accent-blue" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="25, 100" stroke-dashoffset="-40" stroke-width="4"></path>
+<!-- Segment 3: Tech (Offset 65) -->
+<path class="text-accent-orange" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="20, 100" stroke-dashoffset="-65" stroke-width="4"></path>
+<!-- Segment 4: Other (Offset 85) -->
+<path class="text-emerald-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="15, 100" stroke-dashoffset="-85" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-slate-900 dark:text-white">4.2k</span>
+<span class="text-xs text-slate-500">Total Tasks</span>
+</div>
+</div>
+</div>
+<div class="mt-4 grid grid-cols-2 gap-2 text-xs">
+<div class="flex items-center gap-2"><div class="h-2 w-2 rounded-full bg-primary"></div><span class="text-slate-600 dark:text-slate-400">Politics (40%)</span></div>
+<div class="flex items-center gap-2"><div class="h-2 w-2 rounded-full bg-accent-blue"></div><span class="text-slate-600 dark:text-slate-400">Sports (25%)</span></div>
+<div class="flex items-center gap-2"><div class="h-2 w-2 rounded-full bg-accent-orange"></div><span class="text-slate-600 dark:text-slate-400">Tech (20%)</span></div>
+<div class="flex items-center gap-2"><div class="h-2 w-2 rounded-full bg-emerald-500"></div><span class="text-slate-600 dark:text-slate-400">Other (15%)</span></div>
+</div>
+</div>
+<!-- 3. Response Time Heatmap -->
+<div class="flex flex-col rounded-xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-base font-bold text-slate-900 dark:text-white">Response Time</h3>
+<span class="text-xs text-slate-500">By Hour (Avg)</span>
+</div>
+<div class="flex flex-col gap-2 h-full justify-center">
+<!-- Hours Labels -->
+<div class="flex justify-between px-1 text-[10px] text-slate-400">
+<span>09:00</span>
+<span>12:00</span>
+<span>15:00</span>
+<span>18:00</span>
+</div>
+<!-- Rows -->
+<div class="space-y-2">
+<!-- Mon -->
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] font-medium text-slate-500">Mon</span>
+<div class="flex flex-1 gap-1">
+<div class="h-6 flex-1 rounded bg-indigo-100"></div>
+<div class="h-6 flex-1 rounded bg-indigo-300"></div>
+<div class="h-6 flex-1 rounded bg-indigo-500"></div>
+<div class="h-6 flex-1 rounded bg-indigo-200"></div>
+</div>
+</div>
+<!-- Tue -->
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] font-medium text-slate-500">Tue</span>
+<div class="flex flex-1 gap-1">
+<div class="h-6 flex-1 rounded bg-indigo-200"></div>
+<div class="h-6 flex-1 rounded bg-indigo-600"></div>
+<div class="h-6 flex-1 rounded bg-indigo-400"></div>
+<div class="h-6 flex-1 rounded bg-indigo-100"></div>
+</div>
+</div>
+<!-- Wed -->
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] font-medium text-slate-500">Wed</span>
+<div class="flex flex-1 gap-1">
+<div class="h-6 flex-1 rounded bg-indigo-100"></div>
+<div class="h-6 flex-1 rounded bg-indigo-200"></div>
+<div class="h-6 flex-1 rounded bg-indigo-300"></div>
+<div class="h-6 flex-1 rounded bg-indigo-100"></div>
+</div>
+</div>
+<!-- Thu -->
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] font-medium text-slate-500">Thu</span>
+<div class="flex flex-1 gap-1">
+<div class="h-6 flex-1 rounded bg-indigo-400"></div>
+<div class="h-6 flex-1 rounded bg-indigo-500"></div>
+<div class="h-6 flex-1 rounded bg-indigo-200"></div>
+<div class="h-6 flex-1 rounded bg-indigo-100"></div>
+</div>
+</div>
+<!-- Fri -->
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] font-medium text-slate-500">Fri</span>
+<div class="flex flex-1 gap-1">
+<div class="h-6 flex-1 rounded bg-indigo-200"></div>
+<div class="h-6 flex-1 rounded bg-indigo-300"></div>
+<div class="h-6 flex-1 rounded bg-indigo-200"></div>
+<div class="h-6 flex-1 rounded bg-indigo-100"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Alerts Table -->
+<div class="rounded-xl border border-slate-100 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
+<div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
+<h3 class="font-bold text-slate-900 dark:text-white">Recent System Alerts</h3>
+<a class="text-sm font-medium text-primary hover:text-primary/80" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-50 dark:bg-slate-800/50">
+<tr>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-slate-200">Alert Type</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-slate-200">Source</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-slate-200">Status</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-slate-200 text-right">Time</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+<span class="material-symbols-outlined text-lg">warning</span>
+</div>
+<span class="font-medium text-slate-700 dark:text-slate-300">High Latency Detected</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-400">Content Ingestion API</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-full bg-orange-50 px-2 py-1 text-xs font-medium text-orange-700 ring-1 ring-inset ring-orange-600/20">Investigating</span>
+</td>
+<td class="px-6 py-4 text-right text-slate-500">2 min ago</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+<span class="material-symbols-outlined text-lg">check</span>
+</div>
+<span class="font-medium text-slate-700 dark:text-slate-300">System Update Complete</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-400">Core Engine v2.4</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">Resolved</span>
+</td>
+<td class="px-6 py-4 text-right text-slate-500">1 hour ago</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+<span class="material-symbols-outlined text-lg">info</span>
+</div>
+<span class="font-medium text-slate-700 dark:text-slate-300">New Data Source Added</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-400">Reuters Feed</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20">Active</span>
+</td>
+<td class="px-6 py-4 text-right text-slate-500">3 hours ago</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

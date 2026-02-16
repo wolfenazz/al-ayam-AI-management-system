@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Comparison Article Editor - Al-Ayyam</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e3fae",
+                        "primary-content": "#ffffff",
+                        "secondary": "#3b82f6", // Blue for Edit
+                        "success": "#10b981", // Green for Publish
+                        "warning": "#f59e0b", // Orange for Schedule
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e212b",
+                        "text-main": "#0f111a",
+                        "text-sub": "#536293",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main font-display min-h-screen flex flex-col overflow-hidden">
+<!-- Header Section -->
+<header class="bg-surface-light dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800 shrink-0">
+<div class="px-6 py-3">
+<!-- Breadcrumbs & Meta -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<nav class="flex items-center gap-2 text-sm text-text-sub">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Editor</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="font-medium text-text-main dark:text-white">Draft #1234</span>
+</nav>
+<div class="flex items-center gap-3">
+<h1 class="text-xl md:text-2xl font-bold text-text-main dark:text-white leading-tight">Article Editor: Economic Summit Report</h1>
+<span class="hidden md:inline-flex px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium border border-green-200">
+                            Drafting
+                        </span>
+</div>
+</div>
+<!-- Action Buttons Cluster -->
+<div class="flex items-center gap-3 mt-2 md:mt-0">
+<div class="text-text-sub text-xs mr-2 hidden lg:block">Last auto-saved 2 mins ago</div>
+<button class="flex items-center gap-2 h-9 px-4 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 text-text-main text-sm font-medium shadow-sm transition-all group">
+<span class="material-symbols-outlined text-[18px] text-gray-500 group-hover:text-primary">settings</span>
+<span class="hidden sm:inline">Settings</span>
+</button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-lg bg-warning text-white hover:bg-amber-600 text-sm font-bold shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="hidden sm:inline">Schedule</span>
+</button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-lg bg-secondary text-white hover:bg-blue-600 text-sm font-bold shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px]">person_edit</span>
+<span class="hidden sm:inline">Request Human Edit</span>
+</button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-lg bg-success text-white hover:bg-emerald-600 text-sm font-bold shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span>Publish Now</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+<!-- LEFT PANEL: Source Text -->
+<section class="flex-1 flex flex-col min-w-0 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 relative z-0">
+<!-- Toolbar for Left Panel -->
+<div class="h-12 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 bg-gray-50/50 dark:bg-gray-900/50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">description</span>
+<span class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">Original Source Text</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-xs font-medium border border-blue-200">Reuters API</span>
+<span class="px-2 py-1 rounded bg-gray-100 text-gray-600 text-xs font-medium border border-gray-200">Fact Check Mode: ON</span>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-8 font-display">
+<div class="max-w-2xl mx-auto space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-base md:text-lg">
+<p class="font-serif italic text-sm text-gray-400 mb-4">Ingested at: 14:30 UTC | Source ID: #RT-9982</p>
+<h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Global Markets React to Central Bank Announcement</h2>
+<p>Global stock markets experienced significant volatility on Tuesday following the <span class="bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-100 px-1 rounded cursor-help border-b-2 border-yellow-300" title="Key Fact: Verified">Central Bank's unexpected announcement regarding interest rate adjustments.</span> The decision to raise the benchmark rate by 50 basis points caught many investors off guard, leading to a sharp sell-off in technology and growth sectors.</p>
+<p>According to the official press release, <span class="bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-100 px-1 rounded cursor-help border-b-2 border-yellow-300" title="Key Fact: Verified">inflationary pressures have persisted longer than anticipated</span>, necessitating a more aggressive monetary policy stance. "We remain committed to restoring price stability," the Central Bank Governor stated during a press briefing held shortly after the market close.</p>
+<p>Asian markets opened lower on Wednesday, with the Nikkei 225 dropping 1.8% in early trading. European indices are also expected to open in negative territory as traders digest the implications of higher borrowing costs for the broader economy.</p>
+<p class="bg-red-50 dark:bg-red-900/20 p-2 rounded border-l-4 border-red-400 text-gray-700 dark:text-gray-300 text-sm">
+<strong class="text-red-600 dark:text-red-400 block mb-1">Potential Conflict Detected:</strong> 
+                        Original report mentions "1.8% drop" but other sources suggest "1.5%". Please verify.
+                    </p>
+<p>Analysts at major financial institutions have revised their year-end forecasts, suggesting that the era of ultra-low interest rates may be coming to a definitive end. The banking sector, however, showed resilience, with share prices edging higher on the prospect of improved net interest margins.</p>
+</div>
+</div>
+</section>
+<!-- CENTER TOOLBAR (Floating/Sticky) -->
+<div class="lg:w-16 w-full h-auto lg:h-full bg-white dark:bg-gray-800 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 flex lg:flex-col items-center justify-between py-4 px-2 lg:px-0 z-10 shadow-sm shrink-0 order-first lg:order-none">
+<div class="flex lg:flex-col items-center gap-4 lg:gap-6 w-full">
+<!-- Sync Scroll Toggle -->
+<button class="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors" title="Sync Scrolling">
+<span class="material-symbols-outlined">sync_lock</span>
+</button>
+<div class="w-px h-8 lg:w-8 lg:h-px bg-gray-200 dark:bg-gray-600"></div>
+<!-- Confidence Score -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer relative">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="transform -rotate-90 w-10 h-10">
+<circle class="text-gray-200 dark:text-gray-700" cx="20" cy="20" fill="transparent" r="16" stroke="currentColor" stroke-width="3"></circle>
+<circle class="text-success" cx="20" cy="20" fill="transparent" r="16" stroke="currentColor" stroke-dasharray="100" stroke-dashoffset="13" stroke-width="3"></circle>
+</svg>
+<span class="absolute text-[10px] font-bold text-gray-700 dark:text-gray-200">87%</span>
+</div>
+<span class="text-[10px] font-medium text-text-sub uppercase tracking-wider hidden lg:block">Conf.</span>
+<!-- Tooltip -->
+<div class="absolute left-full top-0 ml-2 w-48 p-3 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+<p class="font-bold mb-1">High Confidence</p>
+<p class="text-gray-300">The AI is 87% confident in the factual accuracy of the generated draft.</p>
+</div>
+</div>
+<!-- Credibility -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+<span class="text-[10px] font-medium text-text-sub uppercase tracking-wider hidden lg:block">Cred.</span>
+</div>
+<!-- Flags -->
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<div class="relative w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined text-[20px]">flag</span>
+<span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-gray-800">2</span>
+</div>
+<span class="text-[10px] font-medium text-text-sub uppercase tracking-wider hidden lg:block">Flags</span>
+</div>
+</div>
+<!-- Bottom Action in Toolbar -->
+<div class="hidden lg:flex flex-col items-center gap-4 mb-2">
+<button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors" title="Settings">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</div>
+<!-- RIGHT PANEL: AI Draft -->
+<section class="flex-1 flex flex-col min-w-0 bg-white dark:bg-surface-dark relative z-0">
+<!-- Toolbar for Right Panel -->
+<div class="h-12 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 bg-white dark:bg-surface-dark">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-purple-600 text-[20px]">auto_awesome</span>
+<span class="text-sm font-bold text-text-main dark:text-white uppercase tracking-wider">AI-Generated Draft</span>
+</div>
+<!-- Editor Tools -->
+<div class="flex items-center gap-1 border-l border-gray-200 dark:border-gray-700 pl-4 ml-4">
+<button class="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
+<button class="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
+<button class="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"><span class="material-symbols-outlined text-[18px]">link</span></button>
+<div class="w-px h-4 bg-gray-200 mx-1"></div>
+<button class="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+</div>
+</div>
+<!-- Content Area (Editable) -->
+<div class="flex-1 overflow-y-auto p-8 font-display bg-white dark:bg-surface-dark">
+<div class="max-w-2xl mx-auto space-y-6 text-gray-800 dark:text-gray-200 leading-relaxed text-base md:text-lg outline-none" contenteditable="true">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 pb-2 border-b-2 border-transparent hover:border-gray-100 focus:border-primary transition-colors">Economic Summit: Markets Rattle as Rates Climb</h1>
+<div class="text-sm text-gray-500 mb-6 flex items-center gap-2">
+<span>By Al-Ayyam AI Desk</span> • <span>October 24, 2023</span>
+</div>
+<p>In a move that sent shockwaves through global financial hubs, the Central Bank announced a decisive 50 basis point hike in interest rates on Tuesday. The aggressive policy shift, aimed at curbing persistent inflation, triggered immediate volatility across major indices, particularly hitting the technology sector.</p>
+<p>The decision underscores the monetary authority's unwavering commitment to price stability, even at the cost of short-term market turbulence. "We remain committed to restoring price stability," affirmed the Central Bank Governor, signaling that the era of easy money has abruptly concluded.</p>
+<div class="my-6 p-4 bg-purple-50 dark:bg-purple-900/10 rounded-lg border border-purple-100 dark:border-purple-900/30 flex gap-3">
+<span class="material-symbols-outlined text-purple-600 mt-0.5">lightbulb</span>
+<div>
+<p class="text-sm font-semibold text-purple-800 dark:text-purple-300 mb-1">AI Suggestion</p>
+<p class="text-sm text-purple-700 dark:text-purple-400">Consider adding context about the previous quarter's inflation data to strengthen the justification for the rate hike.</p>
+</div>
+</div>
+<p>Reactions were swift across the globe. Asian markets stumbled, with the Nikkei 225 shedding 1.8% in early Wednesday trading. Analysts are now rapidly adjusting their forecasts, predicting that higher borrowing costs will be the new normal for the foreseeable future.</p>
+<p>Despite the broader downturn, the banking sector emerged as a rare bright spot, buoyed by the anticipation of healthier net interest margins.</p>
+</div>
+</div>
+<!-- Bottom Metrics Panel (Sticky within Right Panel) -->
+<div class="border-t border-gray-200 dark:border-gray-800 bg-surface-light dark:bg-surface-dark p-4">
+<div class="flex flex-col gap-4">
+<!-- Progress Bars Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Readability -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-semibold text-text-sub uppercase">Readability Score</span>
+<span class="text-xs font-bold text-text-main dark:text-white">75/100</span>
+</div>
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[10px] text-gray-400 mt-1">Grade Level: 10 (High School)</p>
+</div>
+<!-- SEO -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-semibold text-text-sub uppercase">SEO Optimization</span>
+<span class="text-xs font-bold text-success">92/100</span>
+</div>
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+<div class="bg-success h-2 rounded-full" style="width: 92%"></div>
+</div>
+<p class="text-[10px] text-gray-400 mt-1">Keywords: Inflation, Central Bank, Rates</p>
+</div>
+</div>
+<!-- Tags Input -->
+<div class="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+<span class="material-symbols-outlined text-gray-400 text-[18px]">label</span>
+<div class="flex flex-wrap gap-2 flex-1">
+<span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-xs rounded text-text-main dark:text-gray-300 flex items-center gap-1">
+                                Economics <button class="hover:text-red-500">×</button>
+</span>
+<span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-xs rounded text-text-main dark:text-gray-300 flex items-center gap-1">
+                                Global Markets <button class="hover:text-red-500">×</button>
+</span>
+<input class="text-xs bg-transparent outline-none text-text-main dark:text-white placeholder-gray-400 min-w-[80px]" placeholder="Add tag..." type="text"/>
+</div>
+<div class="text-xs text-text-sub font-mono">
+                            Words: 342
+                        </div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+        // Simple script to demonstrate toggle visual states if needed, though mostly static for this output
+    </script>
+</body></html>

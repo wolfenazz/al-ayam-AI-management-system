@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Al-Ayyam AI Platform - Task Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e3fae",
+                        "primary-light": "#ebf0ff",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                        "accent-red": "#dc2626",
+                        "accent-green": "#16a34a",
+                        "accent-orange": "#ea580c",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0f111a] font-display min-h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e8eaf2] bg-white dark:bg-[#1a1d2d] px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">newspaper</span>
+</div>
+<h2 class="text-[#0f111a] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Al-Ayyam AI Platform</h2>
+</div>
+<!-- Search Bar -->
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-96 w-full lg:w-96">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full relative group">
+<div class="text-[#536293] absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none transition-colors group-focus-within:text-primary">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0f111a] focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-[#f0f2f5] focus:bg-white transition-all h-full placeholder:text-[#536293] pl-10 pr-4 text-sm font-normal leading-normal" placeholder="Search tasks, reporters, or content..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden lg:flex items-center gap-6 mr-4">
+<a class="text-[#0f111a] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-bold bg-primary-light px-3 py-1.5 rounded-lg" href="#">Tasks</a>
+<a class="text-[#0f111a] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Content</a>
+<a class="text-[#0f111a] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Analytics</a>
+</nav>
+<div class="flex gap-2 items-center border-l border-[#e8eaf2] pl-6">
+<button class="flex items-center justify-center rounded-full size-10 hover:bg-[#f0f2f5] text-[#536293] transition-colors relative">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-accent-red rounded-full ring-2 ring-white"></span>
+</button>
+<button class="flex items-center justify-center rounded-full size-10 hover:bg-[#f0f2f5] text-[#536293] transition-colors">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ml-2 ring-2 ring-white cursor-pointer" data-alt="User profile picture of a man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAkTS_AY4VM4sTUKgK4_cQ3EI3tkyXEZ3IF4D4MFp_A81D4qoMp17Ml6jTMEEx1FXcsXySKBEc8-r7OpLwgPGvJHKKlhSa2JYlyOkdsJELgb37b5L1QowHRJ_UoWJx-7PWz5uqwIkGc440RawOHLptyUcXH41MMWFS61zD6vH-TgGlhY9edVaWc-Jxg_NpC6dEBwi8hVckRmAn88iPnrH90ZRFu0qo-Vv1IonhxwvXDjxJYt66n_KBod8J04hSmU2wboI0p0SZcgs4");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<div class="flex flex-1 overflow-hidden h-full">
+<!-- Left Sidebar (Filters) -->
+<aside class="w-64 bg-white dark:bg-[#1a1d2d] border-r border-[#e8eaf2] flex-col overflow-y-auto hidden md:flex shrink-0 z-10">
+<div class="p-6">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg h-10 bg-primary hover:bg-primary/90 transition-colors text-white text-sm font-bold shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>New Task</span>
+</button>
+</div>
+<div class="flex flex-col gap-1 px-4 pb-4">
+<p class="px-2 text-xs font-semibold text-[#536293] uppercase tracking-wider mb-2 mt-2">Views</p>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-light text-primary font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-sm">All Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#536293] hover:bg-[#f0f2f5] hover:text-[#0f111a] transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="text-sm">My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#536293] hover:bg-[#f0f2f5] hover:text-[#0f111a] transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="text-sm">Team Tasks</span>
+<span class="ml-auto text-xs bg-[#e8eaf2] px-1.5 py-0.5 rounded text-[#536293]">12</span>
+</a>
+</div>
+<div class="border-t border-[#e8eaf2] mx-4 my-2"></div>
+<div class="flex flex-col gap-1 px-4">
+<p class="px-2 text-xs font-semibold text-[#536293] uppercase tracking-wider mb-2 mt-4">Status</p>
+<label class="flex items-center gap-3 px-3 py-1.5 cursor-pointer group">
+<input checked="" class="rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-[#0f111a] group-hover:text-primary transition-colors">In Progress</span>
+<span class="ml-auto text-xs text-[#536293]">8</span>
+</label>
+<label class="flex items-center gap-3 px-3 py-1.5 cursor-pointer group">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-[#0f111a] group-hover:text-primary transition-colors">To Do</span>
+<span class="ml-auto text-xs text-[#536293]">4</span>
+</label>
+<label class="flex items-center gap-3 px-3 py-1.5 cursor-pointer group">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-[#0f111a] group-hover:text-primary transition-colors">In Review</span>
+<span class="ml-auto text-xs text-[#536293]">3</span>
+</label>
+</div>
+<div class="flex flex-col gap-1 px-4 mt-2">
+<p class="px-2 text-xs font-semibold text-[#536293] uppercase tracking-wider mb-2 mt-4">Priority</p>
+<label class="flex items-center gap-3 px-3 py-1.5 cursor-pointer group">
+<input checked="" class="rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-[#0f111a] group-hover:text-primary transition-colors">Urgent</span>
+<span class="ml-auto w-2 h-2 rounded-full bg-accent-red"></span>
+</label>
+<label class="flex items-center gap-3 px-3 py-1.5 cursor-pointer group">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-[#0f111a] group-hover:text-primary transition-colors">High</span>
+<span class="ml-auto w-2 h-2 rounded-full bg-accent-orange"></span>
+</label>
+<label class="flex items-center gap-3 px-3 py-1.5 cursor-pointer group">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/20" type="checkbox"/>
+<span class="text-sm text-[#0f111a] group-hover:text-primary transition-colors">Normal</span>
+<span class="ml-auto w-2 h-2 rounded-full bg-accent-green"></span>
+</label>
+</div>
+</aside>
+<!-- Main Task Grid -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6">
+<div class="max-w-7xl mx-auto">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h1 class="text-2xl font-bold text-[#0f111a] dark:text-white mb-1">Task Management Dashboard</h1>
+<p class="text-[#536293] text-sm">Track breaking news assignments and field updates.</p>
+</div>
+<div class="flex items-center gap-2 bg-white dark:bg-[#1a1d2d] p-1 rounded-lg border border-[#e8eaf2] shadow-sm">
+<button class="p-1.5 rounded hover:bg-[#f0f2f5] text-primary">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</button>
+<button class="p-1.5 rounded hover:bg-[#f0f2f5] text-[#536293]">
+<span class="material-symbols-outlined text-[20px]">view_list</span>
+</button>
+</div>
+</div>
+<!-- Active Tasks Grid -->
+<div class="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
+<!-- Task Card 1: Urgent -->
+<div class="bg-white dark:bg-[#1a1d2d] rounded-xl border border-[#e8eaf2] shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="flex gap-2">
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-accent-red/10 text-accent-red border border-accent-red/20">URGENT</span>
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">IN PROGRESS</span>
+</div>
+<button class="text-[#536293] hover:text-[#0f111a]">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div>
+<h3 class="text-lg font-bold text-[#0f111a] dark:text-white leading-tight mb-2">Breaking: Emergency landing at Bahrain Airport</h3>
+<p class="text-[#536293] text-sm line-clamp-2">Initial reports indicate technical failure. Emergency crews dispatched. Require live feed setup asap.</p>
+</div>
+<div class="mt-auto pt-4 border-t border-[#f0f2f5] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-cover bg-center ring-2 ring-white" data-alt="Portrait of Ahmed Al-Mansoori" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjiBGHYjscIDYf7W1JhWUatRpnn6v1HzEPpwuYRjbv2cMuRDontdLPt6QmCT92JamAfqr56pUlKrUTyThd_L5gDdnjO8iQIgiuJC20ZdFJRBkiDXSWCuhQEGdrQWcFYaPiYf5DsrplRinEvMbAXOCnkrJcjdAIzM31rMCB5mnoik9lmih6rUvYG9ojd3du4x1fQwGtvb_4VdjONqvnIIwFCYjnDTOT02x_20wvJnLpy5cfWXhSjBd61RxxHpK_h5Sa9c5TkAtH2pA');"></div>
+<div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-[#536293]">Assignee</span>
+<span class="text-sm font-medium text-[#0f111a] dark:text-white">Ahmed Al-Mansoori</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-accent-red font-medium text-xs bg-accent-red/5 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span>30m left</span>
+</div>
+</div>
+</div>
+<!-- WhatsApp Integration Strip -->
+<div class="bg-[#f0fdf4] dark:bg-[#064e3b]/20 px-5 py-3 rounded-b-xl border-t border-green-100 dark:border-green-900/30 flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 overflow-hidden">
+<div class="w-6 h-6 rounded bg-[#25D366] flex items-center justify-center text-white shrink-0">
+<svg fill="currentColor" height="14" viewbox="0 0 24 24" width="14"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+</div>
+<div class="flex flex-col min-w-0">
+<p class="text-xs font-semibold text-green-800 dark:text-green-300">New message from Field Team</p>
+<p class="text-xs text-green-700/80 truncate">"Photos coming in 2 mins, uploading now..."</p>
+</div>
+</div>
+<button class="text-xs font-bold text-green-700 hover:text-green-900 bg-white/50 hover:bg-white px-2 py-1 rounded transition-colors whitespace-nowrap">
+                                Open Chat
+                            </button>
+</div>
+</div>
+<!-- Task Card 2: High Priority -->
+<div class="bg-white dark:bg-[#1a1d2d] rounded-xl border border-[#e8eaf2] shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="flex gap-2">
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-accent-orange/10 text-accent-orange border border-accent-orange/20">HIGH</span>
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-[#e8eaf2] text-[#536293] border border-[#d1d6e5]">TO DO</span>
+</div>
+<button class="text-[#536293] hover:text-[#0f111a]">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div>
+<h3 class="text-lg font-bold text-[#0f111a] dark:text-white leading-tight mb-2">Review: Annual Economic Report Draft</h3>
+<p class="text-[#536293] text-sm line-clamp-2">Fact check the inflation statistics for Q3. Cross reference with central bank data.</p>
+</div>
+<div class="mt-auto pt-4 border-t border-[#f0f2f5] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-cover bg-center ring-2 ring-white" data-alt="Portrait of Sarah Jenkins" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPplEhByBWkC2LjpX9RlFNLVHwvVW6y3zxnF9yK1NPAJ-BPPws0CQCIxyD1eb75GSABm1PNcRJSsArdDBtN4VdZ4ri_sOXr4dtMI8BXixLMKW2AC19RaQHn458VCJf44DPKjrg2umjLynMk7zJ7aPiOtxTpIXDcI4SernaeiHF4rqYpunRRBl5pEeH3x3QZX-tDLczr4pVN05Xg3MSgDwQ5iwAoANeT8N75D1TlfBJwxkFrfRvYBZokrRLBozyuTx7SBlAGa2TNi8');"></div>
+<div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gray-300 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-[#536293]">Assignee</span>
+<span class="text-sm font-medium text-[#0f111a] dark:text-white">Sarah Jenkins</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-[#536293] font-medium text-xs bg-[#e8eaf2] px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>Tomorrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Card 3: Normal -->
+<div class="bg-white dark:bg-[#1a1d2d] rounded-xl border border-[#e8eaf2] shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="flex gap-2">
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-accent-green/10 text-accent-green border border-accent-green/20">NORMAL</span>
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">IN PROGRESS</span>
+</div>
+<button class="text-[#536293] hover:text-[#0f111a]">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div>
+<h3 class="text-lg font-bold text-[#0f111a] dark:text-white leading-tight mb-2">Interview: Local Artist Exhibition</h3>
+<p class="text-[#536293] text-sm line-clamp-2">Conduct interview with Fatima Al-Sayed about her upcoming gallery opening in Manama.</p>
+</div>
+<div class="mt-auto pt-4 border-t border-[#f0f2f5] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-cover bg-center ring-2 ring-white" data-alt="Portrait of Khalid Omar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD3R3e1U0bbYChf_fKvJcb7jQhvUAz6HWBwAlR868Wm51f1LLsanPYQfgERri-7KGxj6ZpwwT-E8KClmZvmD3K73stgqn3dIkzvINQmQ8_BTBxUwogmUlQLUnv28Zcedm8fNVDbMNwk70ojVOSJ93eFlG4-VjbLUlZh6GdPl2ZMEBhUXiDqXN8inkKVSA7vYYoPR0QJ-CbRnNDtZP3m2-rIHbTnXbOj8mvZCEX6SD0BmXTBS7P4gufBZgfUB4KUFViuxiP9bY5a63Q');"></div>
+<div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-[#536293]">Assignee</span>
+<span class="text-sm font-medium text-[#0f111a] dark:text-white">Khalid Omar</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-[#536293] font-medium text-xs bg-[#e8eaf2] px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>Fri, 12PM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Card 4: Urgent -->
+<div class="bg-white dark:bg-[#1a1d2d] rounded-xl border border-[#e8eaf2] shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="p-5 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-start">
+<div class="flex gap-2">
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-accent-red/10 text-accent-red border border-accent-red/20">URGENT</span>
+<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-[#e8eaf2] text-[#536293] border border-[#d1d6e5]">REVIEW</span>
+</div>
+<button class="text-[#536293] hover:text-[#0f111a]">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div>
+<h3 class="text-lg font-bold text-[#0f111a] dark:text-white leading-tight mb-2">Viral: Tech Conference Keynote</h3>
+<p class="text-[#536293] text-sm line-clamp-2">Summarize the keynote speech from GITEX. Focus on AI regulations mentioned by the minister.</p>
+</div>
+<div class="mt-auto pt-4 border-t border-[#f0f2f5] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-cover bg-center ring-2 ring-white" data-alt="Portrait of User" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9W-iFM27qXkEzjUb5hzw-KDUp1aOHU4MqQCIDpeA_y4UNRuC9ayJCwPxfIY_SIgUf9yGSK3rFQfM6fxjRICFmT2l0umkdDJyS2ui_o78e6zbqv6niJ8HVs_9GoV322xSZwUiK8d6zjpH0_aWjol-CnVs3wFlrtASIENKc0YHjbQ7Ik9ZQS8AD5bo1g9CgO7YQqHJx66VLzh2xuD1dhgbxPrCu2I7c5qeq1rs6pJf192iB_yCR3KB_XlpSWfSBbH-oigzMz_hoiDQ');"></div>
+<div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gray-300 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-[#536293]">Assignee</span>
+<span class="text-sm font-medium text-[#0f111a] dark:text-white">Omar Farooq</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-accent-orange font-medium text-xs bg-accent-orange/5 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span>2h left</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right WhatsApp Panel -->
+<aside class="w-80 2xl:w-96 bg-white dark:bg-[#1a1d2d] border-l border-[#e8eaf2] flex flex-col shrink-0 relative z-10 shadow-xl">
+<!-- Header -->
+<div class="h-16 bg-primary flex items-center justify-between px-4 text-white shrink-0">
+<div class="flex items-center gap-3">
+<button class="hover:bg-white/10 rounded-full p-1 transition-colors md:hidden">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="relative">
+<div class="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Group chat icon representing field team" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP4_TdYQa5W8GLB6RAp_Uc7eZ3OWZWLncfzUpPqu-1ZkENlCFi3OKGT--n1kdK3UxlH8_nRyReNBInMSk1YzinYjyHQmB_H40riNtEieLJJ-Di9ibDM5ytTb-YP5xwWOQu6713oXL4JLJUmzlJbhq9NIjP8jVFiip7f5drvCu6aHFvVvIcps26DKmTWl65LrcCXyKDCXFic_h8xmhhV8HPHkx2huZrsU9k_lQXlNUwF2RAtJMAX_QP9yio8g2kfSYwM1zHMp2B6TY"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-primary rounded-full"></div>
+</div>
+<div>
+<h3 class="font-bold text-sm">Bahrain Field Team</h3>
+<p class="text-xs text-white/70">Ahmed, Sarah, Khalid...</p>
+</div>
+</div>
+<button class="hover:bg-white/10 rounded-full p-1.5 transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<!-- Chat Area -->
+<div class="flex-1 overflow-y-auto p-4 bg-[#e5ddd5]/30 dark:bg-[#0b141a] flex flex-col gap-4" style="background-image: url('data:image/svg+xml,%3Csvg width=\'64\' height=\'64\' viewBox=\'0 0 64 64\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M8 16c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm33.414 0c5.905-3.252 8.995-9.962 8.995-17.513 0-8.626-4.523-16.142-11.21-19.53-6.687 3.388-11.21 10.904-11.21 19.53 0 7.551 3.09 14.261 8.995 17.513l-6.57 20.361c-1.385-2.022-2.317-4.329-2.674-6.845-.357 2.516-1.289 4.823-2.674 6.845l-6.57-20.361c5.905-3.252 8.995-9.962 8.995-17.513 0-8.626-4.523-16.142-11.21-19.53-6.687 3.388-11.21 10.904-11.21 19.53 0 7.551 3.09 14.261 8.995 17.513l8.604 26.686c.925 2.87 2.88 5.24 5.38 6.52 2.5-1.28 4.455-3.65 5.38-6.52l8.604-26.686zm-17.414-2c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12zm0-2c5.523 0 10-4.477 10-10s-4.477-10-10-10-10 4.477-10 10 4.477 10 10 10zM64 16c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm0-2c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zM54 36c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm0-2c2.209 0 4-1.791 4-4s-1.791-4-4-4-4 1.791-4 4 1.791 4 4 4z\' fill=\'%239ca3af\' fill-opacity=\'0.05\' fill-rule=\'evenodd\'/%3E%3C/svg%3E');">
+<div class="flex justify-center my-2">
+<span class="bg-[#e8eaf2] text-[#536293] text-[10px] font-bold px-2 py-1 rounded shadow-sm">TODAY</span>
+</div>
+<!-- Message 1: Incoming -->
+<div class="flex flex-col gap-1 items-start max-w-[85%]">
+<div class="bg-white dark:bg-[#1f2c34] p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700">
+<p class="text-xs font-bold text-[#e542a3] mb-1">Sarah Jenkins</p>
+<p class="text-sm text-[#0f111a] dark:text-gray-100 leading-relaxed">Just arrived at the scene. It's pretty chaotic. 🚨</p>
+<span class="text-[10px] text-gray-400 block text-right mt-1">10:42 AM</span>
+</div>
+</div>
+<!-- Message 2: Outgoing (Me) -->
+<div class="flex flex-col gap-1 items-end max-w-[85%] self-end">
+<div class="bg-[#dcf8c6] dark:bg-[#005c4b] p-3 rounded-lg rounded-tr-none shadow-sm border border-green-100 dark:border-green-900">
+<p class="text-sm text-[#0f111a] dark:text-gray-100 leading-relaxed">Stay safe. Send us the raw footage as soon as you can. We are going live in 20.</p>
+<div class="flex items-center justify-end gap-1 mt-1">
+<span class="text-[10px] text-gray-500 dark:text-gray-300">10:43 AM</span>
+<span class="material-symbols-outlined text-[12px] text-blue-500">done_all</span>
+</div>
+</div>
+</div>
+<!-- Message 3: Incoming Media -->
+<div class="flex flex-col gap-1 items-start max-w-[85%]">
+<div class="bg-white dark:bg-[#1f2c34] p-1.5 rounded-lg rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700">
+<p class="text-xs font-bold text-[#e542a3] px-1.5 pt-1.5 mb-1">Sarah Jenkins</p>
+<div class="rounded overflow-hidden mb-1 relative group cursor-pointer">
+<div class="bg-cover bg-center h-32 w-full" data-alt="Airport terminal scene with emergency lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBIT-5gAlwVjwE3QG2ItHOLUBcOREvUpxf3w2ir4slnCAQxmaAbUkMvg4t5EloE1P90saECpe-VYPQTagr0dIe26HlwP7f76JcloZ7n51B5Jip553z4uYjvCjkhhKawuxqDksOOscRz-QdKNwobAw6xXcpsifyL_4-7BfDJLC4e1ScheUNVY7Z78BW-essY3Ne8i7_22h-5EX-kZShaLuwkrss5ebnUOZxq_sYvFL4LW-0AJ1Q_VOxXVA5fS-9sx8F2otW3obUYkMM');"></div>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white">download</span>
+</div>
+</div>
+<p class="text-sm text-[#0f111a] dark:text-gray-100 px-1.5 pb-0.5">First look at the terminal entrance.</p>
+<span class="text-[10px] text-gray-400 block text-right px-1.5 pb-1">10:45 AM</span>
+</div>
+</div>
+<!-- Message 4: Incoming Audio -->
+<div class="flex flex-col gap-1 items-start max-w-[85%]">
+<div class="bg-white dark:bg-[#1f2c34] p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-3">
+<div class="relative size-10">
+<div class="w-10 h-10 rounded-full bg-cover bg-center" data-alt="Portrait of Ahmed" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDT9LMjS8H6kapPqMYZfvgfSFSHcMwqHEkQgH5Sn2pQs4PlA8ZhJa6dOoaUZDYsuJD94iOAeKu7H-JHreLF5_6yvCaWQUT--aQwMA1hipawMbcKnFlquQ1ZqKgslLSRFk-Y7JAnVZh5wRx3hDUYHBQ3QRqXJE9FqoKO6YvmHe4fkKnXlocWKlHkNORo3UeWC8ZPj7FE5z9xVyoCiHlA_CdO7wTD82OUIyjkpurKqUNq_2Es99AIsp12u1IMBbg53Qgk3IimDRn2zyM');"></div>
+<div class="absolute -bottom-1 -right-1">
+<span class="material-symbols-outlined text-green-500 text-[16px]">mic</span>
+</div>
+</div>
+<div class="flex flex-col flex-1 min-w-[120px]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-[20px] cursor-pointer">play_arrow</span>
+<div class="h-1 bg-gray-200 rounded-full flex-1 relative">
+<div class="absolute left-0 top-0 h-full w-1/3 bg-gray-400 rounded-full"></div>
+<div class="absolute left-1/3 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-500 rounded-full"></div>
+</div>
+</div>
+<span class="text-[10px] text-gray-400 mt-1">0:15 • 10:46 AM</span>
+</div>
+</div>
+<p class="text-[10px] text-gray-400 ml-2">Ahmed Al-Mansoori</p>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-3 bg-white dark:bg-[#1a1d2d] shrink-0 border-t border-[#e8eaf2]">
+<div class="flex items-end gap-2">
+<button class="text-[#536293] p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="flex-1 bg-[#f0f2f5] dark:bg-[#2a303c] rounded-2xl px-4 py-2 flex items-center gap-2">
+<input class="bg-transparent border-none focus:ring-0 w-full text-sm text-[#0f111a] dark:text-white p-0 placeholder:text-[#536293]" placeholder="Type a message" type="text"/>
+<button class="text-[#536293] hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">sentiment_satisfied</span>
+</button>
+</div>
+<button class="bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors shadow-md">
+<span class="material-symbols-outlined text-[20px] ml-0.5">send</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Al-Ayyam AI - News Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e3fae",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom Scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900 overflow-hidden h-screen flex">
+<!-- Sidebar -->
+<aside class="w-64 bg-white border-r border-slate-200 flex flex-col h-full shrink-0 z-20">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary/10 rounded-lg p-2 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">token</span>
+</div>
+<div>
+<h1 class="text-slate-900 text-lg font-bold leading-tight">Al-Ayyam AI</h1>
+<p class="text-slate-500 text-xs font-medium">News Platform</p>
+</div>
+</div>
+<nav class="flex-1 px-4 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-sm font-semibold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 group transition-colors" href="#">
+<span class="material-symbols-outlined">newspaper</span>
+<span class="text-sm font-medium">News</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 group transition-colors" href="#">
+<span class="material-symbols-outlined">task_alt</span>
+<span class="text-sm font-medium">Tasks</span>
+<span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 group transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Employees</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 group transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-sm font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 group transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-100">
+<button class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-blue-800 text-white py-2.5 px-4 rounded-lg font-semibold transition-colors shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="text-sm">New Article</span>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-light relative">
+<!-- Header -->
+<header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-10">
+<div class="flex items-center gap-4 w-1/3">
+<h2 class="text-slate-800 text-lg font-bold hidden md:block">Dashboard Overview</h2>
+<div class="relative w-full max-w-xs hidden sm:block">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-lg text-sm text-slate-700 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all placeholder-slate-400" placeholder="Search news, tasks..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[24px]">chat_bubble</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<button class="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200">
+<div class="text-right hidden md:block">
+<p class="text-sm font-semibold text-slate-700 leading-tight">Sarah J.</p>
+<p class="text-xs text-slate-500">Chief Editor</p>
+</div>
+<div class="h-9 w-9 rounded-full bg-cover bg-center ring-2 ring-slate-100" data-alt="Profile portrait of a professional woman" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAuwP00RIjMIiAHF16a9RBR_y8YAPQxxph_InCHV-uHHptFSzBnlEwf548lDMdfrI8ZkeZDGjw4gHc78kSAkNdkGPUBH53Dg1lPbH-3rqgccawu7tioGsPggOIgmvBmsw9u8Cey4ShHqQIX89n3kQ9WW2b9_uHeNwyXC3tbEYnhhOF265TXuBUoneccc39_Qh0hjdAkZYw8V0HwC4EmBU6NuQYvlpxzwbfr1mj13EruihwcM8WQJhsCOnweU0qyETMbxjzDcSWXA2I');"></div>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto p-6 md:p-8">
+<div class="max-w-7xl mx-auto space-y-8">
+<!-- KPI Stats Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Total Tasks -->
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute right-[-10px] top-[-10px] bg-blue-50 w-24 h-24 rounded-full opacity-50 group-hover:scale-110 transition-transform"></div>
+<div class="relative z-10 flex justify-between items-start">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Total Tasks</p>
+<h3 class="text-3xl font-bold text-slate-800">250</h3>
+</div>
+<div class="p-2 bg-blue-50 text-primary rounded-lg">
+<span class="material-symbols-outlined">assignment</span>
+</div>
+</div>
+<div class="relative z-10 flex items-center gap-1 mt-auto">
+<span class="text-green-600 bg-green-50 text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 12%
+                            </span>
+<span class="text-slate-400 text-xs">vs last month</span>
+</div>
+</div>
+<!-- In Progress -->
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">In Progress</p>
+<h3 class="text-3xl font-bold text-slate-800">45</h3>
+</div>
+<div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+</div>
+<div class="flex items-center gap-1 mt-auto">
+<span class="text-green-600 bg-green-50 text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 5%
+                            </span>
+<span class="text-slate-400 text-xs">vs last month</span>
+</div>
+</div>
+<!-- Pending Review -->
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Pending Review</p>
+<h3 class="text-3xl font-bold text-slate-800">12</h3>
+</div>
+<div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+<span class="material-symbols-outlined">rate_review</span>
+</div>
+</div>
+<div class="flex items-center gap-1 mt-auto">
+<span class="text-green-600 bg-green-50 text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 2%
+                            </span>
+<span class="text-slate-400 text-xs">vs last month</span>
+</div>
+</div>
+<!-- Published -->
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Published Today</p>
+<h3 class="text-3xl font-bold text-slate-800">85</h3>
+</div>
+<div class="p-2 bg-green-50 text-green-600 rounded-lg">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<div class="flex items-center gap-1 mt-auto">
+<span class="text-green-600 bg-green-50 text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 15%
+                            </span>
+<span class="text-slate-400 text-xs">vs last month</span>
+</div>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: News Feed (2/3 width) -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">feed</span>
+                                AI Curation Feed
+                            </h2>
+<button class="text-sm font-medium text-primary hover:underline">View All</button>
+</div>
+<!-- Article Card 1 -->
+<div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5">
+<div class="w-full sm:w-48 h-32 rounded-lg bg-cover bg-center shrink-0" data-alt="Stock market graph overlay on city skyline" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHMQqgQ4dbihUobTgIODYmRyrI8RR54OL90Ecq_gkpdys5bKOGdsJcsNHzQhUXKcSlH5nfCcgGg7GsyFyvZNue0ccfXZqSYrZ7i0QURxRPkh_AAOL-aQEDk8LShOZu8Q1bbCck9huU35_uoJ5Cjp8ciBrEwK8jYBu1W5RaNP9XGhEsi-han63TlfJtlEq2Z54R-mm2TSGnPoLpnqlRpalcIGz_2ynWjO5bPu_vHRPtHNjXAE1Isjly0v3rxjXmgJTVYqI_l-q0tGQ');"></div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">Finance</span>
+<span class="text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 2 mins ago
+                                            </span>
+</div>
+<button class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[20px]">more_horiz</span></button>
+</div>
+<h3 class="text-slate-900 font-bold text-lg leading-snug mb-1">Global Market Trends: AI Analysis &amp; Forecast Q3</h3>
+<p class="text-slate-500 text-sm line-clamp-2">Market volatility remains high as tech sector earnings reports begin to roll out. AI-driven sentiment analysis indicates a cautious optimism...</p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+<div class="flex items-center gap-2">
+<div class="bg-green-50 border border-green-100 text-green-700 px-2 py-1 rounded flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+<span class="text-xs font-bold">Score: 98/100</span>
+</div>
+<span class="text-xs text-slate-400">High Relevance</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-sm font-medium text-slate-500 hover:text-primary transition-colors">Edit</button>
+<button class="bg-slate-900 hover:bg-primary text-white text-sm font-medium px-3 py-1.5 rounded-md transition-colors">Approve</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Article Card 2 -->
+<div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5">
+<div class="w-full sm:w-48 h-32 rounded-lg bg-cover bg-center shrink-0" data-alt="Politician speaking at a podium with microphones" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD85-pcD35ApYyKLa3EW_-KtSbzhudaNvph6W4q78UabuFeyP8sRMYB-C0rLqRKTP16SbleZXeFcDN0WMZAc26Pun-lc7kjimtFOevvVkTTFTcl0hsFdMaC20VMEtCjJhXcPADhOSr0ohecTfH-eglFh1SlrTL_UaOIyqrRi797j8kNDQRYSbnjpqVugjcTjqwlTlQd877GKF8fkxGB2fMDZ_eEgULKcbaW297j7gn_USXtVzJh1X4asOV5vKYUi0d1YFchame4fZo');"></div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded">Politics</span>
+<span class="text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 15 mins ago
+                                            </span>
+</div>
+<button class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[20px]">more_horiz</span></button>
+</div>
+<h3 class="text-slate-900 font-bold text-lg leading-snug mb-1">Local Election Updates: New Polls Released</h3>
+<p class="text-slate-500 text-sm line-clamp-2">The latest polls show a tight race in the upcoming municipal elections. Voter turnout is expected to be historically high...</p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+<div class="flex items-center gap-2">
+<div class="bg-green-50 border border-green-100 text-green-700 px-2 py-1 rounded flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+<span class="text-xs font-bold">Score: 85/100</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-sm font-medium text-slate-500 hover:text-primary transition-colors">Edit</button>
+<button class="bg-slate-900 hover:bg-primary text-white text-sm font-medium px-3 py-1.5 rounded-md transition-colors">Approve</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Article Card 3 -->
+<div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5">
+<div class="w-full sm:w-48 h-32 rounded-lg bg-cover bg-center shrink-0" data-alt="Team working together on laptops in office" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkKcVP7YRr5_sb27H0MJ6jiU2kO8-1k9CRY5U_MXpuPke4pRag64d9Yki2jBxio7xIXrihVAIx92U8aFMPzl6Q2rKNhjjHLvDwhr63rhw9NuED2RBoqXXO340NoM9pqp6nlzynXH-roS696EG8SFkaakqjmEqvEGvmIEvgOqu-sY_bCmlv5lWOX_orgLDLt6BIDj7FHIqr04UuZ5duINFjNXJOY6ZMm5eF06jWiLrLPcSpA9Dn-ynwN7uLLCWeE_EBf788ApgTbZA');"></div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded">Tech</span>
+<span class="text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 1 hr ago
+                                            </span>
+</div>
+<button class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[20px]">more_horiz</span></button>
+</div>
+<h3 class="text-slate-900 font-bold text-lg leading-snug mb-1">New Startup Funding Rounds Announced</h3>
+<p class="text-slate-500 text-sm line-clamp-2">Silicon Valley investors are shifting focus towards sustainable energy startups. Several major funding rounds were closed...</p>
+</div>
+<div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+<div class="flex items-center gap-2">
+<div class="bg-yellow-50 border border-yellow-100 text-yellow-700 px-2 py-1 rounded flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+<span class="text-xs font-bold">Score: 72/100</span>
+</div>
+<span class="text-xs text-slate-400">Med Relevance</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-sm font-medium text-slate-500 hover:text-primary transition-colors">Edit</button>
+<button class="bg-slate-900 hover:bg-primary text-white text-sm font-medium px-3 py-1.5 rounded-md transition-colors">Approve</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Tasks & Timeline (1/3 width) -->
+<div class="space-y-6">
+<!-- Recent Tasks Panel -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-fit">
+<div class="p-4 border-b border-slate-100 flex justify-between items-center">
+<h3 class="font-bold text-slate-800 flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400">list_alt</span>
+                                    My Tasks
+                                </h3>
+<button class="p-1 rounded hover:bg-slate-50 text-slate-400"><span class="material-symbols-outlined text-[20px]">add</span></button>
+</div>
+<div class="p-2">
+<!-- Task Item Urgent -->
+<div class="p-3 hover:bg-slate-50 rounded-lg group transition-colors cursor-pointer border-b border-slate-50 last:border-0">
+<div class="flex justify-between items-start mb-1">
+<span class="bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded">Urgent</span>
+<span class="text-slate-400 text-[10px]">Due 2pm</span>
+</div>
+<p class="text-slate-800 text-sm font-semibold mb-1 group-hover:text-primary transition-colors">Review Editorial Draft</p>
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-slate-200 bg-cover" data-alt="Avatar of assigned user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJFrI168k6h9177Vhz6Ql4GuVRJaAJKjeQWYEt2ppPXNZ--LJnRAPpiomVR2hnUOkRAqUG6eLDGV2IhlQNCGnsZNb_3QVYov2t0JmAfQB35c9Mcaf8Rr3aikk7cQlwZdBmPrtNyicRFf3_Na29jZ0QJREa_WxSuYfHA_FviasxQVK6_a681B_3JIxXAgF-JSztXwllFg7uAd8Y1e_S_1Tze2jDQndjWM5oJ3k6SqJ3xFOexvsI4hGRtTBaysSMMfysp9uSiexQ8KE');"></div>
+<span class="text-xs text-slate-500">Assigned to Mark</span>
+</div>
+</div>
+<!-- Task Item Normal -->
+<div class="p-3 hover:bg-slate-50 rounded-lg group transition-colors cursor-pointer border-b border-slate-50 last:border-0">
+<div class="flex justify-between items-start mb-1">
+<span class="bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded">Normal</span>
+<span class="text-slate-400 text-[10px]">Due Tomorrow</span>
+</div>
+<p class="text-slate-800 text-sm font-semibold mb-1 group-hover:text-primary transition-colors">Update Source List for Q3</p>
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">You</div>
+<span class="text-xs text-slate-500">Self-assigned</span>
+</div>
+</div>
+<!-- Task Item Low -->
+<div class="p-3 hover:bg-slate-50 rounded-lg group transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded">Low</span>
+<span class="text-slate-400 text-[10px]">Due Friday</span>
+</div>
+<p class="text-slate-800 text-sm font-semibold mb-1 group-hover:text-primary transition-colors">Weekly Analytics Export</p>
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-slate-200 bg-cover" data-alt="Avatar of assigned user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZ5RTaGDNH7O_ehU4p15STSY6oRQsWwKoxjsS9MW3xN4jm_CJilghtP6rOyHcnaDTPzJFN5h7bLrqKJaP5ThntoOigPigGAW3B3gyb18YJ1ii2gWHzbv4goQNeoHZStwhQGFhDf8hAc4W2jY4efeaJPa9K6bethSS9agZ05Ola_fZbSAwkkQnjC4tswCyejB2WsRrMlirFU3F92MgaheVIAqMd29gNkZgZ82meqItCGxS7DHGRjyZqF3Lx7wYjgE-2NgoN7v5C6tw');"></div>
+<span class="text-xs text-slate-500">Assigned to Lisa</span>
+</div>
+</div>
+</div>
+<div class="p-3 border-t border-slate-100 text-center">
+<a class="text-xs font-semibold text-primary hover:text-blue-800" href="#">View All Tasks</a>
+</div>
+</div>
+<!-- Activity Timeline -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+<h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400">history</span>
+                                Activity Log
+                            </h3>
+<div class="relative pl-2 border-l border-slate-200 space-y-6">
+<!-- Timeline Item 1 -->
+<div class="relative pl-4">
+<div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-primary rounded-full ring-4 ring-white"></div>
+<p class="text-sm text-slate-800"><span class="font-semibold">Ahmed</span> edited "Morning Brief"</p>
+<p class="text-xs text-slate-400 mt-0.5">2 mins ago</p>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-4">
+<div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-green-500 rounded-full ring-4 ring-white"></div>
+<p class="text-sm text-slate-800"><span class="font-semibold">Sarah</span> approved 3 articles</p>
+<p class="text-xs text-slate-400 mt-0.5">45 mins ago</p>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-4">
+<div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-slate-300 rounded-full ring-4 ring-white"></div>
+<p class="text-sm text-slate-800"><span class="font-semibold">System</span> auto-archived old posts</p>
+<p class="text-xs text-slate-400 mt-0.5">2 hrs ago</p>
+</div>
+<!-- Timeline Item 4 -->
+<div class="relative pl-4">
+<div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 bg-slate-300 rounded-full ring-4 ring-white"></div>
+<p class="text-sm text-slate-800"><span class="font-semibold">Mike</span> joined the team</p>
+<p class="text-xs text-slate-400 mt-0.5">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
