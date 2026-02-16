@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { getDocument, createDocument, updateDocument } from '../firebase/firestore'
 import { getCollection } from '../firebase/firestore'
-import { where, orderBy, QueryConstraint } from 'firebase/firestore'
+import { query, where, orderBy, QueryConstraint } from 'firebase/firestore'
 import type { NewsItem, NewsFormData, NewsFilters, NewsSource } from '../types/news'
 
 const NEWS_COLLECTION = 'news_items'
@@ -124,9 +124,9 @@ export async function updateNewsStatus(
   const updateData = { status } as Partial<NewsItem>
 
   if (status === 'PUBLISHED') {
-    Object.assign(updateData, { publishedAt: new Date() })
+    (updateData as any).publishedAt = new Date()
   } else if (status === 'UNDER_REVIEW') {
-    Object.assign(updateData, { reviewedBy: null })
+    (updateData as any).reviewedBy = null
   }
 
   await updateNewsItem(newsId, updateData)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Box,
@@ -31,11 +31,10 @@ export default function LoginPage() {
   const cardBg = useColorModeValue('white', 'gray.800')
   const textColor = useColorModeValue('gray.800', 'gray.100')
 
-  useEffect(() => {
-    if (user) {
-      router.push('/dashboard')
-    }
-  }, [user, router])
+  if (user) {
+    router.push('/dashboard')
+    return null
+  }
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,10 +44,9 @@ export default function LoginPage() {
       await loginWithEmail(email, password)
       toast.success('Welcome back!', 'You have successfully logged in.')
       router.push('/dashboard')
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Login error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Please check your credentials and try again.'
-      toast.error('Login failed', errorMessage)
+      toast.error('Login failed', error.message || 'Please check your credentials and try again.')
     } finally {
       setIsLoading(false)
     }
@@ -61,10 +59,9 @@ export default function LoginPage() {
       await loginWithGoogle()
       toast.success('Welcome back!', 'You have successfully logged in with Google.')
       router.push('/dashboard')
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Google login error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Please try again later.'
-      toast.error('Google login failed', errorMessage)
+      toast.error('Google login failed', error.message || 'Please try again later.')
     } finally {
       setIsGoogleLoading(false)
     }
@@ -85,7 +82,7 @@ export default function LoginPage() {
         bg={cardBg}
         p={8}
         borderRadius="xl"
-        shadow="sm"
+        shadow="lg"
       >
         <VStack spacing={6} align="stretch">
           <Box textAlign="center">
@@ -164,7 +161,7 @@ export default function LoginPage() {
           </Button>
 
           <Text textAlign="center" color="gray.500">
-            Don not have an account?{' '}
+            Don't have an account?{' '}
             <Link href="/auth/register" color="blue.500">
               Sign up
             </Link>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Box,
@@ -33,11 +33,10 @@ export default function RegisterPage() {
   const cardBg = useColorModeValue('white', 'gray.800')
   const textColor = useColorModeValue('gray.800', 'gray.100')
 
-  useEffect(() => {
-    if (user) {
-      router.push('/dashboard')
-    }
-  }, [user, router])
+  if (user) {
+    router.push('/dashboard')
+    return null
+  }
 
   const validateForm = (): boolean => {
     if (!name || name.trim().length < 2) {
@@ -76,17 +75,14 @@ export default function RegisterPage() {
       await registerWithEmailAndPassword(email, password)
       toast.success('Account created!', 'Welcome to Al-Ayyam AI Platform.')
       router.push('/dashboard')
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Registration error:', error)
-      const errorCode = (error as { code?: string })?.code
-      const errorMessage = error instanceof Error ? error.message : 'Please try again later.'
-      
-      if (errorCode === 'auth/email-already-in-use') {
+      if (error.code === 'auth/email-already-in-use') {
         toast.error('Email already in use', 'Please use a different email or sign in.')
-      } else if (errorCode === 'auth/weak-password') {
+      } else if (error.code === 'auth/weak-password') {
         toast.error('Weak password', 'Please choose a stronger password.')
       } else {
-        toast.error('Registration failed', errorMessage)
+        toast.error('Registration failed', error.message || 'Please try again later.')
       }
     } finally {
       setIsLoading(false)
@@ -100,10 +96,9 @@ export default function RegisterPage() {
       await loginWithGoogle()
       toast.success('Account created!', 'Welcome to Al-Ayyam AI Platform.')
       router.push('/dashboard')
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Google registration error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Please try again later.'
-      toast.error('Google sign-up failed', errorMessage)
+      toast.error('Google sign-up failed', error.message || 'Please try again later.')
     } finally {
       setIsGoogleLoading(false)
     }

@@ -2,11 +2,7 @@ import { cache } from 'react'
 import { getDocument, createDocument, updateDocument, deleteDocument } from '../firebase/firestore'
 import { getCollection, buildQuery } from '../firebase/firestore'
 import { query, where, orderBy, and, or, QueryConstraint } from 'firebase/firestore'
-import { sendWhatsAppMessage } from './whatsapp.service'
-import { generateTaskMessage } from './whatsapp-templates.service'
-import { logTaskCreated, logTaskAssigned, logTaskSent, logTaskAccepted, logTaskDeclined, logTaskStarted, logTaskCompleted } from './task-timeline.service'
 import type { Task, TaskFormData, TaskFilters } from '../types/task'
-import type { Employee } from '../types/employee'
 
 const COLLECTION = 'tasks'
 
@@ -72,11 +68,10 @@ export const getRecentTasks = cache(
   }
 )
 
-export async function createTask(data: TaskFormData, creatorId: string, creatorName: string = 'Unknown'): Promise<string> {
+export async function createTask(data: TaskFormData): Promise<string> {
   const task = {
     ...data,
     status: 'DRAFT' as const,
-    creatorId,
     createdAt: new Date().toISOString(),
     sentAt: null,
     readAt: null,
@@ -91,11 +86,7 @@ export async function createTask(data: TaskFormData, creatorId: string, creatorN
     lastReminderSent: null
   }
 
-  const taskId = await createDocument(COLLECTION, task)
-
-  await logTaskCreated(taskId, creatorId || 'system', creatorName, data.title)
-
-  return taskId
+  return createDocument(COLLECTION, task)
 }
 
 export async function updateTask(
@@ -112,7 +103,6 @@ export async function deleteTask(taskId: string): Promise<void> {
 export async function updateTaskStatus(
   taskId: string,
   status: Task['status'],
-  userName: string = 'Unknown',
   metadata?: Partial<Omit<Task, 'id' | 'status'>>
 ): Promise<void> {
   const updateData: Partial<Task> = {
@@ -121,76 +111,29 @@ export async function updateTaskStatus(
   }
 
   if (status === 'SENT' && !metadata?.sentAt) {
-    (updateData as Partial<Task> & { sentAt: Date }).sentAt = new Date()
+    (updateData as any).sentAt = new Date()
   } else if (status === 'READ' && !metadata?.readAt) {
-    (updateData as Partial<Task> & { readAt: Date }).readAt = new Date()
+    (updateData as any).readAt = new Date()
   } else if (status === 'ACCEPTED' && !metadata?.acceptedAt) {
-    (updateData as Partial<Task> & { acceptedAt: Date }).acceptedAt = new Date()
+    (updateData as any).acceptedAt = new Date()
   } else if (status === 'IN_PROGRESS' && !metadata?.startedAt) {
-    (updateData as Partial<Task> & { startedAt: Date }).startedAt = new Date()
+    (updateData as any).startedAt = new Date()
   } else if (status === 'COMPLETED' && !metadata?.completedAt) {
-    (updateData as Partial<Task> & { completedAt: Date }).completedAt = new Date()
+    (updateData as any).completedAt = new Date()
   }
 
   await updateTask(taskId, updateData)
-
-  const task = await getTask(taskId)
-  if (task) {
-    if (status === 'SENT' && !metadata?.sentAt) {
-      await logTaskSent(taskId, task.creatorId, userName, 'WhatsApp')
-    } else if (status === 'ACCEPTED' && !metadata?.acceptedAt) {
-      await logTaskAccepted(taskId, task.assigneeId || userName, userName)
-    } else if (status === 'REJECTED') {
-      await logTaskDeclined(taskId, task.assigneeId || userName, userName)
-    } else if (status === 'IN_PROGRESS' && !metadata?.startedAt) {
-      await logTaskStarted(taskId, task.assigneeId || userName, userName)
-    } else if (status === 'COMPLETED' && !metadata?.completedAt) {
-      const rating = metadata?.qualityRating ?? undefined
-      await logTaskCompleted(taskId, task.assigneeId || userName, userName, rating)
-    }
-  }
 }
 
-export async function assignTask(taskId: string, employeeId: string, employeeName: string = 'Unknown', assignerName: string = 'Unknown'): Promise<void> {
+export async function assignTask(taskId: string, employeeId: string): Promise<void> {
   await updateTask(taskId, { assigneeId: employeeId })
-
-  await logTaskAssigned(taskId, assignerName, assignerName, employeeName)
 }
 
 export async function escalateTask(taskId: string): Promise<void> {
   const task = await getTask(taskId)
   if (!task) return
-
+  
   await updateTask(taskId, {
     escalationCount: task.escalationCount + 1
   } as Partial<Task>)
-}
-
-export async function dispatchTaskToEmployee(
-  taskId: string,
-  employee: Employee
-): Promise<void> {
-  const task = await getTask(taskId)
-  if (!task) {
-    throw new Error('Task not found')
-  }
-
-  if (!employee.whatsappUid) {
-    throw new Error('Employee does not have a WhatsApp phone number')
-  }
-
-  const { message } = generateTaskMessage({
-    task,
-    employee,
-    includeQuickReplies: true
-  })
-
-  await sendWhatsAppMessage({
-    taskId,
-    recipientId: employee.id,
-    recipientPhone: employee.whatsappUid,
-    message
-  })
-
-  await updateTaskStatus(taskId, 'SENT')
 }

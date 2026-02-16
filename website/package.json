@@ -6,11 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test": "vitest",
-    "test:ci": "vitest run",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "lint": "eslint"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
@@ -28,18 +24,12 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/jest-dom": "^6.7.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/ui": "^2.2.4",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "jsdom": "^26.0.1",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "vitest": "^2.2.4"
+    "typescript": "^5"
   }
 }
