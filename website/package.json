@@ -11,6 +11,8 @@
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
     "@types/papaparse": "^5.5.2",
+    "clsx": "^2.1.1",
+    "cobe": "^0.6.5",
     "firebase": "^12.9.0",
     "framer-motion": "^12.34.0",
     "next": "16.1.6",
@@ -18,6 +20,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
+    "tailwind-merge": "^3.4.1",
     "uuid": "^13.0.0",
     "xlsx": "^0.18.5",
     "zustand": "^5.0.11"

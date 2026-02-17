@@ -28,7 +28,7 @@ export default function BudgetCard({ task }: { task: Task }) {
                 </span>
                 <span className="text-sm text-gray-500">SAR</span>
             </div>
-            <p className="text-xs text-gray-400 mt-1">Total allocated budget for this assignment.</p>
+            <p className="text-xs text-gray-400 mt-1">Total allocated budget for this task.</p>
         </div>
     );
 }

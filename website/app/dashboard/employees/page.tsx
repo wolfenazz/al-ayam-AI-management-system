@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useEmployees, useEmployeeStats, useAddEmployees } from '@/hooks/useEmployees';
+import { useRef, useEffect, useState } from 'react';
+import { useEmployees, useEmployeeStats, useAddEmployees, useUpdateEmployee, useDeleteEmployee } from '@/hooks/useEmployees';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
 import FileUploader from '@/components/shared/FileUploader';
@@ -246,6 +246,82 @@ function StatCard({
     );
 }
 
+function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isExternal?: boolean }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const deleteEmployee = useDeleteEmployee();
+    const updateEmployee = useUpdateEmployee();
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [menuRef]);
+
+    const handleDelete = () => {
+        if (window.confirm(`Are you sure you want to remove ${employee.name}?`)) {
+            deleteEmployee.mutate(employee.id);
+            toast.success('Member removed');
+        }
+        setIsOpen(false);
+    };
+
+    const handleToggleStatus = () => {
+        const newStatus = employee.availability === 'AVAILABLE' ? 'BUSY' : 'AVAILABLE';
+        updateEmployee.mutate({ id: employee.id, data: { availability: newStatus } });
+        toast.success(`Marked as ${newStatus}`);
+        setIsOpen(false);
+    };
+
+    if (isExternal) return null;
+
+    return (
+        <div className="relative" ref={menuRef}>
+            <button
+                onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
+                className={`p-1 rounded-lg transition-colors ${isOpen ? 'bg-gray-100 text-primary' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'}`}
+            >
+                <span className="material-symbols-outlined text-[20px]">more_vert</span>
+            </button>
+
+            {isOpen && (
+                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-fade-in overflow-hidden">
+                    <button
+                        onClick={() => { toast('Profile view coming soon'); setIsOpen(false); }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                        <span className="material-symbols-outlined text-[18px] text-gray-400">person</span>
+                        View Profile
+                    </button>
+                    <button
+                        onClick={handleToggleStatus}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                    >
+                        <span className="material-symbols-outlined text-[18px] text-gray-400">
+                            {employee.availability === 'AVAILABLE' ? 'do_not_disturb_on' : 'check_circle'}
+                        </span>
+                        {employee.availability === 'AVAILABLE' ? 'Mark as Busy' : 'Mark as Available'}
+                    </button>
+                    <div className="h-px bg-gray-100 my-1" />
+                    <button
+                        onClick={handleDelete}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                    >
+                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                        Remove Member
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}
+
 function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: boolean }) {
     const statusColor =
         employee.availability === 'AVAILABLE' ? 'text-emerald-600 bg-emerald-50 border-emerald-100' :
@@ -253,22 +329,20 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                 'text-gray-500 bg-gray-50 border-gray-100';
 
     return (
-        <div className={`bg-white rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-hidden ${isExternal ? 'opacity-90' : ''}`}>
+        <div className={`bg-white rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-visible ${isExternal ? 'opacity-90' : ''}`}>
             {isExternal && (
                 <div className="absolute top-0 right-0 p-2">
                     <span className="material-symbols-outlined text-orange-400 text-[18px]" title="Unregistered / External Staff">person_add_disabled</span>
                 </div>
             )}
 
-            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                {!isExternal && (
-                    <button className="text-gray-400 hover:text-gray-600">
-                        <span className="material-symbols-outlined text-[20px]">more_vert</span>
-                    </button>
-                )}
-            </div>
+            {!isExternal && (
+                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <EmployeeActionMenu employee={employee} />
+                </div>
+            )}
 
-            <div className="mb-4 relative inline-block">
+            <div className={`mb-4 relative inline-block ${!isExternal ? 'mt-2' : ''}`}>
                 <Avatar
                     src={employee.avatar_url}
                     alt={employee.name}
@@ -381,9 +455,9 @@ function EmployeeRow({ employee, isExternal }: { employee: any; isExternal?: boo
             </div>
 
             {!isExternal && (
-                <button className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-all">
-                    <span className="material-symbols-outlined text-[20px]">more_vert</span>
-                </button>
+                <div className="opacity-0 group-hover:opacity-100 transition-all">
+                    <EmployeeActionMenu employee={employee} />
+                </div>
             )}
         </div>
     )

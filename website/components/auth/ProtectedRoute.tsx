@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 
@@ -17,16 +17,17 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
     const { isAuthenticated, loading } = useAuth();
     const router = useRouter();
+    const hasNavigated = useRef(false);
 
-    // Show loading while auth is resolving
-    if (loading) {
+    useEffect(() => {
+        if (!loading && !isAuthenticated && !hasNavigated.current) {
+            hasNavigated.current = true;
+            router.push('/login');
+        }
+    }, [isAuthenticated, loading, router]);
+
+    if (loading || !isAuthenticated) {
         return fallback || <LoadingScreen />;
-    }
-
-    // Redirect to login if not authenticated
-    if (!isAuthenticated) {
-        router.push('/login');
-        return <LoadingScreen />;
     }
 
     return <>{children}</>;

@@ -136,7 +136,7 @@ export default function AssignTaskModal({ isOpen, onClose, currentAssigneeId, on
                                 <span>Assigning...</span>
                             </>
                         ) : (
-                            'Confirm Assignment'
+                            'Confirm task'
                         )}
                     </button>
                 </div>

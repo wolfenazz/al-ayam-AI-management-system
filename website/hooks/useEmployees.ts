@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient, useMutation,  } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation, } from '@tanstack/react-query';
 import {
     queryDocuments,
     addDocument,
     listenToCollection,
     listenToDocument,
+    updateDocument,
+    deleteDocument,
     COLLECTIONS,
     where,
     orderBy,
@@ -157,10 +159,31 @@ export function useAddEmployee() {
 export function useAddEmployees() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (employees: Omit<Employee, 'id'>[]) => {
+        mutationFn: (employees: Omit<Employee, 'id'>[]) => {
             const promises = employees.map(emp => addDocument(COLLECTIONS.EMPLOYEES, emp));
             return Promise.all(promises);
         },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [EMPLOYEES_KEY] });
+        },
+    });
+}
+
+export function useUpdateEmployee() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: Partial<Employee> }) =>
+            updateDocument(COLLECTIONS.EMPLOYEES, id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [EMPLOYEES_KEY] });
+        },
+    });
+}
+
+export function useDeleteEmployee() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => deleteDocument(COLLECTIONS.EMPLOYEES, id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [EMPLOYEES_KEY] });
         },

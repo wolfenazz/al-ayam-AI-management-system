@@ -80,7 +80,7 @@ export default function TasksPage() {
                             Task Management
                         </h1>
                         <p className="text-text-secondary text-sm">
-                            Track breaking news assignments and field updates.
+                            Track breaking news tasks and field updates.
                         </p>
                     </div>
                     <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-border shadow-sm">
@@ -116,7 +116,7 @@ export default function TasksPage() {
                     ) : (
                         <>
                             <StatCard
-                                icon="assignment"
+                                icon="task"
                                 label="Total Tasks"
                                 value={stats.total.toString()}
                                 color="primary"
@@ -172,7 +172,7 @@ export default function TasksPage() {
                     </div>
                 ) : tasks.length === 0 ? (
                     <div className="bg-white rounded-xl border border-border p-12 text-center shadow-sm">
-                        <span className="material-symbols-outlined text-[64px] text-gray-300 mb-3 block">assignment</span>
+                        <span className="material-symbols-outlined text-[64px] text-gray-300 mb-3 block">task</span>
                         <p className="text-lg font-semibold text-text-primary mb-1">No tasks yet</p>
                         <p className="text-sm text-text-secondary">Create your first task or seed sample data from the dashboard.</p>
                     </div>

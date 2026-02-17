@@ -14,8 +14,8 @@ const taskTypes: { value: TaskType; label: string; icon: string }[] = [
     { value: 'BREAKING_NEWS', label: 'Breaking News', icon: 'breaking_news' },
     { value: 'PRESS_CONF', label: 'Press Conference', icon: 'podium' },
     { value: 'INTERVIEW', label: 'Interview', icon: 'mic' },
-    { value: 'PHOTO_ASSIGN', label: 'Photo Assignment', icon: 'photo_camera' },
-    { value: 'VIDEO_ASSIGN', label: 'Video Assignment', icon: 'videocam' },
+    { value: 'PHOTO_ASSIGN', label: 'Photo task', icon: 'photo_camera' },
+    { value: 'VIDEO_ASSIGN', label: 'Video task', icon: 'videocam' },
     { value: 'FACT_CHECK', label: 'Fact Check', icon: 'fact_check' },
     { value: 'FOLLOW_UP', label: 'Follow-Up', icon: 'replay' },
     { value: 'CUSTOM', label: 'Custom', icon: 'edit_note' },
@@ -131,7 +131,7 @@ export default function CreateTaskModal() {
                         </div>
                         <div>
                             <h2 className="font-bold text-text-primary text-sm">Al-Ayyam Task Manager</h2>
-                            <span className="text-xs text-text-secondary">News Desk / Assignments</span>
+                            <span className="text-xs text-text-secondary">News Desk / tasks</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -157,7 +157,7 @@ export default function CreateTaskModal() {
                                 <span className="material-symbols-outlined text-[18px] text-text-secondary">edit_note</span>
                                 <h3 className="font-bold text-text-primary text-base">Define Task</h3>
                             </div>
-                            <p className="text-xs text-text-secondary">Create a new assignment for reporters.</p>
+                            <p className="text-xs text-text-secondary">Create a new task for reporters.</p>
                         </div>
 
                         {/* Template Selector */}
@@ -413,10 +413,10 @@ export default function CreateTaskModal() {
                                         </span>
                                     </div>
 
-                                    {/* Assignment message */}
+                                    {/* task message */}
                                     <div className="flex flex-col items-start max-w-[90%]">
                                         <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-xs">
-                                            <p className="font-bold text-accent-red text-[10px] mb-1">🚨 New Assignment: {title || 'Untitled Task'}</p>
+                                            <p className="font-bold text-accent-red text-[10px] mb-1">🚨 New task: {title || 'Untitled Task'}</p>
                                             <p className="text-text-primary leading-relaxed mb-2 text-[11px]">
                                                 {description || 'No description provided.'}
                                             </p>
@@ -495,7 +495,7 @@ export default function CreateTaskModal() {
                                     ) : (
                                         <>
                                             <span className="material-symbols-outlined text-[18px]">send</span>
-                                            Send Assignment
+                                            Send task
                                         </>
                                     )}
                                 </button>

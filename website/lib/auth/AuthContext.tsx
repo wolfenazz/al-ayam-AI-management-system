@@ -13,6 +13,8 @@ interface AuthContextType {
     employee: Employee | null;
     loading: boolean;
     isAuthenticated: boolean;
+    profileComplete: boolean;
+    refreshEmployee: () => Promise<void>;
 }
 
 // ─── Context ─────────────────────────────────────────────────────
@@ -22,6 +24,8 @@ const AuthContext = createContext<AuthContextType>({
     employee: null,
     loading: true,
     isAuthenticated: false,
+    profileComplete: false,
+    refreshEmployee: async () => { },
 });
 
 // ─── Provider ────────────────────────────────────────────────────
@@ -30,6 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [employee, setEmployee] = useState<Employee | null>(null);
     const [loading, setLoading] = useState(true);
+    const [profileComplete, setProfileComplete] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthChange(async (firebaseUser) => {
@@ -43,26 +48,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         firebaseUser.uid
                     );
 
-                    // If no profile exists, create a basic one
+                    // If no profile exists, do NOT auto-create one.
+                    // Let the register page handle profile completion.
                     if (!employeeProfile) {
-                        const newProfile: Omit<Employee, 'id'> = {
-                            name: firebaseUser.displayName || 'New User',
-                            email: firebaseUser.email || '',
-                            role: 'Journalist',
-                            status: 'ACTIVE',
-                            availability: 'AVAILABLE',
-                            created_at: new Date().toISOString(),
-                            last_active: new Date().toISOString(),
-                            avatar_url: firebaseUser.photoURL || '',
-                        };
-
-                        await setDocument(COLLECTIONS.EMPLOYEES, firebaseUser.uid, {
-                            ...newProfile,
-                            created_at: serverTimestamp(),
-                            last_active: serverTimestamp(),
-                        });
-
-                        employeeProfile = { id: firebaseUser.uid, ...newProfile };
+                        setEmployee(null);
+                        setProfileComplete(false);
                     } else {
                         // Sync avatar & name from Firebase Auth if missing, and update last_active
                         const updates: Record<string, unknown> = {
@@ -89,16 +79,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         ).catch(() => {
                             // Silently fail — not critical
                         });
-                    }
 
-                    setEmployee(employeeProfile);
+                        setEmployee(employeeProfile);
+                        setProfileComplete(true);
+                    }
                 } catch (error) {
                     console.error('Error fetching employee profile:', error);
                     // Still allow auth to proceed even if Firestore fails
                     setEmployee(null);
+                    setProfileComplete(false);
                 }
             } else {
                 setEmployee(null);
+                setProfileComplete(false);
             }
 
             setLoading(false);
@@ -107,6 +100,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return () => unsubscribe();
     }, []);
 
+    // Function to re-fetch the employee profile (e.g. after completing registration)
+    const refreshEmployee = async () => {
+        if (user) {
+            try {
+                const employeeProfile = await getDocument<Employee>(
+                    COLLECTIONS.EMPLOYEES,
+                    user.uid
+                );
+                if (employeeProfile) {
+                    setEmployee(employeeProfile);
+                    setProfileComplete(true);
+                }
+            } catch (error) {
+                console.error('Error refreshing employee profile:', error);
+            }
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -114,6 +125,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 employee,
                 loading,
                 isAuthenticated: !!user,
+                profileComplete,
+                refreshEmployee,
             }}
         >
             {children}

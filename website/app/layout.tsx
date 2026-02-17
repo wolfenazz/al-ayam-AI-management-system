@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Al-Ayyam AI Platform - Task Management",
-  description: "WhatsApp Task Command Center - Manage news assignments and field updates with real-time WhatsApp integration.",
+  description: "WhatsApp Task Command Center - Manage news tasks and field updates with real-time WhatsApp integration.",
 };
 
 export default function RootLayout({

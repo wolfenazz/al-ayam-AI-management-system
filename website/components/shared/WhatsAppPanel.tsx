@@ -75,7 +75,7 @@ export default function WhatsAppPanel() {
     return (
         <aside className="w-full h-full bg-white flex flex-col shrink-0 relative z-10 overflow-hidden">
             {/* Header */}
-            <div className="h-16 bg-primary flex items-center justify-between px-4 text-white shrink-0 shadow-md z-20">
+            <div className="bg-primary flex items-center justify-between px-4 pt-12 pb-3 text-white shrink-0 shadow-md z-20">
                 <div className="flex items-center gap-3">
                     <div className="relative cursor-pointer">
                         <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden ring-2 ring-white/20">
@@ -141,7 +141,7 @@ export default function WhatsAppPanel() {
             </div>
 
             {/* Input Area */}
-            <div className="p-2 bg-[#f0f2f5] shrink-0 border-t border-border z-20">
+            <div className="p-2 pb-8 bg-[#f0f2f5] shrink-0 border-t border-border z-20">
                 <div className="flex items-center gap-2">
                     <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors">
                         <span className="material-symbols-outlined text-[24px]">add</span>
