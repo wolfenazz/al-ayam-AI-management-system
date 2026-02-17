@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const { chatPanelOpen, toggleChatPanel } = useUIStore();
 
     return (
-        <ProtectedRoute>
+        <ProtectedRoute allowedRoles={['Admin', 'Manager']}>
             <div className="flex flex-col h-screen overflow-hidden">
                 <Header />
 

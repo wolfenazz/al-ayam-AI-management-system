@@ -1,22 +1,26 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { EmployeeRole } from '@/types/common';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
     fallback?: React.ReactNode;
+    allowedRoles?: EmployeeRole[];
 }
 
 /**
  * Wraps a page to require authentication.
  * Redirects to /login if no user is authenticated.
  * Shows a loading spinner while auth state is resolving.
+ * optional: allowedRoles - restricts access to specific employee roles.
  */
-export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
-    const { isAuthenticated, loading, profileComplete } = useAuth();
+export default function ProtectedRoute({ children, fallback, allowedRoles }: ProtectedRouteProps) {
+    const { isAuthenticated, loading, profileComplete, employee } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
     const hasNavigated = useRef(false);
 
     useEffect(() => {
@@ -28,12 +32,37 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
                 // Authenticated but no employee profile — redirect to complete registration
                 hasNavigated.current = true;
                 router.push('/register?complete=google');
+            } else if (allowedRoles && employee && !allowedRoles.includes(employee.role)) {
+                // User has a profile but not the required role
+                hasNavigated.current = true;
+
+                // Redirect logic based on role
+                if (['Admin', 'Manager'].includes(employee.role)) {
+                    // Admins/Managers trying to access restricted pages (unlikely but possible)
+                    // If they are on employee dashboard and not allowed, send to main dashboard
+                    if (pathname.startsWith('/employees-dashboard')) {
+                        router.push('/dashboard');
+                    }
+                } else {
+                    // Regular employees trying to access admin dashboard
+                    if (pathname.startsWith('/dashboard') && !pathname.startsWith('/dashboard/tasks')) { // tasks excluded if shared? No, separate dashboard.
+                        router.push('/employees-dashboard');
+                    } else {
+                        // Generic unauthorized redirect
+                        router.push('/unauthorized');
+                    }
+                }
             }
         }
-    }, [isAuthenticated, loading, profileComplete, router]);
+    }, [isAuthenticated, loading, profileComplete, employee, router, allowedRoles, pathname]);
 
     if (loading || !isAuthenticated || !profileComplete) {
         return fallback || <LoadingScreen />;
+    }
+
+    // Role check for rendering (double check to prevent flash)
+    if (allowedRoles && employee && !allowedRoles.includes(employee.role)) {
+        return fallback || <LoadingScreen />; // Keep loading state until redirect happens
     }
 
     return <>{children}</>;

@@ -45,7 +45,7 @@ export function Iphone17Pro({
 
             {/* Screen background */}
             <rect
-                fill="#ffffff"
+                fill="#000000ff"
                 x={screenX}
                 y={screenY}
                 width={screenW}
@@ -79,23 +79,14 @@ export function Iphone17Pro({
                         style={{
                             width: `${screenW / scale}px`,
                             height: `${screenH / scale}px`,
-                            transform: `scale(${scale})`,
-                            transformOrigin: 'top left',
+                            zoom: scale,
                             overflow: 'hidden',
                             borderRadius: `${screenRx / scale}px`,
+                            display: 'flex',
+                            flexDirection: 'column',
                         }}
                     >
-                        <div
-                            style={{
-                                width: `${screenW / scale}px`,
-                                height: `${screenH / scale}px`,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                overflow: 'hidden',
-                            }}
-                        >
-                            {children}
-                        </div>
+                        {children}
                     </div>
                 </foreignObject>
             )}
