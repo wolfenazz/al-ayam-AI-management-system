@@ -5,7 +5,7 @@ import React from 'react';
 interface AvatarProps {
     src?: string;
     alt?: string; // Made optional to fix potential usage issues
-    size?: 'xs' | 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     status?: 'online' | 'offline' | 'busy' | 'off_duty' | null;
     className?: string;
 }
@@ -15,6 +15,7 @@ const sizeClasses = {
     sm: 'w-8 h-8 text-xs',
     md: 'w-10 h-10 text-sm',
     lg: 'w-12 h-12 text-base',
+    xl: 'w-20 h-20 text-2xl',
 };
 
 const statusSizeClasses = {
@@ -22,6 +23,7 @@ const statusSizeClasses = {
     sm: 'w-3 h-3 -bottom-0.5 -right-0.5 border-2',
     md: 'w-3.5 h-3.5 -bottom-0.5 -right-0.5 border-2',
     lg: 'w-4 h-4 bottom-0 right-0 border-2',
+    xl: 'w-5 h-5 bottom-1 right-1 border-4',
 };
 
 const statusColors = {

@@ -82,27 +82,7 @@ export default function Header() {
 
             <div className="flex flex-1 justify-end gap-6 items-center">
                 {/* Navigation Links */}
-                <nav className="hidden lg:flex items-center gap-1 mr-4">
-                    {[
-                        { href: '/dashboard', label: 'Dashboard', exact: true },
-                        { href: '/dashboard/tasks', label: 'Tasks', exact: false },
-                        { href: '/dashboard/analytics', label: 'Analytics', exact: false },
-                    ].map((item) => {
-                        const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
-                        return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${active
-                                    ? 'text-primary font-bold bg-primary-light'
-                                    : 'text-text-primary font-medium hover:text-primary hover:bg-surface'
-                                    }`}
-                            >
-                                {item.label}
-                            </Link>
-                        );
-                    })}
-                </nav>
+                {/* Navigation Links Removed - Moved to Sidebar */}
 
                 <div className="flex gap-2 items-center border-l border-border pl-4 lg:pl-6">
                     {/* Notifications */}

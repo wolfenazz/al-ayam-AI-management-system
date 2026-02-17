@@ -66,7 +66,7 @@ export default function EmployeesPage() {
                                 color="green"
                             />
                             <StatCard
-                                icon="busy_prediction_point"
+                                icon="hourglass_top"
                                 label="Busy"
                                 value={stats.busy.toString()}
                                 color="red"
@@ -166,15 +166,15 @@ function EmployeeCard({ employee }: { employee: any }) {
                 </button>
             </div>
 
-            <div className="mb-4 relative">
+            <div className="mb-4 relative inline-block">
                 <Avatar
                     src={employee.avatar_url}
                     alt={employee.name}
-                    size="lg"
-                    className="w-20 h-20 text-2xl ring-4 ring-gray-50"
+                    size="xl"
+                    className="ring-4 ring-gray-50"
                 />
                 <div className={`absolute bottom-0 right-0 w-5 h-5 rounded-full border-4 border-white ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
-                        employee.availability === 'BUSY' ? 'bg-red-500' : 'bg-gray-400'
+                    employee.availability === 'BUSY' ? 'bg-red-500' : 'bg-gray-400'
                     }`}></div>
             </div>
 
@@ -232,10 +232,10 @@ function EmployeeRow({ employee }: { employee: any }) {
 
                 <div className="col-span-3">
                     <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium ${employee.availability === 'AVAILABLE' ? 'text-emerald-700 bg-emerald-50' :
-                            employee.availability === 'BUSY' ? 'text-red-700 bg-red-50' : 'text-gray-600 bg-gray-100'
+                        employee.availability === 'BUSY' ? 'text-red-700 bg-red-50' : 'text-gray-600 bg-gray-100'
                         }`}>
                         <div className={`w-1.5 h-1.5 rounded-full ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
-                                employee.availability === 'BUSY' ? 'bg-red-500' : 'bg-gray-500'
+                            employee.availability === 'BUSY' ? 'bg-red-500' : 'bg-gray-500'
                             }`}></div>
                         {employee.availability?.replace('_', ' ')}
                     </div>

@@ -55,38 +55,46 @@ function getAvailabilityStatus(emp?: Employee): 'online' | 'offline' | 'busy' | 
     return 'offline';
 }
 
-function getDeadlineDisplay(deadline?: string): { text: string; urgent: boolean } | null {
-    if (!deadline) return null;
+function getScheduleDisplay(task: Task): { text: string; urgent: boolean; icon: string } | null {
+    if (!task.deadline) return null;
     const now = Date.now();
-    const target = new Date(deadline).getTime();
+    const target = new Date(task.deadline).getTime();
     const diff = target - now;
 
-    if (diff < 0) return { text: 'OVERDUE', urgent: true };
-    if (diff < 60 * 60 * 1000) {
-        const mins = Math.floor(diff / 60000);
-        return { text: `${mins}m left`, urgent: true };
+    let text = '';
+    const urgent = diff < 4 * 60 * 60 * 1000; // Less than 4 hours
+    const overdue = diff < 0;
+
+    if (task.start_time && task.end_time) {
+        const date = new Date(task.deadline);
+        const isToday = new Date().toDateString() === date.toDateString();
+        const datePart = isToday ? 'Today' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        text = `${datePart}, ${task.start_time} - ${task.end_time}`;
+    } else {
+        // Legacy/Fallback logic
+        if (overdue) text = 'OVERDUE';
+        else if (diff < 60 * 60 * 1000) text = `${Math.floor(diff / 60000)}m left`;
+        else if (diff < 24 * 60 * 60 * 1000) text = 'Tomorrow'; // Approximate
+        else text = `${Math.floor(diff / (24 * 3600000))}d left`;
     }
-    if (diff < 4 * 60 * 60 * 1000) {
-        const hours = Math.floor(diff / 3600000);
-        return { text: `${hours}h left`, urgent: true };
-    }
-    if (diff < 24 * 60 * 60 * 1000) {
-        return { text: 'Tomorrow', urgent: false };
-    }
-    const days = Math.floor(diff / (24 * 3600000));
-    return { text: `${days}d left`, urgent: false };
+
+    return {
+        text,
+        urgent: urgent || overdue,
+        icon: task.start_time ? 'schedule' : (urgent ? 'timer' : 'calendar_today')
+    };
 }
 
 export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRowProps) {
     const { setActiveChatTaskId } = useUIStore();
-    const deadlineInfo = getDeadlineDisplay(task.deadline);
+    const scheduleInfo = getScheduleDisplay(task);
     const showWhatsAppStrip = task.status === 'IN_PROGRESS' && task.priority === 'URGENT';
 
     return (
         <div
             className={`group bg-white rounded-xl border transition-all flex flex-col mb-1 ${isSelected
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'border-border hover:border-gray-300 shadow-sm'
+                ? 'border-primary bg-primary/5 shadow-sm'
+                : 'border-border hover:border-gray-300 shadow-sm'
                 }`}
         >
             <div className="flex items-center p-4 gap-4">
@@ -102,8 +110,8 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
 
                 {/* Priority Indicator Line */}
                 <div className={`w-1 h-12 rounded-full shrink-0 ${task.priority === 'URGENT' ? 'bg-red-500' :
-                        task.priority === 'HIGH' ? 'bg-orange-500' :
-                            task.priority === 'NORMAL' ? 'bg-blue-500' : 'bg-gray-300'
+                    task.priority === 'HIGH' ? 'bg-orange-500' :
+                        task.priority === 'NORMAL' ? 'bg-blue-500' : 'bg-gray-300'
                     }`} />
 
                 {/* Task Info */}
@@ -146,13 +154,13 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
 
                     {/* Deadline (Col 11-12) */}
                     <div className="col-span-2 flex justify-end">
-                        {deadlineInfo && (
-                            <div className={`flex items-center gap-1 font-medium text-xs px-2 py-1 rounded whitespace-nowrap ${deadlineInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-gray-100'
+                        {scheduleInfo && (
+                            <div className={`flex items-center gap-1 font-medium text-xs px-2 py-1 rounded whitespace-nowrap ${scheduleInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-gray-100'
                                 }`}>
                                 <span className="material-symbols-outlined text-[14px]">
-                                    {deadlineInfo.urgent ? 'timer' : 'calendar_today'}
+                                    {scheduleInfo.icon}
                                 </span>
-                                <span>{deadlineInfo.text}</span>
+                                <span>{scheduleInfo.text}</span>
                             </div>
                         )}
                     </div>

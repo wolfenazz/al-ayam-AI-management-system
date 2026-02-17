@@ -43,7 +43,8 @@ export default function CreateTaskModal() {
     const [taskType, setTaskType] = useState<TaskType>('BREAKING_NEWS');
     const [selectedEmployee, setSelectedEmployee] = useState<string>('');
     const [deadlineDate, setDeadlineDate] = useState('2026-02-17');
-    const [deadlineTime, setDeadlineTime] = useState('14:30');
+    const [startTime, setStartTime] = useState('09:00');
+    const [endTime, setEndTime] = useState('17:00');
     const [searchReporter, setSearchReporter] = useState('');
     const [deliverables, setDeliverables] = useState<Record<string, number>>({});
 
@@ -85,8 +86,8 @@ export default function CreateTaskModal() {
             return;
         }
 
-        const deadline = deadlineDate && deadlineTime
-            ? new Date(`${deadlineDate}T${deadlineTime}`).toISOString()
+        const deadline = deadlineDate && endTime
+            ? new Date(`${deadlineDate}T${endTime}`).toISOString()
             : undefined;
 
         createTask.mutate({
@@ -98,6 +99,8 @@ export default function CreateTaskModal() {
             assignee_id: selectedEmployee || undefined,
             creator_id: user.uid,
             deadline,
+            start_time: startTime,
+            end_time: endTime,
             deliverables,
         }, {
             onSuccess: () => {
@@ -221,24 +224,38 @@ export default function CreateTaskModal() {
                         </div>
 
                         {/* Deadline */}
-                        <div className="mb-5 grid grid-cols-2 gap-3">
-                            <div>
-                                <label className="block text-xs font-semibold text-text-secondary mb-1.5">Deadline Date</label>
-                                <input
-                                    type="date"
-                                    value={deadlineDate}
-                                    onChange={(e) => setDeadlineDate(e.target.value)}
-                                    className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
-                                />
+                        <div className="mb-5">
+                            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Task Schedule</label>
+                            <div className="grid grid-cols-2 gap-3 mb-3">
+                                <div className="col-span-2">
+                                    <label className="block text-[10px] text-text-secondary mb-1 transition-colors">Date</label>
+                                    <input
+                                        type="date"
+                                        value={deadlineDate}
+                                        onChange={(e) => setDeadlineDate(e.target.value)}
+                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <label className="block text-xs font-semibold text-text-secondary mb-1.5">Time</label>
-                                <input
-                                    type="time"
-                                    value={deadlineTime}
-                                    onChange={(e) => setDeadlineTime(e.target.value)}
-                                    className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
-                                />
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-[10px] text-text-secondary mb-1">From</label>
+                                    <input
+                                        type="time"
+                                        value={startTime}
+                                        onChange={(e) => setStartTime(e.target.value)}
+                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] text-text-secondary mb-1">To</label>
+                                    <input
+                                        type="time"
+                                        value={endTime}
+                                        onChange={(e) => setEndTime(e.target.value)}
+                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -404,7 +421,21 @@ export default function CreateTaskModal() {
                                                 {description || 'No description provided.'}
                                             </p>
                                             <div className="flex flex-col gap-0.5 text-[10px] text-text-secondary">
-                                                <span>⏰ Deadline: Today, {deadlineTime || '14:30'}</span>
+                                                <span>
+                                                    ⏰ Schedule: {
+                                                        (() => {
+                                                            if (!deadlineDate) return 'No Date';
+                                                            const [y, m, d] = deadlineDate.split('-').map(Number);
+                                                            const targetDate = new Date(y, m - 1, d);
+                                                            const today = new Date();
+                                                            const isToday = today.getFullYear() === y && today.getMonth() === m - 1 && today.getDate() === d;
+
+                                                            return isToday
+                                                                ? 'Today'
+                                                                : targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
+                                                        })()
+                                                    }, {startTime || '09:00'} - {endTime || '17:00'}
+                                                </span>
                                                 <span>⚡ Priority: {priority}</span>
                                             </div>
                                             {/* Deliverables summary */}

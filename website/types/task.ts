@@ -17,6 +17,8 @@ export interface Task {
         address?: string;
     };
     deadline?: string;
+    start_time?: string;
+    end_time?: string;
     estimated_duration?: number;
     budget?: number;
     deliverables?: Record<string, number>;
