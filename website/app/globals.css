@@ -24,8 +24,8 @@
   --color-surface: var(--surface);
   --color-card: var(--card);
   --color-card-dark: #1a1d2d;
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Inter', sans-serif;
+  --font-sans: 'Outfit', sans-serif;
+  --font-display: 'Outfit', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -304,6 +304,23 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+/* Font Family Utilities */
+.font-almarai {
+  font-family: 'Almarai', sans-serif;
+}
+
+.font-cairo {
+  font-family: 'Cairo', sans-serif;
+}
+
+.font-comfortaa {
+  font-family: 'Comfortaa', sans-serif;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
 }
 
 @layer base {

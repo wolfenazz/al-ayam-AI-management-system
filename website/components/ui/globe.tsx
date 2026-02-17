@@ -88,9 +88,11 @@ export function Globe({
 
         // Dynamic colors based on theme
         const themeConfig = isDark ? {
+            width: 100,
+            height: 800,
             baseColor: [1, 1, 1] as [number, number, number], // White land for high contrast
             glowColor: [0.5, 0.5, 0.5] as [number, number, number], // Soft white glow
-            markerColor: [0, 0, 0] as [number, number, number], // Black markers
+            markerColor: [0 / 255, 135 / 255, 204 / 255] as [number, number, number],
             dark: 1,
         } : {
             baseColor: [1, 1, 1] as [number, number, number],

@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { loginWithEmail, loginWithGoogle, getAuthErrorMessage } from '@/lib/firebase/auth';
 import { Globe } from '@/components/ui/globe';
+import { MorphingText } from "@/components/ui/morphing-text"
 
 export default function LoginPage() {
     const router = useRouter();
@@ -86,9 +87,9 @@ export default function LoginPage() {
     return (
         <div className="flex flex-col lg:flex-row min-h-screen w-full bg-background transition-colors duration-300">
             {/* Left: Globe Panel */}
-            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center dark:bg-black overflow-hidden transition-colors duration-400  bg-gray-60">
+            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-black overflow-hidden transition-colors duration-400  ">
                 <Globe className="top-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
+                <div className="absolute bottom-20 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
                     <Image
                         src="/images/alayam-logo-small.webp"
                         alt="Al-Ayyam Logo"
@@ -98,7 +99,7 @@ export default function LoginPage() {
                         priority
                         style={{ width: 'auto', height: 'auto' }}
                     />
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                         AI Platform
                     </h1>
                 </div>
@@ -128,9 +129,6 @@ export default function LoginPage() {
 
 
 
-
-
-
                     {/* Error Message */}
                     {error && (
                         <div className="flex items-center gap-2 p-3 bg-accent-red/5 border border-accent-red/20 rounded-lg text-accent-red text-sm animate-fade-in">
@@ -138,9 +136,22 @@ export default function LoginPage() {
                             {error}
                         </div>
                     )}
-
                     {/* Form */}
-                    <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+                    <form className="flex flex-col gap-5 text-[#3498d1]" onSubmit={handleSubmit}>
+                        <MorphingText 
+  texts={[
+    "Truth",
+    "Integrity",
+    "Insight",
+    "Accountability",
+    "Heritage",
+    "Credibility",
+    "Perspective",
+    "Authority",
+    "Clarity",
+    "Legacy"
+  ]} 
+/>
                         {/* Email */}
                         <div className="flex flex-col gap-2">
                             <label className="text-sm font-medium text-text-primary" htmlFor="login-email">
