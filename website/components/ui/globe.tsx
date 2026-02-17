@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import createGlobe, { COBEOptions } from "cobe"
 import { useMotionValue, useSpring } from "framer-motion"
 
@@ -39,6 +39,7 @@ export function Globe({
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const pointerInteracting = useRef<number | null>(null)
     const pointerInteractionMovement = useRef(0)
+    const [isDark, setIsDark] = useState(false)
 
     const r = useMotionValue(0)
     const rs = useSpring(r, {
@@ -46,6 +47,19 @@ export function Globe({
         damping: 30,
         stiffness: 100,
     })
+
+    useEffect(() => {
+        const updateTheme = () => {
+            setIsDark(document.documentElement.classList.contains("dark"))
+        }
+        updateTheme()
+        const observer = new MutationObserver(updateTheme)
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"],
+        })
+        return () => observer.disconnect()
+    }, [])
 
     const updatePointerInteraction = (value: number | null) => {
         pointerInteracting.current = value
@@ -72,8 +86,22 @@ export function Globe({
         window.addEventListener("resize", onResize)
         onResize()
 
+        // Dynamic colors based on theme
+        const themeConfig = isDark ? {
+            baseColor: [1, 1, 1] as [number, number, number], // White land for high contrast
+            glowColor: [0.5, 0.5, 0.5] as [number, number, number], // Soft white glow
+            markerColor: [0, 0, 0] as [number, number, number], // Black markers
+            dark: 1,
+        } : {
+            baseColor: [1, 1, 1] as [number, number, number],
+            glowColor: [1, 1, 1] as [number, number, number],
+            markerColor: [0 / 255, 135 / 255, 204 / 255] as [number, number, number],
+            dark: 0,
+        }
+
         const globe = createGlobe(canvasRef.current!, {
             ...config,
+            ...themeConfig,
             width: width * 2,
             height: width * 2,
             onRender: (state) => {
@@ -89,7 +117,7 @@ export function Globe({
             globe.destroy()
             window.removeEventListener("resize", onResize)
         }
-    }, [rs, config])
+    }, [rs, config, isDark])
 
     return (
         <div

@@ -1,5 +1,7 @@
 'use client';
 
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
+
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -244,7 +246,7 @@ function RegisterPageContent() {
         return (
             <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white">
                 {/* Left: Globe Panel */}
-                <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 overflow-hidden">
+                <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-black overflow-hidden transition-colors duration-300">
                     <Globe className="top-1/2 -translate-y-1/2" />
                     <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
                         <Image
@@ -256,7 +258,7 @@ function RegisterPageContent() {
                             priority
                             style={{ width: 'auto', height: 'auto' }}
                         />
-                        <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                        <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                             AI Platform
                         </h1>
                     </div>
@@ -474,9 +476,9 @@ function RegisterPageContent() {
 
     // ─── Normal Registration Form ───────────────────────────────────
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white">
+        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-background transition-colors duration-300">
             {/* Left: Globe Panel */}
-            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 overflow-hidden">
+            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-60 dark:bg-black overflow-hidden transition-colors duration-300">
                 <Globe className="top-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
                     <Image
@@ -488,14 +490,17 @@ function RegisterPageContent() {
                         priority
                         style={{ width: 'auto', height: 'auto' }}
                     />
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                         AI Platform
                     </h1>
                 </div>
             </div>
 
             {/* Right: Registration Form */}
-            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-white overflow-y-auto">
+            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-background overflow-y-auto relative transition-colors duration-300">
+                <div className="absolute top-4 right-4">
+                    <AnimatedThemeToggler />
+                </div>
                 <div className="w-full max-w-[480px] flex flex-col gap-6 animate-fade-in">
 
                     {/* Mobile Logo */}
@@ -541,7 +546,7 @@ function RegisterPageContent() {
                     <button
                         onClick={handleGoogleSignUp}
                         disabled={isLoading}
-                        className="flex items-center justify-center gap-3 w-full h-12 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all text-text-primary font-medium shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center gap-3 w-full h-12 bg-surface border border-border rounded-lg hover:bg-surface/80 transition-all text-text-primary font-medium shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg viewBox="0 0 24 24" width="20" height="20">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -584,7 +589,7 @@ function RegisterPageContent() {
                                         type="text"
                                         value={formData.fullName}
                                         onChange={(e) => update('fullName', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                         placeholder="Ahmed Al-Mansoori"
                                         autoComplete="name"
                                     />
@@ -605,7 +610,7 @@ function RegisterPageContent() {
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) => update('email', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                         placeholder="name@alayyam.com"
                                         autoComplete="email"
                                     />
@@ -626,7 +631,7 @@ function RegisterPageContent() {
                                         type="tel"
                                         value={formData.phone}
                                         onChange={(e) => update('phone', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                         placeholder="+973 XXXX XXXX"
                                         autoComplete="tel"
                                     />
@@ -646,7 +651,7 @@ function RegisterPageContent() {
                                         id="reg-department"
                                         value={formData.department}
                                         onChange={(e) => update('department', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none appearance-none cursor-pointer"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none appearance-none cursor-pointer"
                                     >
                                         <option value="">Select department...</option>
                                         <option value="News">News</option>
@@ -711,7 +716,7 @@ function RegisterPageContent() {
                                         type={showPassword ? 'text' : 'password'}
                                         value={formData.password}
                                         onChange={(e) => update('password', e.target.value)}
-                                        className="block w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                        className="block w-full pl-10 pr-10 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                         placeholder="Minimum 8 characters"
                                         autoComplete="new-password"
                                     />
@@ -755,11 +760,11 @@ function RegisterPageContent() {
                                         type={showConfirmPassword ? 'text' : 'password'}
                                         value={formData.confirmPassword}
                                         onChange={(e) => update('confirmPassword', e.target.value)}
-                                        className={`block w-full pl-10 pr-10 py-3 rounded-lg border bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:ring-2 focus:bg-white transition-all text-sm outline-none ${formData.confirmPassword && formData.password !== formData.confirmPassword
+                                        className={`block w-full pl-10 pr-10 py-3 rounded-lg border bg-surface text-text-primary placeholder-text-secondary focus:ring-2 focus:bg-background transition-all text-sm outline-none ${formData.confirmPassword && formData.password !== formData.confirmPassword
                                             ? 'border-accent-red focus:border-accent-red focus:ring-accent-red/20'
                                             : formData.confirmPassword && formData.password === formData.confirmPassword
                                                 ? 'border-accent-green focus:border-accent-green focus:ring-accent-green/20'
-                                                : 'border-gray-200 focus:border-primary focus:ring-primary/20'
+                                                : 'border-border focus:border-primary focus:ring-primary/20'
                                             }`}
                                         placeholder="Re-enter your password"
                                         autoComplete="new-password"

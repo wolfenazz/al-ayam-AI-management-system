@@ -1,5 +1,7 @@
 'use client';
 
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -82,9 +84,9 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white">
+        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-background transition-colors duration-300">
             {/* Left: Globe Panel */}
-            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 overflow-hidden">
+            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center dark:bg-black overflow-hidden transition-colors duration-400  bg-gray-60">
                 <Globe className="top-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
                     <Image
@@ -96,14 +98,17 @@ export default function LoginPage() {
                         priority
                         style={{ width: 'auto', height: 'auto' }}
                     />
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                         AI Platform
                     </h1>
                 </div>
             </div>
 
             {/* Right: Login Form */}
-            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-white overflow-y-auto">
+            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-background overflow-y-auto relative transition-colors duration-300">
+                <div className="absolute top-4 right-4">
+                    <AnimatedThemeToggler />
+                </div>
                 <div className="w-full max-w-[480px] flex flex-col gap-8 animate-fade-in">
 
                     {/* Mobile Logo */}
@@ -150,7 +155,7 @@ export default function LoginPage() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                    className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                     placeholder="name@alayyam.com"
                                     autoComplete="email"
                                 />
@@ -171,7 +176,7 @@ export default function LoginPage() {
                                     type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="block w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                    className="block w-full pl-10 pr-10 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                     placeholder="Enter your password"
                                     autoComplete="current-password"
                                 />
@@ -239,7 +244,7 @@ export default function LoginPage() {
                     <button
                         onClick={handleGoogleSignIn}
                         disabled={isLoading}
-                        className="flex items-center justify-center gap-3 w-full h-12 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all text-text-primary font-medium shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center gap-3 w-full h-12 bg-surface border border-border rounded-lg hover:bg-surface/80 transition-all text-text-primary font-medium shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg viewBox="0 0 24 24" width="20" height="20">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />

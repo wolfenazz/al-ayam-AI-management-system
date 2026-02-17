@@ -122,7 +122,7 @@ export default function CreateTaskModal() {
             />
 
             {/* Modal */}
-            <div className="relative bg-white rounded-2xl shadow-2xl w-[95vw] max-w-[1200px] h-[90vh] max-h-[750px] flex flex-col animate-fade-in overflow-hidden">
+            <div className="relative bg-card rounded-2xl shadow-2xl w-[95vw] max-w-[1200px] h-[90vh] max-h-[750px] flex flex-col animate-fade-in overflow-hidden">
                 {/* Modal Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
                     <div className="flex items-center gap-3">
@@ -166,7 +166,7 @@ export default function CreateTaskModal() {
                                 <label className="block text-xs font-semibold text-text-secondary mb-1.5">Load Template</label>
                                 <select
                                     onChange={handleTemplateChange}
-                                    className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50 cursor-pointer"
+                                    className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-surface cursor-pointer"
                                     defaultValue=""
                                 >
                                     <option value="" disabled>Select a template...</option>
@@ -184,7 +184,7 @@ export default function CreateTaskModal() {
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background"
                                 placeholder="Enter task title..."
                             />
                         </div>
@@ -195,7 +195,7 @@ export default function CreateTaskModal() {
                             <select
                                 value={taskType}
                                 onChange={(e) => setTaskType(e.target.value as TaskType)}
-                                className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white appearance-none cursor-pointer"
+                                className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background appearance-none cursor-pointer"
                             >
                                 {taskTypes.map((t) => (
                                     <option key={t.value} value={t.value}>{t.label}</option>
@@ -213,7 +213,7 @@ export default function CreateTaskModal() {
                                         onClick={() => setPriority(opt.value)}
                                         className={`flex flex-col items-center gap-1 py-2.5 px-2 rounded-lg border-2 transition-all text-center ${priority === opt.value
                                             ? opt.color + ' border-current font-bold shadow-sm'
-                                            : 'border-border text-text-secondary hover:border-gray-300'
+                                            : 'border-border text-text-secondary hover:border-text-secondary/30'
                                             }`}
                                     >
                                         <span className="material-symbols-outlined text-[15px]">{opt.icon}</span>
@@ -233,7 +233,7 @@ export default function CreateTaskModal() {
                                         type="date"
                                         value={deadlineDate}
                                         onChange={(e) => setDeadlineDate(e.target.value)}
-                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background"
                                     />
                                 </div>
                             </div>
@@ -244,7 +244,7 @@ export default function CreateTaskModal() {
                                         type="time"
                                         value={startTime}
                                         onChange={(e) => setStartTime(e.target.value)}
-                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background"
                                     />
                                 </div>
                                 <div>
@@ -253,7 +253,7 @@ export default function CreateTaskModal() {
                                         type="time"
                                         value={endTime}
                                         onChange={(e) => setEndTime(e.target.value)}
-                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                        className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background"
                                     />
                                 </div>
                             </div>
@@ -266,7 +266,7 @@ export default function CreateTaskModal() {
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={4}
-                                className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white resize-none"
+                                className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background resize-none"
                                 placeholder="Enter task details..."
                             />
                         </div>
@@ -307,7 +307,7 @@ export default function CreateTaskModal() {
                                 type="text"
                                 value={searchReporter}
                                 onChange={(e) => setSearchReporter(e.target.value)}
-                                className="w-full pl-9 pr-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white"
+                                className="w-full pl-9 pr-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background"
                                 placeholder="Search reporters..."
                             />
                         </div>
@@ -326,7 +326,7 @@ export default function CreateTaskModal() {
                                             onClick={() => setSelectedEmployee(emp.id)}
                                             className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${isSelected
                                                 ? 'border-primary bg-primary-light shadow-sm'
-                                                : 'border-border hover:border-gray-300 bg-white'
+                                                : 'border-border hover:border-text-secondary/30 bg-card'
                                                 } ${isOffline ? 'opacity-50 grayscale' : ''}`}
                                         >
                                             <div className="relative">
@@ -371,7 +371,7 @@ export default function CreateTaskModal() {
                     </div>
 
                     {/* Right Column: WhatsApp Message Preview */}
-                    <div className="w-[340px] shrink-0 overflow-y-auto p-4 bg-gradient-to-b from-gray-50 to-gray-100/50 scrollbar-thin flex flex-col items-center">
+                    <div className="w-[340px] shrink-0 overflow-y-auto p-4 bg-background dark:bg-background/50 scrollbar-thin flex flex-col items-center">
                         <div className="mb-4 flex items-center gap-2 self-start">
                             <span className="material-symbols-outlined text-[18px] text-whatsapp-dark">chat</span>
                             <h3 className="font-bold text-text-primary text-base">Message Preview</h3>
@@ -478,7 +478,7 @@ export default function CreateTaskModal() {
                                 <button
                                     onClick={() => handleAction('DRAFT')}
                                     disabled={createTask.isPending}
-                                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-surface hover:bg-surface/80 text-text-primary font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-50"
                                 >
                                     Save Draft
                                 </button>

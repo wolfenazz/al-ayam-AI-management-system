@@ -48,7 +48,7 @@ export default function DeliverablesEditor({ value, onChange }: DeliverablesEdit
                     return (
                         <div key={type} className={`
                             flex items-center justify-between p-2 rounded-lg border transition-all select-none
-                            ${count > 0 ? 'border-primary bg-primary/5' : 'border-border bg-white hover:border-gray-300'}
+                            ${count > 0 ? 'border-primary bg-primary/5' : 'border-border bg-background hover:border-text-secondary/30'}
                         `}>
                             <span className="text-sm font-medium text-text-primary">{type}</span>
 
@@ -56,19 +56,19 @@ export default function DeliverablesEditor({ value, onChange }: DeliverablesEdit
                                 {count > 0 && (
                                     <button
                                         onClick={() => handleUpdate(type, count - 1)}
-                                        className="w-5 h-5 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary text-xs transition-colors"
+                                        className="w-5 h-5 flex items-center justify-center rounded-full bg-background border border-border text-text-secondary hover:text-primary hover:border-primary text-xs transition-colors"
                                     >
                                         -
                                     </button>
                                 )}
 
-                                <span className={`text-sm font-bold w-4 text-center ${count > 0 ? 'text-primary' : 'text-gray-300'}`}>
+                                <span className={`text-sm font-bold w-4 text-center ${count > 0 ? 'text-primary' : 'text-text-secondary/50'}`}>
                                     {count}
                                 </span>
 
                                 <button
                                     onClick={() => handleUpdate(type, count + 1)}
-                                    className="w-5 h-5 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary text-xs transition-colors"
+                                    className="w-5 h-5 flex items-center justify-center rounded-full bg-background border border-border text-text-secondary hover:text-primary hover:border-primary text-xs transition-colors"
                                 >
                                     +
                                 </button>
@@ -85,13 +85,13 @@ export default function DeliverablesEditor({ value, onChange }: DeliverablesEdit
                     value={customType}
                     onChange={(e) => setCustomType(e.target.value)}
                     placeholder="Add custom item..."
-                    className="flex-1 px-3 py-1.5 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="flex-1 px-3 py-1.5 text-sm bg-background text-text-primary border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 placeholder:text-text-secondary"
                     onKeyDown={(e) => e.key === 'Enter' && handleAddCustom()}
                 />
                 <button
                     onClick={handleAddCustom}
                     disabled={!customType.trim()}
-                    className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 bg-surface text-text-primary rounded-lg text-sm font-medium hover:bg-surface/80 disabled:opacity-50 transition-colors"
                 >
                     Add
                 </button>

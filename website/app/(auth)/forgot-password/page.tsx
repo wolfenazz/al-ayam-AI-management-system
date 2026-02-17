@@ -1,8 +1,11 @@
 'use client';
 
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
+import Image from 'next/image';
+import { Globe } from '@/components/ui/globe';
+
 import React, { useState } from 'react';
 import Link from 'next/link';
-import AuthLeftPanel from '@/components/auth/AuthLeftPanel';
 import { resetPassword, getAuthErrorMessage } from '@/lib/firebase/auth';
 
 export default function ForgotPasswordPage() {
@@ -33,12 +36,31 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white">
-            {/* Left: Branding Panel */}
-            <AuthLeftPanel />
+        <div className="flex flex-col lg:flex-row min-h-screen w-full bg-background transition-colors duration-300">
+            {/* Left: Globe Panel */}
+            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-60 dark:bg-black overflow-hidden transition-colors duration-300">
+                <Globe className="top-1/2 -translate-y-1/2" />
+                <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
+                    <Image
+                        src="/images/alayam-logo-small.webp"
+                        alt="Al-Ayyam Logo"
+                        width={80}
+                        height={80}
+                        className="object-contain"
+                        priority
+                        style={{ width: 'auto', height: 'auto' }}
+                    />
+                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                        AI Platform
+                    </h1>
+                </div>
+            </div>
 
             {/* Right: Forgot Password Form */}
-            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-white overflow-y-auto">
+            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-background overflow-y-auto relative transition-colors duration-300">
+                <div className="absolute top-4 right-4">
+                    <AnimatedThemeToggler />
+                </div>
                 <div className="w-full max-w-[480px] flex flex-col gap-8 animate-fade-in">
 
                     {/* Mobile Logo */}
@@ -92,7 +114,7 @@ export default function ForgotPasswordPage() {
                                             type="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                            className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                             placeholder="name@alayyam.com"
                                             autoComplete="email"
                                         />
