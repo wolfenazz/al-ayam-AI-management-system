@@ -3,18 +3,31 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { mockMessages, mockEmployees } from '@/lib/mock-data';
 import { TaskMessage } from '@/types/message';
+import { useUIStore } from '@/stores/uiStore';
+import { useTask } from '@/hooks/useTasks';
+import { useEmployees } from '@/hooks/useEmployees';
 
 export default function WhatsAppPanel() {
+    const { activeChatTaskId } = useUIStore(); // Get selected task ID
+    const { task, isLoading: taskLoading } = useTask(activeChatTaskId);
+    const { employees } = useEmployees();
+
     const [messageInput, setMessageInput] = useState('');
     const chatEndRef = useRef<HTMLDivElement>(null);
-    const messages = mockMessages;
+
+    // Filter messages for the active task (using mock data for now)
+    // If mocking, we might not have task_id match, so let's just show all if task is selected for demo
+    // UPDATE: Let's assume mockMessages have some task_id or we just show them for ANY task for now.
+    // Ideally: const messages = mockMessages.filter(m => m.task_id === activeChatTaskId);
+    const messages = activeChatTaskId ? mockMessages : [];
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages.length]);
+    }, [messages.length, activeChatTaskId]);
 
     const handleSend = () => {
         if (messageInput.trim()) {
+            // optimized: logic to send message
             setMessageInput('');
         }
     };
@@ -26,24 +39,66 @@ export default function WhatsAppPanel() {
         }
     };
 
+    const assignee = task?.assignee_id ? employees.find(e => e.id === task.assignee_id) : null;
+
+    // 1. Empty State: No Task Selected
+    if (!activeChatTaskId) {
+        return (
+            <aside className="w-full h-full bg-[#f0f2f5] flex flex-col items-center justify-center text-center p-6 relative z-10 overflow-hidden">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                    <span className="material-symbols-outlined text-[40px] text-gray-300">chat_bubble_outline</span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">No Chat Selected</h3>
+                <p className="text-sm text-gray-500">
+                    Select a task from the list to view the conversation with the reporter.
+                </p>
+                <div className="mt-8 border-t border-gray-200 pt-6 w-full max-w-[200px]">
+                    <div className="flex items-center justify-center gap-2 text-gray-400">
+                        <span className="material-symbols-outlined text-[18px]">lock</span>
+                        <span className="text-xs">End-to-end encrypted</span>
+                    </div>
+                </div>
+            </aside>
+        );
+    }
+
+    // 2. Loading State
+    if (taskLoading) {
+        return (
+            <aside className="w-full h-full bg-white flex flex-col items-center justify-center z-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </aside>
+        );
+    }
+
+    // 3. Active Chat View
     return (
         <aside className="w-full h-full bg-white flex flex-col shrink-0 relative z-10 overflow-hidden">
             {/* Header */}
-            <div className="h-16 bg-primary flex items-center justify-between px-4 text-white shrink-0">
+            <div className="h-16 bg-primary flex items-center justify-between px-4 text-white shrink-0 shadow-md z-20">
                 <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden">
-                            <img
-                                className="w-full h-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP4_TdYQa5W8GLB6RAp_Uc7eZ3OWZWLncfzUpPqu-1ZkENlCFi3OKGT--n1kdK3UxlH8_nRyReNBInMSk1YzinYjyHQmB_H40riNtEieLJJ-Di9ibDM5ytTb-YP5xwWOQu6713oXL4JLJUmzlJbhq9NIjP8jVFiip7f5drvCu6aHFvVvIcps26DKmTWl65LrcCXyKDCXFic_h8xmhhV8HPHkx2huZrsU9k_lQXlNUwF2RAtJMAX_QP9yio8g2kfSYwM1zHMp2B6TY"
-                                alt="Group chat"
-                            />
+                    <div className="relative cursor-pointer">
+                        <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden ring-2 ring-white/20">
+                            {assignee?.avatar_url ? (
+                                <img
+                                    className="w-full h-full object-cover"
+                                    src={assignee.avatar_url}
+                                    alt={assignee.name}
+                                />
+                            ) : (
+                                <span className="material-symbols-outlined text-[24px]">group</span>
+                            )}
                         </div>
-                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-primary rounded-full" />
+                        <div className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-primary rounded-full ${assignee?.availability === 'AVAILABLE' ? 'bg-green-400' : 'bg-gray-400'
+                            }`} />
                     </div>
-                    <div>
-                        <h3 className="font-bold text-sm">Bahrain Field Team</h3>
-                        <p className="text-xs text-white/70">Ahmed, Sarah, Khalid...</p>
+                    <div className="flex flex-col">
+                        <h3 className="font-bold text-sm leading-tight truncate max-w-[140px]">
+                            {assignee ? assignee.name : 'Unknown Reporter'}
+                        </h3>
+                        <p className="text-[10px] text-white/80 truncate max-w-[140px]">
+                            {task?.title || 'No Task Title'}
+                        </p>
                     </div>
                 </div>
                 <button className="hover:bg-white/10 rounded-full p-1.5 transition-colors">
@@ -52,28 +107,46 @@ export default function WhatsAppPanel() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 chat-bg flex flex-col gap-4 scrollbar-thin">
+            <div
+                className="flex-1 overflow-y-auto p-4 chat-bg flex flex-col gap-4 scrollbar-thin"
+                style={{ backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')" }}
+            >
+                {/* Encryption Notice */}
+                <div className="flex justify-center my-2">
+                    <div className="bg-[#ffeba0] text-gray-800 text-[10px] px-2 py-1 rounded shadow-sm text-center max-w-[80%] flex items-center gap-1 justify-center">
+                        <span className="material-symbols-outlined text-[10px]">lock</span>
+                        Messages are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
+                    </div>
+                </div>
+
                 {/* Today divider */}
                 <div className="flex justify-center my-2">
-                    <span className="bg-border text-text-secondary text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                    <span className="bg-white/90 text-text-secondary text-[10px] font-bold px-2 py-1 rounded shadow-sm">
                         TODAY
                     </span>
                 </div>
 
-                {messages.map((msg, index) => (
-                    <MessageBubble key={msg.id} message={msg} index={index} />
-                ))}
+                {messages.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center opacity-60">
+                        <p className="text-sm text-gray-500">No messages yet.</p>
+                        <p className="text-xs text-gray-400">Send a message to start the conversation.</p>
+                    </div>
+                ) : (
+                    messages.map((msg, index) => (
+                        <MessageBubble key={msg.id} message={msg} index={index} />
+                    ))
+                )}
 
                 <div ref={chatEndRef} />
             </div>
 
             {/* Input Area */}
-            <div className="p-3 bg-white shrink-0 border-t border-border">
-                <div className="flex items-end gap-2">
-                    <button className="text-text-secondary p-2 hover:bg-surface rounded-full transition-colors">
-                        <span className="material-symbols-outlined">add</span>
+            <div className="p-2 bg-[#f0f2f5] shrink-0 border-t border-border z-20">
+                <div className="flex items-center gap-2">
+                    <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors">
+                        <span className="material-symbols-outlined text-[24px]">add</span>
                     </button>
-                    <div className="flex-1 bg-surface rounded-2xl px-4 py-2 flex items-center gap-2">
+                    <div className="flex-1 bg-white rounded-lg px-3 py-2 flex items-center gap-2 border border-white focus-within:border-white">
                         <input
                             className="bg-transparent border-none focus:ring-0 outline-none w-full text-sm text-text-primary p-0 placeholder:text-text-secondary"
                             placeholder="Type a message"
@@ -85,12 +158,18 @@ export default function WhatsAppPanel() {
                             <span className="material-symbols-outlined text-[20px]">sentiment_satisfied</span>
                         </button>
                     </div>
-                    <button
-                        onClick={handleSend}
-                        className="bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors shadow-md active:scale-95"
-                    >
-                        <span className="material-symbols-outlined text-[20px] ml-0.5">send</span>
-                    </button>
+                    {messageInput.trim() ? (
+                        <button
+                            onClick={handleSend}
+                            className="bg-[#00a884] text-white p-2 rounded-full hover:bg-[#008f6f] transition-colors shadow-sm active:scale-95 flex items-center justify-center"
+                        >
+                            <span className="material-symbols-outlined text-[20px] ml-0.5">send</span>
+                        </button>
+                    ) : (
+                        <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors">
+                            <span className="material-symbols-outlined text-[24px]">mic</span>
+                        </button>
+                    )}
                 </div>
             </div>
         </aside>
@@ -179,9 +258,9 @@ function MessageBubble({ message, index }: { message: TaskMessage; index: number
             style={{ animationDelay: `${index * 100}ms` }}
         >
             <div
-                className={`p-3 rounded-lg shadow-sm border ${isOutbound
-                    ? 'bg-[#dcf8c6] rounded-tr-none border-green-100'
-                    : 'bg-white rounded-tl-none border-gray-100'
+                className={`p-2 px-3 rounded-lg shadow-sm border ${isOutbound
+                    ? 'bg-[#d9fdd3] rounded-tr-none border-[#d9fdd3]'
+                    : 'bg-white rounded-tl-none border-white'
                     }`}
             >
                 {!isOutbound && (
@@ -189,17 +268,17 @@ function MessageBubble({ message, index }: { message: TaskMessage; index: number
                         {message.sender_name}
                     </p>
                 )}
-                <p className="text-sm text-text-primary leading-relaxed">{message.content}</p>
-                <div className={`flex items-center gap-1 mt-1 ${isOutbound ? 'justify-end' : 'justify-end'}`}>
-                    <span className="text-[10px] text-gray-400">{formatTime(message.sent_at)}</span>
+                <p className="text-sm text-gray-900 leading-relaxed">{message.content}</p>
+                <div className={`flex items-center gap-1 mt-0.5 ${isOutbound ? 'justify-end' : 'justify-end'}`}>
+                    <span className="text-[10px] text-gray-500/80">{formatTime(message.sent_at)}</span>
                     {isOutbound && message.status === 'READ' && (
-                        <span className="material-symbols-outlined text-[12px] text-blue-500">done_all</span>
+                        <span className="material-symbols-outlined text-[14px] text-[#53bdeb]">done_all</span>
                     )}
                     {isOutbound && message.status === 'DELIVERED' && (
-                        <span className="material-symbols-outlined text-[12px] text-gray-400">done_all</span>
+                        <span className="material-symbols-outlined text-[14px] text-gray-400">done_all</span>
                     )}
                     {isOutbound && message.status === 'SENT' && (
-                        <span className="material-symbols-outlined text-[12px] text-gray-400">done</span>
+                        <span className="material-symbols-outlined text-[14px] text-gray-400">done</span>
                     )}
                 </div>
             </div>

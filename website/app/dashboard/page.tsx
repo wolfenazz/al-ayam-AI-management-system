@@ -232,12 +232,7 @@ export default function DashboardOverviewPage() {
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <QuickAction icon="add_task" label="Create Task" description="Assign a new task" href="/dashboard/tasks" />
-                    <QuickAction icon="bar_chart" label="Analytics" description="View performance" href="/dashboard/analytics" />
-                    <QuickAction icon="chat" label="WhatsApp" description="Open chat panel" href="#" />
-                </div>
+             
             </div>
         </div>
     );

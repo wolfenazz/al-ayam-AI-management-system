@@ -32,6 +32,26 @@ export interface Task {
     quality_rating?: number;
     escalation_count?: number;
     last_reminder_sent?: string;
+    notes?: TaskNote[];
+    versions?: TaskVersion[];
+}
+
+export interface TaskNote {
+    id: string;
+    content: string;
+    author_id: string;
+    author_name: string;
+    created_at: string;
+}
+
+export interface TaskVersion {
+    id: string;
+    task_snapshot: Partial<Task>;
+    changed_fields: string[];
+    changed_by: string;
+    changed_by_name: string;
+    changed_at: string;
+    change_reason?: string;
 }
 
 export interface TaskTemplate {
@@ -55,4 +75,8 @@ export interface TaskFilters {
     type?: TaskType[];
     assignee_id?: string;
     search?: string;
+    date_range?: {
+        start: string;
+        end: string;
+    };
 }

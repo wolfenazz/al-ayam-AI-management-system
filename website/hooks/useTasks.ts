@@ -15,7 +15,7 @@ import {
     serverTimestamp,
     Timestamp,
 } from '@/lib/firebase/firestore';
-import { Task, TaskFilters } from '@/types/task';
+import { Task, TaskFilters, TaskTemplate } from '@/types/task';
 import { QueryConstraint } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -39,6 +39,19 @@ function buildConstraints(filters?: TaskFilters): QueryConstraint[] {
 
     if (filters?.assignee_id) {
         constraints.push(where('assignee_id', '==', filters.assignee_id));
+    }
+
+    if (filters?.type && filters.type.length > 0) {
+        constraints.push(where('type', 'in', filters.type));
+    }
+
+    if (filters?.date_range) {
+        if (filters.date_range.start) {
+            constraints.push(where('created_at', '>=', filters.date_range.start));
+        }
+        if (filters.date_range.end) {
+            constraints.push(where('created_at', '<=', filters.date_range.end));
+        }
     }
 
     // Default ordering
@@ -171,6 +184,23 @@ export function useUpdateTask() {
 }
 
 /**
+ * Bulk update tasks.
+ */
+export function useBulkUpdateTasks() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ ids, updates }: { ids: string[]; updates: Partial<Task> }) => {
+            await Promise.all(ids.map(id => updateDocument(COLLECTIONS.TASKS, id, updates)));
+            return ids;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [TASKS_KEY] });
+        },
+    });
+}
+
+/**
  * Delete a task.
  */
 export function useDeleteTask() {
@@ -185,6 +215,46 @@ export function useDeleteTask() {
             queryClient.invalidateQueries({ queryKey: [TASKS_KEY] });
         },
     });
+}
+
+/**
+ * Bulk delete tasks.
+ */
+export function useBulkDeleteTasks() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (ids: string[]) => {
+            await Promise.all(ids.map(id => deleteDocument(COLLECTIONS.TASKS, id)));
+            return ids;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [TASKS_KEY] });
+        },
+    });
+}
+
+/**
+ * Fetch task templates.
+ */
+export function useTaskTemplates() {
+    const [templates, setTemplates] = useState<TaskTemplate[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(true);
+        const unsubscribe = listenToCollection<TaskTemplate>(
+            COLLECTIONS.TASK_TEMPLATES,
+            [where('is_active', '==', true), orderBy('name', 'asc')],
+            (data) => {
+                setTemplates(data);
+                setIsLoading(false);
+            }
+        );
+        return () => unsubscribe();
+    }, []);
+
+    return { templates, isLoading };
 }
 
 /**

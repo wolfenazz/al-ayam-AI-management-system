@@ -1,0 +1,198 @@
+'use client';
+
+import React from 'react';
+import { Task } from '@/types/task';
+import { Employee } from '@/types/employee';
+import { Priority, TaskStatus } from '@/types/common';
+import Badge from '@/components/ui/Badge';
+import Avatar from '@/components/ui/Avatar';
+import { useUIStore } from '@/stores/uiStore';
+
+interface TaskRowProps {
+    task: Task;
+    employee?: Employee;
+    isSelected: boolean;
+    onSelect: (taskId: string) => void;
+}
+
+const priorityVariant: Record<Priority, 'urgent' | 'high' | 'normal' | 'low'> = {
+    URGENT: 'urgent',
+    HIGH: 'high',
+    NORMAL: 'normal',
+    LOW: 'low',
+};
+
+const statusLabel: Record<TaskStatus, string> = {
+    DRAFT: 'DRAFT',
+    SENT: 'TO DO',
+    READ: 'READ',
+    ACCEPTED: 'ACCEPTED',
+    IN_PROGRESS: 'IN PROGRESS',
+    REVIEW: 'REVIEW',
+    COMPLETED: 'COMPLETED',
+    REJECTED: 'REJECTED',
+    OVERDUE: 'OVERDUE',
+    CANCELLED: 'CANCELLED',
+};
+
+const statusVariant: Record<TaskStatus, 'status' | 'neutral' | 'urgent' | 'normal'> = {
+    DRAFT: 'neutral',
+    SENT: 'neutral',
+    READ: 'neutral',
+    ACCEPTED: 'status',
+    IN_PROGRESS: 'status',
+    REVIEW: 'neutral',
+    COMPLETED: 'normal',
+    REJECTED: 'urgent',
+    OVERDUE: 'urgent',
+    CANCELLED: 'neutral',
+};
+
+function getAvailabilityStatus(emp?: Employee): 'online' | 'offline' | 'busy' | null {
+    if (!emp) return null;
+    if (emp.availability === 'AVAILABLE') return 'online';
+    if (emp.availability === 'BUSY') return 'busy';
+    return 'offline';
+}
+
+function getDeadlineDisplay(deadline?: string): { text: string; urgent: boolean } | null {
+    if (!deadline) return null;
+    const now = Date.now();
+    const target = new Date(deadline).getTime();
+    const diff = target - now;
+
+    if (diff < 0) return { text: 'OVERDUE', urgent: true };
+    if (diff < 60 * 60 * 1000) {
+        const mins = Math.floor(diff / 60000);
+        return { text: `${mins}m left`, urgent: true };
+    }
+    if (diff < 4 * 60 * 60 * 1000) {
+        const hours = Math.floor(diff / 3600000);
+        return { text: `${hours}h left`, urgent: true };
+    }
+    if (diff < 24 * 60 * 60 * 1000) {
+        return { text: 'Tomorrow', urgent: false };
+    }
+    const days = Math.floor(diff / (24 * 3600000));
+    return { text: `${days}d left`, urgent: false };
+}
+
+export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRowProps) {
+    const { setActiveChatTaskId } = useUIStore();
+    const deadlineInfo = getDeadlineDisplay(task.deadline);
+    const showWhatsAppStrip = task.status === 'IN_PROGRESS' && task.priority === 'URGENT';
+
+    return (
+        <div
+            className={`group bg-white rounded-xl border transition-all flex flex-col mb-1 ${isSelected
+                    ? 'border-primary bg-primary/5 shadow-sm'
+                    : 'border-border hover:border-gray-300 shadow-sm'
+                }`}
+        >
+            <div className="flex items-center p-4 gap-4">
+                {/* Checkbox */}
+                <div className="flex items-center justify-center shrink-0">
+                    <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => onSelect(task.id)}
+                        className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                    />
+                </div>
+
+                {/* Priority Indicator Line */}
+                <div className={`w-1 h-12 rounded-full shrink-0 ${task.priority === 'URGENT' ? 'bg-red-500' :
+                        task.priority === 'HIGH' ? 'bg-orange-500' :
+                            task.priority === 'NORMAL' ? 'bg-blue-500' : 'bg-gray-300'
+                    }`} />
+
+                {/* Task Info */}
+                <div className="flex-1 min-w-0 grid grid-cols-12 gap-4 items-center">
+                    {/* Title & Type (Col 1-5) */}
+                    <div className="col-span-5">
+                        <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-bold text-text-primary truncate">{task.title}</h3>
+                            {task.type && (
+                                <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded uppercase font-bold tracking-wider">
+                                    {task.type.replace('_', ' ')}
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-sm text-text-secondary truncate">{task.description || 'No description'}</p>
+                    </div>
+
+                    {/* Status & Priority (Col 6-8) */}
+                    <div className="col-span-3 flex flex-wrap gap-2 items-center">
+                        <Badge variant={priorityVariant[task.priority]}>{task.priority}</Badge>
+                        <Badge variant={statusVariant[task.status]}>{statusLabel[task.status]}</Badge>
+                    </div>
+
+                    {/* Assignee (Col 9-10) */}
+                    <div className="col-span-2 flex items-center gap-2 overflow-hidden">
+                        {employee ? (
+                            <>
+                                <Avatar
+                                    src={employee.avatar_url}
+                                    alt={employee.name}
+                                    size="xs"
+                                    status={getAvailabilityStatus(employee)}
+                                />
+                                <span className="text-sm text-text-primary truncate">{employee.name.split(' ')[0]}</span>
+                            </>
+                        ) : (
+                            <span className="text-sm text-text-secondary italic">Unassigned</span>
+                        )}
+                    </div>
+
+                    {/* Deadline (Col 11-12) */}
+                    <div className="col-span-2 flex justify-end">
+                        {deadlineInfo && (
+                            <div className={`flex items-center gap-1 font-medium text-xs px-2 py-1 rounded whitespace-nowrap ${deadlineInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-gray-100'
+                                }`}>
+                                <span className="material-symbols-outlined text-[14px]">
+                                    {deadlineInfo.urgent ? 'timer' : 'calendar_today'}
+                                </span>
+                                <span>{deadlineInfo.text}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center pl-2 border-l border-border shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setActiveChatTaskId(task.id); }}
+                        className="p-1.5 hover:bg-surface rounded text-text-secondary hover:text-primary transition-colors"
+                        title="Chat"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">chat</span>
+                    </button>
+                    <button
+                        className="p-1.5 hover:bg-surface rounded text-text-secondary hover:text-text-primary transition-colors"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* WhatsApp Integration Strip (Condensed for Row) */}
+            {showWhatsAppStrip && (
+                <div className="bg-green-50 px-12 py-1.5 flex items-center justify-between gap-3 text-xs border-t border-green-100 rounded-b-xl mx-0.5 mb-0.5">
+                    <div className="flex items-center gap-2">
+                        <span className="text-green-700 font-bold flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">whatsapp</span>
+                            New Update
+                        </span>
+                        <span className="text-green-800/70 truncate max-w-[400px]">"Photos coming in 2 mins, uploading now..."</span>
+                    </div>
+                    <button
+                        onClick={() => setActiveChatTaskId(task.id)}
+                        className="font-bold text-green-700 hover:text-green-900 hover:underline"
+                    >
+                        View
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}

@@ -1,25 +1,78 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import TaskCard from './components/TaskCard';
+import TaskRow from './components/TaskRow'; // Import new component
 import { useUIStore } from '@/stores/uiStore';
-import { useTasks, useTaskStats } from '@/hooks/useTasks';
+import { useTasks, useTaskStats, useBulkUpdateTasks, useBulkDeleteTasks } from '@/hooks/useTasks';
 import { useEmployees, getEmployeeById } from '@/hooks/useEmployees';
+import { TaskStatus } from '@/types/common';
 
 export default function TasksPage() {
     const { viewMode, setViewMode } = useUIStore();
     const { tasks, isLoading: tasksLoading } = useTasks();
     const { employees, isLoading: employeesLoading } = useEmployees();
     const stats = useTaskStats(tasks);
+    const bulkUpdate = useBulkUpdateTasks();
+    const bulkDelete = useBulkDeleteTasks();
+
+    const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set());
 
     const isLoading = tasksLoading || employeesLoading;
 
     const getEmployee = (assigneeId?: string) =>
         getEmployeeById(employees, assigneeId);
 
+    // Selection Handlers
+    const handleSelectTask = (taskId: string) => {
+        const newSelected = new Set(selectedTaskIds);
+        if (newSelected.has(taskId)) {
+            newSelected.delete(taskId);
+        } else {
+            newSelected.add(taskId);
+        }
+        setSelectedTaskIds(newSelected);
+    };
+
+    const handleSelectAll = () => {
+        if (selectedTaskIds.size === tasks.length) {
+            setSelectedTaskIds(new Set());
+        } else {
+            setSelectedTaskIds(new Set(tasks.map(t => t.id)));
+        }
+    };
+
+    const handleBulkAction = async (action: 'APPROVE' | 'REJECT' | 'DELETE' | 'MARK_COMPLETED') => {
+        if (selectedTaskIds.size === 0) return;
+
+        const ids = Array.from(selectedTaskIds);
+
+        try {
+            if (action === 'DELETE') {
+                if (window.confirm(`Are you sure you want to delete ${ids.length} tasks?`)) {
+                    await bulkDelete.mutateAsync(ids);
+                    setSelectedTaskIds(new Set());
+                }
+            } else {
+                let status: TaskStatus | undefined;
+                if (action === 'APPROVE') status = 'ACCEPTED';
+                if (action === 'REJECT') status = 'REJECTED';
+                if (action === 'MARK_COMPLETED') status = 'COMPLETED';
+
+                if (status) {
+                    await bulkUpdate.mutateAsync({ ids, updates: { status } });
+                    setSelectedTaskIds(new Set());
+                }
+            }
+        } catch (error) {
+            console.error("Bulk action failed:", error);
+            alert("Failed to perform bulk action.");
+        }
+    };
+
     return (
-        <div className="p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="p-6 relative min-h-screen">
+            <div className="max-w-7xl mx-auto pb-24">
                 {/* Page Header */}
                 <div className="flex justify-between items-end mb-6">
                     <div>
@@ -90,9 +143,25 @@ export default function TasksPage() {
                     )}
                 </div>
 
-                {/* Tasks Grid */}
+                {/* Select All Bar (List Mode Only) */}
+                {viewMode === 'list' && !isLoading && tasks.length > 0 && (
+                    <div className="flex items-center gap-3 px-4 py-2 mb-2 bg-gray-50 rounded-lg border border-transparent hover:border-border transition-colors">
+                        <input
+                            type="checkbox"
+                            checked={selectedTaskIds.size === tasks.length && tasks.length > 0}
+                            onChange={handleSelectAll}
+                            className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                        />
+                        <span className="text-sm font-semibold text-text-secondary">Select All</span>
+                        {selectedTaskIds.size > 0 && (
+                            <span className="text-sm text-primary font-bold ml-auto">{selectedTaskIds.size} selected</span>
+                        )}
+                    </div>
+                )}
+
+                {/* Tasks Content */}
                 {isLoading ? (
-                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'}>
+                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6' : 'flex flex-col gap-2'}>
                         {Array.from({ length: 3 }).map((_, i) => (
                             <div key={i} className="bg-white rounded-xl border border-border p-6 shadow-sm animate-pulse">
                                 <div className="h-5 w-3/4 bg-gray-200 rounded mb-3" />
@@ -112,19 +181,81 @@ export default function TasksPage() {
                         className={
                             viewMode === 'grid'
                                 ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6'
-                                : 'flex flex-col gap-4'
+                                : 'flex flex-col gap-2'
                         }
                     >
-                        {tasks.map((task) => (
-                            <TaskCard
-                                key={task.id}
-                                task={task}
-                                employee={getEmployee(task.assignee_id)}
-                            />
-                        ))}
+                        {viewMode === 'grid' ? (
+                            tasks.map((task) => (
+                                <TaskCard
+                                    key={task.id}
+                                    task={task}
+                                    employee={getEmployee(task.assignee_id)}
+                                />
+                            ))
+                        ) : (
+                            tasks.map((task) => (
+                                <TaskRow
+                                    key={task.id}
+                                    task={task}
+                                    employee={getEmployee(task.assignee_id)}
+                                    isSelected={selectedTaskIds.has(task.id)}
+                                    onSelect={handleSelectTask}
+                                />
+                            ))
+                        )}
                     </div>
                 )}
             </div>
+
+            {/* Bulk Actions Floating Bar */}
+            {selectedTaskIds.size > 0 && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-2xl border border-border p-2 px-6 flex items-center gap-4 z-40 animate-slide-up">
+                    <div className="flex items-center gap-2 pr-4 border-r border-border">
+                        <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">
+                            {selectedTaskIds.size}
+                        </div>
+                        <span className="text-sm font-semibold text-text-primary">Selected</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => handleBulkAction('APPROVE')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-green-50 text-green-700 font-medium text-sm transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                            Approve
+                        </button>
+                        <button
+                            onClick={() => handleBulkAction('REJECT')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-red-50 text-red-700 font-medium text-sm transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">cancel</span>
+                            Reject
+                        </button>
+                        <button
+                            onClick={() => handleBulkAction('MARK_COMPLETED')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-blue-50 text-blue-700 font-medium text-sm transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">done_all</span>
+                            Complete
+                        </button>
+                        <div className="w-px h-6 bg-border mx-1" />
+                        <button
+                            onClick={() => handleBulkAction('DELETE')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-red-600 font-medium text-sm transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                            Delete
+                        </button>
+                        <button
+                            onClick={() => setSelectedTaskIds(new Set())}
+                            className="ml-2 p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">close</span>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

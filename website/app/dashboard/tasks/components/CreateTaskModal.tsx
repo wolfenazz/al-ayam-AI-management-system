@@ -2,10 +2,13 @@
 
 import React, { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
-import { mockEmployees } from '@/lib/mock-data';
+import { useCreateTask, useTaskTemplates } from '@/hooks/useTasks';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { useEmployees } from '@/hooks/useEmployees';
 import { Priority, TaskType } from '@/types/common';
 import Avatar from '@/components/ui/Avatar';
 import { Iphone17Pro } from '@/components/ui/Iphone17Pro';
+import DeliverablesEditor from './DeliverablesEditor';
 
 const taskTypes: { value: TaskType; label: string; icon: string }[] = [
     { value: 'BREAKING_NEWS', label: 'Breaking News', icon: 'breaking_news' },
@@ -27,20 +30,40 @@ const priorityOptions: { value: Priority; label: string; icon: string; color: st
 
 export default function CreateTaskModal() {
     const { createTaskModalOpen, setCreateTaskModalOpen } = useUIStore();
+    const { user } = useAuth();
+    const createTask = useCreateTask();
+    const { templates } = useTaskTemplates();
+    const { employees: activeEmployees } = useEmployees({ status: 'ACTIVE' });
+
     const [title, setTitle] = useState('Coverage: City Council Vote');
     const [description, setDescription] = useState(
         'Please attend the emergency city council voting session regarding the new zoning laws. Get quotes from the mayor and the opposition leader.'
     );
     const [priority, setPriority] = useState<Priority>('HIGH');
-    const [, setTaskType] = useState<TaskType>('BREAKING_NEWS');
-    const [selectedEmployee, setSelectedEmployee] = useState<string>('emp-1');
+    const [taskType, setTaskType] = useState<TaskType>('BREAKING_NEWS');
+    const [selectedEmployee, setSelectedEmployee] = useState<string>('');
     const [deadlineDate, setDeadlineDate] = useState('2026-02-17');
     const [deadlineTime, setDeadlineTime] = useState('14:30');
     const [searchReporter, setSearchReporter] = useState('');
+    const [deliverables, setDeliverables] = useState<Record<string, number>>({});
+
+    const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const templateId = e.target.value;
+        if (!templateId) return;
+
+        const template = templates.find(t => t.id === templateId);
+        if (template) {
+            if (template.description) setDescription(template.description);
+            setTaskType(template.type);
+            setPriority(template.default_priority);
+            if (template.required_deliverables) {
+                setDeliverables(template.required_deliverables);
+            }
+        }
+    };
 
     if (!createTaskModalOpen) return null;
 
-    const activeEmployees = mockEmployees.filter((e) => e.status === 'ACTIVE');
     const filteredEmployees = searchReporter
         ? activeEmployees.filter((e) =>
             e.name.toLowerCase().includes(searchReporter.toLowerCase()) ||
@@ -49,7 +72,43 @@ export default function CreateTaskModal() {
         )
         : activeEmployees;
 
-    const selectedEmp = mockEmployees.find((e) => e.id === selectedEmployee);
+    const selectedEmp = activeEmployees.find((e) => e.id === selectedEmployee);
+
+    const handleAction = (status: 'SENT' | 'DRAFT') => {
+        if (!user) {
+            alert('You must be logged in to create a task.');
+            return;
+        }
+
+        if (status === 'SENT' && !selectedEmployee) {
+            alert('Please select a reporter to assign the task to.');
+            return;
+        }
+
+        const deadline = deadlineDate && deadlineTime
+            ? new Date(`${deadlineDate}T${deadlineTime}`).toISOString()
+            : undefined;
+
+        createTask.mutate({
+            title,
+            description,
+            type: taskType,
+            priority,
+            status: status,
+            assignee_id: selectedEmployee || undefined,
+            creator_id: user.uid,
+            deadline,
+            deliverables,
+        }, {
+            onSuccess: () => {
+                setCreateTaskModalOpen(false);
+            },
+            onError: (error) => {
+                console.error("Failed to create task:", error);
+                alert("Failed to create task. Please try again.");
+            }
+        });
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -98,6 +157,23 @@ export default function CreateTaskModal() {
                             <p className="text-xs text-text-secondary">Create a new assignment for reporters.</p>
                         </div>
 
+                        {/* Template Selector */}
+                        {templates.length > 0 && (
+                            <div className="mb-5">
+                                <label className="block text-xs font-semibold text-text-secondary mb-1.5">Load Template</label>
+                                <select
+                                    onChange={handleTemplateChange}
+                                    className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-gray-50 cursor-pointer"
+                                    defaultValue=""
+                                >
+                                    <option value="" disabled>Select a template...</option>
+                                    {templates.map(t => (
+                                        <option key={t.id} value={t.id}>{t.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+
                         {/* Task Title */}
                         <div className="mb-5">
                             <label className="block text-xs font-semibold text-text-secondary mb-1.5">Task Title</label>
@@ -114,6 +190,7 @@ export default function CreateTaskModal() {
                         <div className="mb-5">
                             <label className="block text-xs font-semibold text-text-secondary mb-1.5">Task Type</label>
                             <select
+                                value={taskType}
                                 onChange={(e) => setTaskType(e.target.value as TaskType)}
                                 className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white appearance-none cursor-pointer"
                             >
@@ -136,8 +213,8 @@ export default function CreateTaskModal() {
                                             : 'border-border text-text-secondary hover:border-gray-300'
                                             }`}
                                     >
-                                        <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
-                                        <span className="text-[11px] font-medium">{opt.label}</span>
+                                        <span className="material-symbols-outlined text-[15px]">{opt.icon}</span>
+                                        <span className="text-[9px] font-medium">{opt.label}</span>
                                     </button>
                                 ))}
                             </div>
@@ -175,6 +252,11 @@ export default function CreateTaskModal() {
                                 className="w-full px-3 py-2 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white resize-none"
                                 placeholder="Enter task details..."
                             />
+                        </div>
+
+                        {/* Deliverables Editor */}
+                        <div className="mb-5">
+                            <DeliverablesEditor value={deliverables} onChange={setDeliverables} />
                         </div>
 
                         {/* Location / Media */}
@@ -215,55 +297,59 @@ export default function CreateTaskModal() {
 
                         {/* Employee List */}
                         <div className="flex flex-col gap-2">
-                            {filteredEmployees.map((emp) => {
-                                const isSelected = selectedEmployee === emp.id;
-                                const isOffline = emp.availability === 'OFF_DUTY';
-                                return (
-                                    <button
-                                        key={emp.id}
-                                        onClick={() => setSelectedEmployee(emp.id)}
-                                        className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${isSelected
-                                            ? 'border-primary bg-primary-light shadow-sm'
-                                            : 'border-border hover:border-gray-300 bg-white'
-                                            } ${isOffline ? 'opacity-50 grayscale' : ''}`}
-                                    >
-                                        <div className="relative">
-                                            <Avatar
-                                                src={emp.avatar_url}
-                                                alt={emp.name}
-                                                size="md"
-                                                status={emp.availability === 'AVAILABLE' ? 'online' : emp.availability === 'BUSY' ? 'busy' : 'offline'}
-                                            />
-                                            {isSelected && (
-                                                <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                                                    <span className="material-symbols-outlined text-white text-[14px]">check</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-bold text-text-primary">{emp.name}</span>
-                                                {emp.performance_score && (
-                                                    <span className="text-xs text-accent-green font-bold">✓ {emp.performance_score}</span>
+                            {activeEmployees.length === 0 ? (
+                                <div className="text-center py-4 text-gray-400 text-sm">No employees loaded. (Check mock data or auth)</div>
+                            ) : (
+                                filteredEmployees.map((emp) => {
+                                    const isSelected = selectedEmployee === emp.id;
+                                    const isOffline = emp.availability === 'OFF_DUTY';
+                                    return (
+                                        <button
+                                            key={emp.id}
+                                            onClick={() => setSelectedEmployee(emp.id)}
+                                            className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${isSelected
+                                                ? 'border-primary bg-primary-light shadow-sm'
+                                                : 'border-border hover:border-gray-300 bg-white'
+                                                } ${isOffline ? 'opacity-50 grayscale' : ''}`}
+                                        >
+                                            <div className="relative">
+                                                <Avatar
+                                                    src={emp.avatar_url}
+                                                    alt={emp.name}
+                                                    size="md"
+                                                    status={emp.availability === 'AVAILABLE' ? 'online' : emp.availability === 'BUSY' ? 'busy' : 'offline'}
+                                                />
+                                                {isSelected && (
+                                                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                                        <span className="material-symbols-outlined text-white text-[14px]">check</span>
+                                                    </div>
                                                 )}
                                             </div>
-                                            <p className="text-xs text-text-secondary">{emp.role} • {emp.department}</p>
-                                            {emp.skills && (
-                                                <div className="flex gap-1 mt-1.5 flex-wrap">
-                                                    {emp.skills.slice(0, 3).map((skill) => (
-                                                        <span
-                                                            key={skill}
-                                                            className="text-[10px] px-1.5 py-0.5 bg-primary-light text-primary rounded font-medium capitalize"
-                                                        >
-                                                            {skill.replace('_', ' ')}
-                                                        </span>
-                                                    ))}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm font-bold text-text-primary">{emp.name}</span>
+                                                    {emp.performance_score && (
+                                                        <span className="text-xs text-accent-green font-bold">✓ {emp.performance_score}</span>
+                                                    )}
                                                 </div>
-                                            )}
-                                        </div>
-                                    </button>
-                                );
-                            })}
+                                                <p className="text-xs text-text-secondary">{emp.role} • {emp.department}</p>
+                                                {emp.skills && (
+                                                    <div className="flex gap-1 mt-1.5 flex-wrap">
+                                                        {emp.skills.slice(0, 3).map((skill) => (
+                                                            <span
+                                                                key={skill}
+                                                                className="text-[10px] px-1.5 py-0.5 bg-primary-light text-primary rounded font-medium capitalize"
+                                                            >
+                                                                {skill.replace('_', ' ')}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </button>
+                                    );
+                                })
+                            )}
                         </div>
                     </div>
 
@@ -310,39 +396,6 @@ export default function CreateTaskModal() {
                                         </span>
                                     </div>
 
-                                    {/* Incoming greeting */}
-                                    <div className="flex flex-col gap-1 items-start max-w-[90%] mb-2">
-                                        <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-xs">
-                                            <p className="text-text-primary leading-relaxed">
-                                                Good morning {selectedEmp?.name.split(' ')[0]}, are you available for a quick assignment?
-                                            </p>
-                                            <span className="text-[9px] text-gray-400 block text-right mt-0.5">10:00 AM</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Reply */}
-                                    <div className="flex flex-col items-end max-w-[90%] ml-auto mb-3">
-                                        <div className="bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm text-xs">
-                                            <p className="text-text-primary">Yes, I am free until 5 PM.</p>
-                                            <div className="flex items-center justify-end gap-0.5 mt-0.5">
-                                                <span className="text-[9px] text-gray-500">10:08 AM</span>
-                                                <span className="material-symbols-outlined text-[10px] text-blue-500">done_all</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Map placeholder */}
-                                    <div className="flex flex-col items-start max-w-[90%] mb-2">
-                                        <div className="bg-white p-1 rounded-lg rounded-tl-none shadow-sm overflow-hidden">
-                                            <div className="bg-accent-green/10 h-20 rounded flex items-center justify-center mb-1">
-                                                <span className="material-symbols-outlined text-accent-green text-[32px]">location_on</span>
-                                            </div>
-                                            <div className="px-1.5 pb-1">
-                                                <p className="text-[10px] text-text-secondary">City Council Hall</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     {/* Assignment message */}
                                     <div className="flex flex-col items-start max-w-[90%]">
                                         <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-sm text-xs">
@@ -354,7 +407,22 @@ export default function CreateTaskModal() {
                                                 <span>⏰ Deadline: Today, {deadlineTime || '14:30'}</span>
                                                 <span>⚡ Priority: {priority}</span>
                                             </div>
-                                            <span className="text-[9px] text-gray-400 block text-right mt-1">10:42 AM ✓</span>
+                                            {/* Deliverables summary */}
+                                            {Object.keys(deliverables).length > 0 && (
+                                                <div className="mt-2 pt-1 border-t border-gray-100">
+                                                    <p className="text-[10px] font-semibold text-gray-500 mb-0.5">Required:</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {Object.entries(deliverables).map(([key, count]) => (
+                                                            <span key={key} className="text-[9px] bg-gray-100 px-1 rounded text-gray-600">
+                                                                {count}x {key.replace(/_/g, ' ')}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <span className="text-[9px] text-gray-400 block text-right mt-1">
+                                                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✓
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -371,17 +439,36 @@ export default function CreateTaskModal() {
                         </Iphone17Pro>
 
                         {/* Footer */}
-                        <div className="mt-4 text-center w-full">
-                            <p className="text-[10px] text-text-secondary mb-3">
+                        <div className="mt-4 text-center w-full space-y-3">
+                            <p className="text-[10px] text-text-secondary">
                                 Will be sent via WhatsApp Business API ∙ 🔒 End-to-end encrypted
                             </p>
-                            <button
-                                onClick={() => setCreateTaskModalOpen(false)}
-                                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-whatsapp hover:bg-whatsapp/90 text-white font-bold text-sm transition-all active:scale-[0.98] shadow-md shadow-whatsapp/20"
-                            >
-                                <span className="material-symbols-outlined text-[18px]">send</span>
-                                Send Assignment to {selectedEmp?.name.split(' ')[0] || 'Reporter'}
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handleAction('DRAFT')}
+                                    disabled={createTask.isPending}
+                                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-50"
+                                >
+                                    Save Draft
+                                </button>
+                                <button
+                                    onClick={() => handleAction('SENT')}
+                                    disabled={!selectedEmployee || createTask.isPending}
+                                    className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl bg-whatsapp hover:bg-whatsapp/90 text-white font-bold text-sm transition-all active:scale-[0.98] shadow-md shadow-whatsapp/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {createTask.isPending ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                            <span>Sending...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className="material-symbols-outlined text-[18px]">send</span>
+                                            Send Assignment
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

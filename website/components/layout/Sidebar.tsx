@@ -40,6 +40,7 @@ export default function Sidebar() {
         { href: '/dashboard', icon: 'dashboard', label: 'Dashboard', exact: true },
         { href: '/dashboard/tasks', icon: 'assignment', label: 'Tasks', exact: false },
         { href: '/dashboard/analytics', icon: 'bar_chart', label: 'Analytics', exact: false },
+        { href: '/dashboard/employees', icon: 'group', label: 'Team', exact: false },
     ];
 
     const isActive = (item: typeof navItems[0]) => {

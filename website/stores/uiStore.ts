@@ -29,7 +29,7 @@ interface UIState {
 export const useUIStore = create<UIState>((set) => ({
     sidebarOpen: true,
     chatPanelOpen: false,
-    activeChatTaskId: 'tsk-001',
+    activeChatTaskId: null,
     createTaskModalOpen: false,
     activeView: 'all',
     viewMode: 'grid',
