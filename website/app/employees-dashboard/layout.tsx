@@ -19,7 +19,7 @@ export default function EmployeeDashboardLayout({ children }: { children: React.
                     <EmployeeSidebar />
 
                     {/* Main Content */}
-                    <main className="flex-1 overflow-y-auto bg-background-light scrollbar-thin relative">
+                    <main className="flex-1 overflow-y-auto bg-background scrollbar-thin relative">
                         {children}
                     </main>
                 </div>

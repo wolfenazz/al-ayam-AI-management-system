@@ -79,7 +79,7 @@ export default function Header() {
                             <span className="material-symbols-outlined text-[20px]">search</span>
                         </div>
                         <input
-                            className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-surface focus:bg-white transition-all h-full placeholder:text-text-secondary pl-10 pr-4 text-sm font-normal leading-normal"
+                            className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-surface focus:bg-card transition-all h-full placeholder:text-text-secondary pl-10 pr-4 text-sm font-normal leading-normal"
                             placeholder="Search tasks, reporters, or content..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -108,7 +108,7 @@ export default function Header() {
 
                         {/* Notification Dropdown */}
                         {showNotifications && (
-                            <div className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border border-border z-50 animate-fade-in overflow-hidden">
+                            <div className="absolute right-0 top-12 w-80 bg-card rounded-xl shadow-xl border border-border z-50 animate-fade-in overflow-hidden">
                                 <div className="px-4 py-3 border-b border-border flex items-center justify-between">
                                     <h3 className="font-bold text-sm text-text-primary">Notifications</h3>
                                     <span className="text-xs bg-accent-red/10 text-accent-red px-2 py-0.5 rounded-full font-bold">
@@ -176,7 +176,7 @@ export default function Header() {
 
                         {/* User Menu Dropdown */}
                         {showUserMenu && (
-                            <div className="absolute right-0 top-12 w-64 bg-white rounded-xl shadow-xl border border-border z-50 animate-fade-in overflow-hidden">
+                            <div className="absolute right-0 top-12 w-64 bg-card rounded-xl shadow-xl border border-border z-50 animate-fade-in overflow-hidden">
                                 {/* User Info */}
                                 <div className="px-4 py-4 border-b border-border bg-surface/50">
                                     <div className="flex items-center gap-3">

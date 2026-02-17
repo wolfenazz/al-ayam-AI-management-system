@@ -62,7 +62,7 @@ export default function EmployeeDashboardOverview() {
                 </div>
 
                 {/* Active Tasks List */}
-                <div className="bg-white rounded-xl border border-border shadow-sm">
+                <div className="bg-card rounded-xl border border-border shadow-sm">
                     <div className="flex items-center justify-between px-6 py-4 border-b border-border">
                         <h2 className="text-lg font-bold text-text-primary">My Active Tasks</h2>
                         <Link
@@ -103,10 +103,10 @@ export default function EmployeeDashboardOverview() {
                                             </p>
                                         </div>
 
-                                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${task.status === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-700' :
-                                            task.status === 'REVIEW' ? 'bg-purple-50 text-purple-700' :
-                                                'bg-gray-100 text-gray-600'
-                                            }`}>
+                                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${task.status === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-700' :
+                                             task.status === 'REVIEW' ? 'bg-purple-50 text-purple-700' :
+                                                 'bg-surface text-text-secondary'
+                                             }`}>
                                             {task.status.replace(/_/g, ' ')}
                                         </span>
                                     </div>
@@ -134,7 +134,7 @@ function MetricCard({ icon, label, value, color }: {
     const c = colorMap[color];
 
     return (
-        <div className="bg-white rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-2">
                 <div className={`size-8 rounded-lg ${c.bg} flex items-center justify-center`}>
                     <span className={`material-symbols-outlined text-[20px] ${c.icon}`}>{icon}</span>

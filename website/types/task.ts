@@ -21,6 +21,7 @@ export interface Task {
     end_time?: string;
     estimated_duration?: number;
     budget?: number;
+    expenses?: Expense[];
     deliverables?: Record<string, number>;
     created_at: string;
     sent_at?: string;
@@ -36,6 +37,13 @@ export interface Task {
     last_reminder_sent?: string;
     notes?: TaskNote[];
     versions?: TaskVersion[];
+}
+
+export interface Expense {
+    id: string;
+    description: string;
+    amount: number;
+    date: string;
 }
 
 export interface TaskNote {

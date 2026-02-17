@@ -50,7 +50,7 @@ export default function EmployeeSidebar() {
 
             <aside
                 className={`
-          w-64 bg-white border-r border-border flex-col overflow-y-auto shrink-0 z-30
+          w-64 bg-card border-r border-border flex-col overflow-y-auto shrink-0 z-30
           transition-transform duration-300 ease-in-out
           fixed md:relative md:translate-x-0 h-full
           ${sidebarOpen ? 'translate-x-0 flex' : '-translate-x-full hidden md:flex md:translate-x-0'}
@@ -67,8 +67,8 @@ export default function EmployeeSidebar() {
                             href={item.href}
                             onClick={() => setSidebarOpen(false)}
                             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${isActive(item)
-                                ? 'bg-primary-light text-primary font-medium'
-                                : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+                                ? 'bg-sidebar-accent text-sidebar-primary-foreground font-medium'
+                                : 'text-slate-600 hover:bg-surface hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
@@ -84,7 +84,7 @@ export default function EmployeeSidebar() {
 
                 {/* Footer Info */}
                 <div className="mt-auto p-4 border-t border-border">
-                    <div className="flex items-center gap-2 text-text-secondary">
+                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                         <span className="material-symbols-outlined text-[16px]">verified_user</span>
                         <span className="text-xs">Employee Portal</span>
                     </div>

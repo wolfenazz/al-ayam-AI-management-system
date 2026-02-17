@@ -2,14 +2,7 @@
 
 import React, { useState } from 'react';
 import { useUpdateTask } from '@/hooks/useTasks';
-import { Task } from '@/types/task';
-
-interface Expense {
-    id: string;
-    description: string;
-    amount: number;
-    date: string;
-}
+import { Task, Expense } from '@/types/task';
 
 interface BudgetTrackingProps {
     task: Task;
@@ -21,7 +14,7 @@ export default function BudgetTracking({ task }: BudgetTrackingProps) {
     const [expenseDescription, setExpenseDescription] = useState('');
     const [expenseAmount, setExpenseAmount] = useState('');
 
-    const expenses: Expense[] = (task as any).expenses || [];
+    const expenses: Expense[] = task.expenses || [];
 
     const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
     const remainingBudget = (task.budget || 0) - totalExpenses;

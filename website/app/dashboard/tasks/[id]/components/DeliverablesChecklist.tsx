@@ -19,7 +19,7 @@ export default function DeliverablesChecklist({ task }: DeliverablesChecklistPro
 
     const deliverables = Object.entries(task.deliverables || {}).map(([name, completed]) => ({
         name,
-        completed: completed === 1 || completed === true,
+        completed: completed === 1,
     }));
 
     const handleToggle = (name: string) => {
@@ -115,7 +115,7 @@ export default function DeliverablesChecklist({ task }: DeliverablesChecklistPro
                             <button
                                 onClick={() => handleToggle(deliverable.name)}
                                 className={`
-                                    flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all
+                                    shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all
                                     ${deliverable.completed
                                         ? 'bg-primary border-primary text-white'
                                         : 'border-gray-300 hover:border-gray-400'
