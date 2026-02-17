@@ -63,6 +63,19 @@ export async function setDocument(
 }
 
 /**
+ * Add a new document with an auto-generated ID
+ */
+export async function addDocument(
+    collectionName: string,
+    data: DocumentData
+): Promise<string> {
+    const colRef = collection(db, collectionName);
+    const docRef = doc(colRef);
+    await setDoc(docRef, { ...data, id: docRef.id, created_at: serverTimestamp(), updated_at: serverTimestamp() });
+    return docRef.id;
+}
+
+/**
  * Update specific fields of a document
  */
 export async function updateDocument(

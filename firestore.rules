@@ -28,11 +28,8 @@ service cloud.firestore {
       // Any authenticated user can read employee profiles
       allow read: if isAuthenticated();
 
-      // Users can write their own profile
-      allow create, update: if isAuthenticated() && isOwner(employeeId);
-
-      // Managers and admins can update any employee
-      allow update: if isAuthenticated() && isManagerOrAdmin();
+      // Users can write their own profile, Managers/Admins can create/update any
+      allow create, update: if isAuthenticated() && (isOwner(employeeId) || isManagerOrAdmin());
 
       // Only admins can delete employees
       allow delete: if isAuthenticated() && hasRole('Admin');

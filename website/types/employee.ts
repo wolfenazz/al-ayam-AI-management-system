@@ -23,4 +23,6 @@ export interface Employee {
     last_active?: string;
     manager_id?: string;
     avatar_url?: string;
+    is_external?: boolean;
+    source?: 'platform' | 'csv' | 'excel';
 }

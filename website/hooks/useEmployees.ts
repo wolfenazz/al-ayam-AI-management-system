@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation,  } from '@tanstack/react-query';
 import {
     queryDocuments,
+    addDocument,
     listenToCollection,
     listenToDocument,
     COLLECTIONS,
@@ -138,6 +139,32 @@ export function useEmployee(employeeId: string | null) {
 export function getEmployeeById(employees: Employee[], id?: string): Employee | undefined {
     if (!id) return undefined;
     return employees.find((e) => e.id === id);
+}
+
+// ─── Mutations ───────────────────────────────────────────────────
+
+export function useAddEmployee() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newEmployee: Omit<Employee, 'id'>) =>
+            addDocument(COLLECTIONS.EMPLOYEES, newEmployee),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [EMPLOYEES_KEY] });
+        },
+    });
+}
+
+export function useAddEmployees() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (employees: Omit<Employee, 'id'>[]) => {
+            const promises = employees.map(emp => addDocument(COLLECTIONS.EMPLOYEES, emp));
+            return Promise.all(promises);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [EMPLOYEES_KEY] });
+        },
+    });
 }
 
 /**
