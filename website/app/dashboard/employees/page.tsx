@@ -81,6 +81,58 @@ export default function EmployeesPage() {
                 {/* Stats Bar */}
                 {/* ... existing stats ... */}
 
+                {/* Import Modal */}
+                {showImportModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        {/* Overlay */}
+                        <div
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                            onClick={() => setShowImportModal(false)}
+                        />
+
+                        {/* Modal */}
+                        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 animate-fade-in">
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+                                        <span className="material-symbols-outlined text-[20px]">upload_file</span>
+                                    </div>
+                                    <div>
+                                        <h2 className="font-bold text-text-primary text-lg">Import Employees</h2>
+                                        <p className="text-xs text-text-secondary">Upload CSV or Excel file</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setShowImportModal(false)}
+                                    className="text-text-secondary hover:text-text-primary p-1 hover:bg-surface rounded-lg transition-colors"
+                                >
+                                    <span className="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
+
+                            {/* FileUploader */}
+                            <FileUploader
+                                onUpload={handleImport}
+                                isLoading={addEmployees.isPending}
+                            />
+
+                            {/* Instructions */}
+                            <div className="mt-6 bg-gray-50 rounded-lg p-4">
+                                <h3 className="font-semibold text-text-primary text-sm mb-2 flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-primary text-[18px]">info</span>
+                                    File Format Requirements
+                                </h3>
+                                <ul className="text-xs text-text-secondary space-y-1 list-disc list-inside">
+                                    <li>CSV or Excel file (.xlsx, .xls)</li>
+                                    <li>Required column: <span className="font-semibold text-text-primary">Name</span></li>
+                                    <li>Optional columns: Phone, Role, Department, Email</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Employees Content */}
                 {isLoading ? (
                     <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'flex flex-col gap-2'}>
