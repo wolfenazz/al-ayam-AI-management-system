@@ -67,7 +67,7 @@ export default function EmployeeSidebar() {
                             href={item.href}
                             onClick={() => setSidebarOpen(false)}
                             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${isActive(item)
-                                ? 'bg-sidebar-accent text-sidebar-primary-foreground font-medium'
+                                ? 'bg-primary text-primary-foreground font-medium'
                                 : 'text-slate-600 hover:bg-surface hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                                 }`}
                         >
