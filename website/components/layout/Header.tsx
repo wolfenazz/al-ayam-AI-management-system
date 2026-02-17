@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -56,11 +57,17 @@ export default function Header() {
 
                 {/* Logo */}
                 <div className="flex items-center gap-3 text-primary">
-                    <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-md shadow-primary/20">
-                        <span className="material-symbols-outlined text-[20px]">newspaper</span>
+                    <div className="relative size-8 shrink-0">
+                        <Image
+                            src="/images/alayam-logo-small.webp"
+                            alt="Al-Ayyam Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <h2 className="text-text-primary text-lg font-bold leading-tight tracking-[-0.015em] hidden sm:block">
-                        Al-Ayyam AI Platform
+                        AI Platform
                     </h2>
                 </div>
 

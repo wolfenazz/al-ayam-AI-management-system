@@ -15,18 +15,24 @@ interface ProtectedRouteProps {
  * Shows a loading spinner while auth state is resolving.
  */
 export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
-    const { isAuthenticated, loading } = useAuth();
+    const { isAuthenticated, loading, profileComplete } = useAuth();
     const router = useRouter();
     const hasNavigated = useRef(false);
 
     useEffect(() => {
-        if (!loading && !isAuthenticated && !hasNavigated.current) {
-            hasNavigated.current = true;
-            router.push('/login');
+        if (!loading && !hasNavigated.current) {
+            if (!isAuthenticated) {
+                hasNavigated.current = true;
+                router.push('/login');
+            } else if (!profileComplete) {
+                // Authenticated but no employee profile — redirect to complete registration
+                hasNavigated.current = true;
+                router.push('/register?complete=google');
+            }
         }
-    }, [isAuthenticated, loading, router]);
+    }, [isAuthenticated, loading, profileComplete, router]);
 
-    if (loading || !isAuthenticated) {
+    if (loading || !isAuthenticated || !profileComplete) {
         return fallback || <LoadingScreen />;
     }
 

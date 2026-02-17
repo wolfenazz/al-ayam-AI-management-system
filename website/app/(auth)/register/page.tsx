@@ -515,7 +515,7 @@ function RegisterPageContent() {
                     {/* Header */}
                     <div className="text-center">
                         <h2 className="text-3xl font-bold text-text-primary mb-2">Create Account</h2>
-                        <p className="text-text-secondary">Join Al-Ayyam AI Platform to start managing news tasks.</p>
+                        <p className="text-text-secondary">Al-Ayyam AI Platform</p>
                     </div>
 
                     {/* Step Indicators */}

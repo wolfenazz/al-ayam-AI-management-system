@@ -1,11 +1,109 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { mockMessages, mockEmployees } from '@/lib/mock-data';
-import { TaskMessage } from '@/types/message';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useTask } from '@/hooks/useTasks';
 import { useEmployees } from '@/hooks/useEmployees';
+import { Task } from '@/types/task';
+
+// ─── Reply Type ──────────────────────────────────────────────────
+
+interface ChatReply {
+    content: string;
+    direction: 'inbound' | 'outbound';
+    time: string;
+}
+
+// ─── Generate contextual reporter replies based on task data ─────
+
+function generateReporterReplies(task: Task, reporterName: string): ChatReply[] {
+    const replies: ChatReply[] = [];
+    const baseTime = task.sent_at ? new Date(task.sent_at) : new Date(task.created_at);
+
+    const addMinutes = (date: Date, min: number) => {
+        const d = new Date(date);
+        d.setMinutes(d.getMinutes() + min);
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const taskType = task.type?.replace(/_/g, ' ').toLowerCase() || 'task';
+    const locationText = task.location?.address || 'the location';
+
+    // 1. Reporter acknowledges receiving the task
+    if (task.read_at || task.accepted_at || task.started_at || task.completed_at ||
+        task.status === 'ACCEPTED' || task.status === 'IN_PROGRESS' || task.status === 'COMPLETED') {
+        replies.push({
+            content: `Got it! I'll take care of the ${taskType}. 👍`,
+            direction: 'inbound',
+            time: addMinutes(baseTime, 2),
+        });
+    }
+
+    // 2. Reporter confirms acceptance
+    if (task.accepted_at || task.status === 'ACCEPTED' || task.status === 'IN_PROGRESS' || task.status === 'COMPLETED') {
+        replies.push({
+            content: task.location
+                ? `I'm heading to ${locationText} now. Will update you as soon as I arrive.`
+                : `I'm on it. Will start working on this right away.`,
+            direction: 'inbound',
+            time: addMinutes(baseTime, 5),
+        });
+
+        // Editor/manager response
+        replies.push({
+            content: task.priority === 'URGENT'
+                ? 'Great, this is urgent so please prioritize it. Stay safe! 🙏'
+                : 'Perfect, keep me updated on the progress.',
+            direction: 'outbound',
+            time: addMinutes(baseTime, 6),
+        });
+    }
+
+    // 3. Reporter starts working
+    if (task.started_at || task.status === 'IN_PROGRESS' || task.status === 'COMPLETED') {
+        replies.push({
+            content: task.location
+                ? `I've arrived at ${locationText}. Setting up now. 📍`
+                : `Started working on the ${taskType}. Making progress.`,
+            direction: 'inbound',
+            time: addMinutes(baseTime, 25),
+        });
+
+        // If deliverables are required, reporter mentions them
+        if (task.deliverables && Object.keys(task.deliverables).length > 0) {
+            const deliverablesList = Object.entries(task.deliverables)
+                .map(([key, count]) => `${count} ${key.replace(/_/g, ' ')}`)
+                .join(', ');
+            replies.push({
+                content: `I'll make sure to get the ${deliverablesList} as required. 📸`,
+                direction: 'inbound',
+                time: addMinutes(baseTime, 28),
+            });
+        }
+    }
+
+    // 4. Task completed
+    if (task.completed_at || task.status === 'COMPLETED') {
+        replies.push({
+            content: `All done! ✅ I've completed the ${taskType} and uploaded all the deliverables. Please review when you get a chance.`,
+            direction: 'inbound',
+            time: addMinutes(baseTime, 90),
+        });
+
+        replies.push({
+            content: 'Excellent work! Reviewing now. Thank you! 🎉',
+            direction: 'outbound',
+            time: addMinutes(baseTime, 95),
+        });
+    }
+
+    // 5. If task is still pending/sent — show a "seen" but no reply yet
+    if (task.status === 'DRAFT' || task.status === 'SENT') {
+        // No replies yet, task was just sent
+    }
+
+    return replies;
+}
 
 export default function WhatsAppPanel() {
     const { activeChatTaskId } = useUIStore(); // Get selected task ID
@@ -13,23 +111,48 @@ export default function WhatsAppPanel() {
     const { employees } = useEmployees();
 
     const [messageInput, setMessageInput] = useState('');
+    const [sentMessages, setSentMessages] = useState<ChatReply[]>([]);
     const chatEndRef = useRef<HTMLDivElement>(null);
 
-    // Filter messages for the active task (using mock data for now)
-    // If mocking, we might not have task_id match, so let's just show all if task is selected for demo
-    // UPDATE: Let's assume mockMessages have some task_id or we just show them for ANY task for now.
-    // Ideally: const messages = mockMessages.filter(m => m.task_id === activeChatTaskId);
-    const messages = activeChatTaskId ? mockMessages : [];
+    const assignee = task?.assignee_id ? employees.find(e => e.id === task.assignee_id) : (task?.creator_id ? employees.find(e => e.id === task.creator_id) : null);
 
+    // Generate contextual reporter replies based on the task
+    const reporterReplies = useMemo(() => {
+        if (!task) return [];
+        return generateReporterReplies(task, assignee?.name || 'Reporter');
+    }, [task, assignee]);
+
+    // Handle Invalid Date fallback
+    const getValidDate = (dateString?: string) => {
+        if (!dateString) return new Date();
+        const d = new Date(dateString);
+        return isNaN(d.getTime()) ? new Date() : d;
+    };
+
+    // Reset sent messages when switching tasks
+    useEffect(() => {
+        setSentMessages([]);
+        setMessageInput('');
+    }, [activeChatTaskId]);
+
+    // Auto-scroll when new messages arrive
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages.length, activeChatTaskId]);
+    }, [reporterReplies.length, sentMessages.length, activeChatTaskId]);
 
     const handleSend = () => {
-        if (messageInput.trim()) {
-            // optimized: logic to send message
-            setMessageInput('');
-        }
+        const text = messageInput.trim();
+        if (!text) return;
+
+        const now = new Date();
+        const newMsg: ChatReply = {
+            content: text,
+            direction: 'outbound',
+            time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+
+        setSentMessages(prev => [...prev, newMsg]);
+        setMessageInput('');
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -39,12 +162,11 @@ export default function WhatsAppPanel() {
         }
     };
 
-    const assignee = task?.assignee_id ? employees.find(e => e.id === task.assignee_id) : null;
 
     // 1. Empty State: No Task Selected
     if (!activeChatTaskId) {
         return (
-            <aside className="w-full h-full bg-[#f0f2f5] flex flex-col items-center justify-center text-center p-6 relative z-10 overflow-hidden">
+            <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center text-center p-6 overflow-hidden bg-[#f0f2f5]">
                 <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
                     <span className="material-symbols-outlined text-[40px] text-gray-300">chat_bubble_outline</span>
                 </div>
@@ -58,27 +180,27 @@ export default function WhatsAppPanel() {
                         <span className="text-xs">End-to-end encrypted</span>
                     </div>
                 </div>
-            </aside>
+            </div>
         );
     }
 
     // 2. Loading State
     if (taskLoading) {
         return (
-            <aside className="w-full h-full bg-white flex flex-col items-center justify-center z-10">
+            <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center bg-white">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </aside>
+            </div>
         );
     }
 
-    // 3. Active Chat View
+    // 3. Active Chat View - Same pattern as CreateTaskModal (which works)
     return (
-        <aside className="w-full h-full bg-white flex flex-col shrink-0 relative z-10 overflow-hidden">
-            {/* Header */}
-            <div className="bg-primary flex items-center justify-between px-4 pt-12 pb-3 text-white shrink-0 shadow-md z-20">
+        <div className="w-full flex-1 min-h-0 flex flex-col bg-white overflow-hidden">
+            {/* Header - shrink-0 keeps it pinned at top */}
+            <div className="bg-primary flex items-center justify-between px-3 pt-9 pb-2 text-white shadow-md z-30 shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="relative cursor-pointer">
-                        <div className="size-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden ring-2 ring-white/20">
+                        <div className="size-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden ring-2 ring-white/20">
                             {assignee?.avatar_url ? (
                                 <img
                                     className="w-full h-full object-cover"
@@ -86,211 +208,186 @@ export default function WhatsAppPanel() {
                                     alt={assignee.name}
                                 />
                             ) : (
-                                <span className="material-symbols-outlined text-[24px]">group</span>
+                                <div className="w-full h-full text-white font-bold flex items-center justify-center">
+                                    {(assignee?.name || 'R')[0]}
+                                </div>
                             )}
                         </div>
-                        <div className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-primary rounded-full ${assignee?.availability === 'AVAILABLE' ? 'bg-green-400' : 'bg-gray-400'
-                            }`} />
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-primary"></div>
                     </div>
-                    <div className="flex flex-col">
-                        <h3 className="font-bold text-sm leading-tight truncate max-w-[140px]">
-                            {assignee ? assignee.name : 'Unknown Reporter'}
-                        </h3>
-                        <p className="text-[10px] text-white/80 truncate max-w-[140px]">
-                            {task?.title || 'No Task Title'}
-                        </p>
+                    <div>
+                        <div className="font-bold text-xs">{assignee?.name || 'Reporter'}</div>
+                        <div className="text-[10px] text-white/80">Online</div>
                     </div>
                 </div>
-                <button className="hover:bg-white/10 rounded-full p-1.5 transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">more_vert</span>
-                </button>
+                <div className="flex items-center gap-1">
+                    <button className="hover:bg-white/10 rounded-full p-1.5 transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">videocam</span>
+                    </button>
+                    <button className="hover:bg-white/10 rounded-full p-1.5 transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">call</span>
+                    </button>
+                    <button className="hover:bg-white/10 rounded-full p-1.5 transition-colors">
+                        <span className="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                </div>
             </div>
 
-            {/* Chat Area */}
-            <div
-                className="flex-1 overflow-y-auto p-4 chat-bg flex flex-col gap-4 scrollbar-thin"
-                style={{ backgroundImage: "url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')" }}
-            >
+            {/* Chat Area - flex-1 fills all remaining space between header and input */}
+            <div className="flex-1 overflow-y-auto p-3 chat-bg flex flex-col gap-3 scrollbar-thin w-full pb-4">
                 {/* Encryption Notice */}
-                <div className="flex justify-center my-2">
-                    <div className="bg-[#ffeba0] text-gray-800 text-[10px] px-2 py-1 rounded shadow-sm text-center max-w-[80%] flex items-center gap-1 justify-center">
+                <div className="flex justify-center my-1">
+                    <div className="bg-[#ffeba0] text-gray-800 text-[10px] px-2 py-1 rounded shadow-sm text-center max-w-[85%] flex items-center gap-1 justify-center">
                         <span className="material-symbols-outlined text-[10px]">lock</span>
-                        Messages are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
+                        Messages are end-to-end encrypted.
                     </div>
                 </div>
 
-                {/* Today divider */}
-                <div className="flex justify-center my-2">
-                    <span className="bg-white/90 text-text-secondary text-[10px] font-bold px-2 py-1 rounded shadow-sm">
-                        TODAY
+                {/* Date divider */}
+                <div className="flex justify-center my-1">
+                    <span className="bg-white/90 text-text-secondary text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+                        {task?.created_at
+                            ? (() => {
+                                const d = getValidDate(task.created_at);
+                                const today = new Date();
+                                return d.toDateString() === today.toDateString()
+                                    ? 'TODAY'
+                                    : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+                            })()
+                            : 'TODAY'}
                     </span>
                 </div>
 
-                {messages.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center opacity-60">
-                        <p className="text-sm text-gray-500">No messages yet.</p>
-                        <p className="text-xs text-gray-400">Send a message to start the conversation.</p>
+                {/* Task Assignment Message — the task sent to the reporter */}
+                {task && (
+                    <div className="flex flex-col items-end self-end max-w-[90%] animate-fade-in">
+                        <div className="bg-[#d9fdd3] p-2.5 rounded-lg rounded-tr-none shadow-sm text-xs border border-[#d9fdd3]">
+                            <p className="font-bold text-accent-red text-[11px] mb-1">🚨 New Task: {task.title}</p>
+                            <p className="text-text-primary leading-relaxed mb-2 text-[11px]">
+                                {task.description || 'No description provided.'}
+                            </p>
+                            <div className="flex flex-col gap-0.5 text-[10px] text-text-secondary">
+                                {(task.deadline || task.start_time) && (
+                                    <span>
+                                        ⏰ Schedule:{' '}
+                                        {(() => {
+                                            if (!task.deadline) return 'No Date';
+                                            const d = getValidDate(task.deadline);
+                                            const today = new Date();
+                                            const isToday = d.toDateString() === today.toDateString();
+                                            const datePart = isToday
+                                                ? 'Today'
+                                                : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
+                                            return `${datePart}, ${task.start_time || '09:00'} - ${task.end_time || '17:00'}`;
+                                        })()}
+                                    </span>
+                                )}
+                                <span>⚡ Priority: {task.priority}</span>
+                                <span>📋 Type: {task.type.replace(/_/g, ' ')}</span>
+                            </div>
+                            {task.deliverables && Object.keys(task.deliverables).length > 0 && (
+                                <div className="mt-2 pt-1.5 border-t border-green-200/50">
+                                    <p className="text-[10px] font-semibold text-gray-500 mb-0.5">Required Deliverables:</p>
+                                    <div className="flex flex-wrap gap-1">
+                                        {Object.entries(task.deliverables).map(([key, count]) => (
+                                            <span key={key} className="text-[9px] bg-white/60 px-1.5 py-0.5 rounded text-gray-600">
+                                                {count}x {key.replace(/_/g, ' ')}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            <div className="flex items-center gap-1 justify-end mt-1.5">
+                                <span className="text-[9px] text-gray-500/70">
+                                    {getValidDate(task.sent_at || task.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                                <span className="material-symbols-outlined text-[13px] text-[#53bdeb]">done_all</span>
+                            </div>
+                        </div>
                     </div>
-                ) : (
-                    messages.map((msg, index) => (
-                        <MessageBubble key={msg.id} message={msg} index={index} />
-                    ))
                 )}
+
+                {/* Reporter response messages */}
+                {reporterReplies.map((reply, index) => (
+                    <div
+                        key={index}
+                        className={`flex flex-col gap-1 max-w-[85%] animate-fade-in ${reply.direction === 'outbound' ? 'items-end self-end' : 'items-start'
+                            }`}
+                        style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    >
+                        <div
+                            className={`p-2 px-3 rounded-lg shadow-sm ${reply.direction === 'outbound'
+                                ? 'bg-[#d9fdd3] rounded-tr-none'
+                                : 'bg-white rounded-tl-none'
+                                }`}
+                        >
+                            {reply.direction === 'inbound' && (
+                                <p className="text-[11px] font-bold mb-0.5 text-primary">
+                                    {assignee?.name || 'Reporter'}
+                                </p>
+                            )}
+                            <p className="text-[12px] text-gray-900 leading-relaxed">{reply.content}</p>
+                            <div className="flex items-center gap-1 justify-end mt-0.5">
+                                <span className="text-[9px] text-gray-500/70">{reply.time}</span>
+                                {reply.direction === 'outbound' && (
+                                    <span className="material-symbols-outlined text-[13px] text-[#53bdeb]">done_all</span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+
+                {/* Admin-sent messages */}
+                {sentMessages.map((msg, index) => (
+                    <div
+                        key={`sent-${index}`}
+                        className="flex flex-col gap-1 max-w-[85%] items-end self-end animate-fade-in"
+                    >
+                        <div className="p-2 px-3 rounded-lg rounded-tr-none shadow-sm bg-[#d9fdd3]">
+                            <p className="text-[12px] text-gray-900 leading-relaxed">{msg.content}</p>
+                            <div className="flex items-center gap-1 justify-end mt-0.5">
+                                <span className="text-[9px] text-gray-500/70">{msg.time}</span>
+                                <span className="material-symbols-outlined text-[13px] text-[#53bdeb]">done_all</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
 
                 <div ref={chatEndRef} />
             </div>
 
-            {/* Input Area */}
-            <div className="p-2 pb-8 bg-[#f0f2f5] shrink-0 border-t border-border z-20">
-                <div className="flex items-center gap-2">
-                    <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors">
+            {/* Input Area - shrink-0 keeps it pinned at bottom */}
+            <div className="bg-[#f0f0f0] p-2 flex items-center gap-2 shrink-0 border-t border-border z-30">
+                <div className="w-full flex items-center gap-2">
+                    <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors shrink-0">
                         <span className="material-symbols-outlined text-[24px]">add</span>
                     </button>
-                    <div className="flex-1 bg-white rounded-lg px-3 py-2 flex items-center gap-2 border border-white focus-within:border-white">
+                    <div className="flex-1 bg-white rounded-lg px-3 py-2 flex items-center gap-2 border border-white focus-within:border-white shadow-sm h-10">
                         <input
-                            className="bg-transparent border-none focus:ring-0 outline-none w-full text-sm text-text-primary p-0 placeholder:text-text-secondary"
+                            className="bg-transparent border-none focus:ring-0 outline-none w-full text-sm text-text-primary p-0 placeholder:text-text-secondary h-full"
                             placeholder="Type a message"
                             value={messageInput}
                             onChange={(e) => setMessageInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                         />
-                        <button className="text-text-secondary hover:text-primary transition-colors shrink-0">
+                        <button className="text-text-secondary hover:text-primary transition-colors shrink-0 flex items-center justify-center">
                             <span className="material-symbols-outlined text-[20px]">sentiment_satisfied</span>
                         </button>
                     </div>
                     {messageInput.trim() ? (
                         <button
                             onClick={handleSend}
-                            className="bg-[#00a884] text-white p-2 rounded-full hover:bg-[#008f6f] transition-colors shadow-sm active:scale-95 flex items-center justify-center"
+                            className="bg-[#00a884] text-white p-2 rounded-full hover:bg-[#008f6f] transition-colors shadow-sm active:scale-95 flex items-center justify-center shrink-0 w-10 h-10"
                         >
                             <span className="material-symbols-outlined text-[20px] ml-0.5">send</span>
                         </button>
                     ) : (
-                        <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors">
+                        <button className="text-text-secondary p-2 hover:bg-black/5 rounded-full transition-colors shrink-0 w-10 h-10 flex items-center justify-center">
                             <span className="material-symbols-outlined text-[24px]">mic</span>
                         </button>
                     )}
                 </div>
             </div>
-        </aside>
-    );
-}
-
-function MessageBubble({ message, index }: { message: TaskMessage; index: number }) {
-    const isOutbound = message.direction === 'OUTBOUND';
-    const sender = mockEmployees.find((e) => e.id === message.sender_id);
-    const senderColor = getSenderColor(message.sender_name || '');
-
-    const formatTime = (dateStr: string) => {
-        const d = new Date(dateStr);
-        return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    };
-
-    if (message.message_type === 'AUDIO') {
-        return (
-            <div className="flex flex-col gap-1 items-start max-w-[85%] animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <div className="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 flex items-center gap-3">
-                    <div className="relative size-10 shrink-0">
-                        <div
-                            className="w-10 h-10 rounded-full bg-cover bg-center"
-                            style={{ backgroundImage: sender?.avatar_url ? `url('${sender.avatar_url}')` : undefined }}
-                        >
-                            {!sender?.avatar_url && (
-                                <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                                    {(message.sender_name || 'U')[0]}
-                                </div>
-                            )}
-                        </div>
-                        <div className="absolute -bottom-1 -right-1">
-                            <span className="material-symbols-outlined text-green-500 text-[16px]">mic</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col flex-1 min-w-[120px]">
-                        <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-gray-500 text-[20px] cursor-pointer hover:text-primary transition-colors">
-                                play_arrow
-                            </span>
-                            <div className="h-1 bg-gray-200 rounded-full flex-1 relative">
-                                <div className="absolute left-0 top-0 h-full w-1/3 bg-gray-400 rounded-full" />
-                                <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-500 rounded-full" />
-                            </div>
-                        </div>
-                        <span className="text-[10px] text-gray-400 mt-1">0:15 • {formatTime(message.sent_at)}</span>
-                    </div>
-                </div>
-                <p className="text-[10px] text-gray-400 ml-2">{message.sender_name}</p>
-            </div>
-        );
-    }
-
-    if (message.message_type === 'IMAGE') {
-        return (
-            <div className="flex flex-col gap-1 items-start max-w-[85%] animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <div className="bg-white p-1.5 rounded-lg rounded-tl-none shadow-sm border border-gray-100">
-                    <p className="text-xs font-bold px-1.5 pt-1.5 mb-1" style={{ color: senderColor }}>
-                        {message.sender_name}
-                    </p>
-                    <div className="rounded overflow-hidden mb-1 relative group cursor-pointer">
-                        <div
-                            className="bg-cover bg-center h-32 w-full"
-                            style={{ backgroundImage: `url('${message.media_url}')` }}
-                        />
-                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span className="material-symbols-outlined text-white">download</span>
-                        </div>
-                    </div>
-                    {message.content && (
-                        <p className="text-sm text-text-primary px-1.5 pb-0.5">{message.content}</p>
-                    )}
-                    <span className="text-[10px] text-gray-400 block text-right px-1.5 pb-1">
-                        {formatTime(message.sent_at)}
-                    </span>
-                </div>
-            </div>
-        );
-    }
-
-    // TEXT message
-    return (
-        <div
-            className={`flex flex-col gap-1 max-w-[85%] animate-fade-in ${isOutbound ? 'items-end self-end' : 'items-start'
-                }`}
-            style={{ animationDelay: `${index * 100}ms` }}
-        >
-            <div
-                className={`p-2 px-3 rounded-lg shadow-sm border ${isOutbound
-                    ? 'bg-[#d9fdd3] rounded-tr-none border-[#d9fdd3]'
-                    : 'bg-white rounded-tl-none border-white'
-                    }`}
-            >
-                {!isOutbound && (
-                    <p className="text-xs font-bold mb-1" style={{ color: senderColor }}>
-                        {message.sender_name}
-                    </p>
-                )}
-                <p className="text-sm text-gray-900 leading-relaxed">{message.content}</p>
-                <div className={`flex items-center gap-1 mt-0.5 ${isOutbound ? 'justify-end' : 'justify-end'}`}>
-                    <span className="text-[10px] text-gray-500/80">{formatTime(message.sent_at)}</span>
-                    {isOutbound && message.status === 'READ' && (
-                        <span className="material-symbols-outlined text-[14px] text-[#53bdeb]">done_all</span>
-                    )}
-                    {isOutbound && message.status === 'DELIVERED' && (
-                        <span className="material-symbols-outlined text-[14px] text-gray-400">done_all</span>
-                    )}
-                    {isOutbound && message.status === 'SENT' && (
-                        <span className="material-symbols-outlined text-[14px] text-gray-400">done</span>
-                    )}
-                </div>
-            </div>
         </div>
     );
-}
-
-function getSenderColor(name: string): string {
-    const colors = ['#e542a3', '#1e3fae', '#16a34a', '#ea580c', '#7c3aed', '#0891b2'];
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return colors[Math.abs(hash) % colors.length];
 }

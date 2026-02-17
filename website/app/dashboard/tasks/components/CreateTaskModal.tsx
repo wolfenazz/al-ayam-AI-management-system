@@ -130,7 +130,7 @@ export default function CreateTaskModal() {
                             <span className="material-symbols-outlined text-[18px]">newspaper</span>
                         </div>
                         <div>
-                            <h2 className="font-bold text-text-primary text-sm">Al-Ayyam Task Manager</h2>
+                            <h2 className="font-bold text-text-primary text-sm">Task Manager</h2>
                             <span className="text-xs text-text-secondary">News Desk / tasks</span>
                         </div>
                     </div>
