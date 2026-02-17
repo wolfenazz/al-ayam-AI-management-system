@@ -110,7 +110,7 @@ export default function LoginPage() {
                 <div className="absolute top-4 right-4">
                     <AnimatedThemeToggler />
                 </div>
-                <div className="w-full max-w-[480px] flex flex-col gap-8 animate-fade-in">
+                <div className="w-full max-w-120 flex flex-col gap-8 animate-fade-in">
 
                     {/* Mobile Logo */}
 
@@ -246,9 +246,9 @@ export default function LoginPage() {
                     </form>
                     {/* Divider */}
                     <div className="relative flex py-1 items-center">
-                        <div className="flex-grow border-t border-gray-200" />
-                        <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">Or continue with Gmail</span>
-                        <div className="flex-grow border-t border-gray-200" />
+                        <div className="grow border-t border-gray-200 dark:border-gray-700" />
+                        <span className="shrink-0 mx-4 text-gray-400 dark:text-gray-500 text-sm">Or continue with Gmail</span>
+                        <div className="grow border-t border-gray-200 dark:border-gray-700" />
                     </div>
 
                     {/* Google Sign In */}
