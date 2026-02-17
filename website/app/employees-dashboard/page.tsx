@@ -91,7 +91,7 @@ export default function EmployeeDashboardOverview() {
                                         className="flex items-center gap-4 px-6 py-4 hover:bg-surface/50 transition-colors"
                                     >
                                         <div className={`size-3 rounded-full shrink-0 ${task.priority === 'URGENT' ? 'bg-accent-red' :
-                                                task.priority === 'HIGH' ? 'bg-accent-orange' : 'bg-accent-green'
+                                            task.priority === 'HIGH' ? 'bg-accent-orange' : 'bg-accent-green'
                                             }`} title={`Priority: ${task.priority}`} />
 
                                         <div className="flex-1 min-w-0">
@@ -99,13 +99,13 @@ export default function EmployeeDashboardOverview() {
                                                 {task.title}
                                             </p>
                                             <p className="text-xs text-text-secondary">
-                                                {task.type.replace(/_/g, ' ')} · Due {new Date(task.due_date).toLocaleDateString()}
+                                                {task.type.replace(/_/g, ' ')} · Due {task.deadline ? new Date(task.deadline).toLocaleDateString() : 'No deadline'}
                                             </p>
                                         </div>
 
                                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${task.status === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-700' :
-                                                task.status === 'REVIEW' ? 'bg-purple-50 text-purple-700' :
-                                                    'bg-gray-100 text-gray-600'
+                                            task.status === 'REVIEW' ? 'bg-purple-50 text-purple-700' :
+                                                'bg-gray-100 text-gray-600'
                                             }`}>
                                             {task.status.replace(/_/g, ' ')}
                                         </span>

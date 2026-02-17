@@ -8,6 +8,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { logout } from '@/lib/firebase/auth';
 import { useNotifications } from '@/hooks/useNotifications';
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 
 export default function Header() {
     const router = useRouter();
@@ -88,6 +89,7 @@ export default function Header() {
             </div>
 
             <div className="flex flex-1 justify-end gap-6 items-center">
+                <AnimatedThemeToggler />
                 {/* Navigation Links */}
                 {/* Navigation Links Removed - Moved to Sidebar */}
 
@@ -199,10 +201,12 @@ export default function Header() {
 
                                 {/* Menu Items */}
                                 <div className="py-1">
-                                    <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors text-left">
-                                        <span className="material-symbols-outlined text-[20px] text-text-secondary">person</span>
-                                        My Profile
-                                    </button>
+                                    {!pathname.startsWith('/employees-dashboard') && (
+                                        <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors text-left">
+                                            <span className="material-symbols-outlined text-[20px] text-text-secondary">person</span>
+                                            My Profile
+                                        </button>
+                                    )}
                                     <button className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-text-primary hover:bg-surface transition-colors text-left">
                                         <span className="material-symbols-outlined text-[20px] text-text-secondary">settings</span>
                                         Settings
