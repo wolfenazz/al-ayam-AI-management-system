@@ -3,7 +3,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: #1e3fae;
+  --color-primary: var(--primary);
   --color-primary-light: #ebf0ff;
   --color-primary-lighter: #eef2ff;
   --color-background-light: #f6f6f8;
@@ -14,10 +14,11 @@
   --color-whatsapp: #25d366;
   --color-whatsapp-dark: #075e54;
   --color-whatsapp-bg: #ece5dd;
-  --color-text-primary: #0f111a;
-  --color-text-secondary: #536293;
-  --color-border: #e8eaf2;
-  --color-surface: #f0f2f5;
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
   --color-card-dark: #1a1d2d;
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Inter', sans-serif;
@@ -26,13 +27,23 @@
 :root {
   --background: #f6f6f8;
   --foreground: #0f111a;
+  --card: #ffffff;
+  --surface: #f0f2f5;
+  --text-primary: #0f111a;
+  --text-secondary: #536293;
+  --border: #e8eaf2;
+  --primary: #1e3fae;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121520;
-    --foreground: #ffffff;
-  }
+:root.dark {
+  --background: #0f111a;
+  --foreground: #ffffff;
+  --card: #1e2235;
+  --surface: #262a40;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border: #2d3446;
+  --primary: #3b82f6;
 }
 
 /* Base styles */
@@ -41,6 +52,7 @@ body {
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Scrollbar styling */
@@ -64,6 +76,10 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 9999px;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #4b5563;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {

@@ -52,7 +52,7 @@ export default function DashboardOverviewPage() {
                 {/* Welcome Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-text-primary mb-1">
-                        {greeting}, {firstName} 👋
+                        {greeting}, {firstName} 
                     </h1>
                     <p className="text-text-secondary">
                         Here&apos;s an overview of your newsroom activity today.
@@ -63,10 +63,10 @@ export default function DashboardOverviewPage() {
                 {isLoading ? (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-border p-5 shadow-sm animate-pulse">
-                                <div className="h-10 w-10 bg-gray-200 rounded-lg mb-3" />
-                                <div className="h-8 w-16 bg-gray-200 rounded mb-1" />
-                                <div className="h-4 w-24 bg-gray-100 rounded" />
+                            <div key={i} className="bg-card rounded-xl border border-border p-5 shadow-sm animate-pulse">
+                                <div className="h-10 w-10 bg-surface rounded-lg mb-3" />
+                                <div className="h-8 w-16 bg-surface rounded mb-1" />
+                                <div className="h-4 w-24 bg-surface rounded" />
                             </div>
                         ))}
                     </div>
@@ -106,7 +106,7 @@ export default function DashboardOverviewPage() {
                 {/* Two-Column Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     {/* Recent Activity */}
-                    <div className="lg:col-span-2 bg-white rounded-xl border border-border shadow-sm">
+                    <div className="lg:col-span-2 bg-card rounded-xl border border-border shadow-sm">
                         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
                             <h2 className="text-lg font-bold text-text-primary">Recent Tasks</h2>
                             <Link
@@ -120,12 +120,12 @@ export default function DashboardOverviewPage() {
                             {isLoading ? (
                                 Array.from({ length: 4 }).map((_, i) => (
                                     <div key={i} className="flex items-center gap-4 px-6 py-4 animate-pulse">
-                                        <div className="size-2.5 bg-gray-200 rounded-full" />
+                                        <div className="size-2.5 bg-surface rounded-full" />
                                         <div className="flex-1">
-                                            <div className="h-4 w-3/4 bg-gray-200 rounded mb-1" />
-                                            <div className="h-3 w-1/2 bg-gray-100 rounded" />
+                                            <div className="h-4 w-3/4 bg-surface rounded mb-1" />
+                                            <div className="h-3 w-1/2 bg-surface rounded" />
                                         </div>
-                                        <div className="h-6 w-20 bg-gray-100 rounded-full" />
+                                        <div className="h-6 w-20 bg-surface rounded-full" />
                                     </div>
                                 ))
                             ) : tasks.length === 0 ? (
@@ -178,7 +178,7 @@ export default function DashboardOverviewPage() {
                     </div>
 
                     {/* Team Overview */}
-                    <div className="bg-white rounded-xl border border-border shadow-sm">
+                    <div className="bg-card rounded-xl border border-border shadow-sm">
                         <div className="px-6 py-4 border-b border-border">
                             <h2 className="text-lg font-bold text-text-primary">Team Status</h2>
                         </div>
@@ -232,7 +232,7 @@ export default function DashboardOverviewPage() {
                     </div>
                 </div>
 
-             
+
             </div>
         </div>
     );
@@ -256,7 +256,7 @@ function MetricCard({ icon, label, value, change, color }: {
     const c = colorMap[color];
 
     return (
-        <div className="bg-white rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-3">
                 <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
                     <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
@@ -278,7 +278,7 @@ function QuickAction({ icon, label, description, href }: {
     return (
         <Link
             href={href}
-            className="flex items-center gap-4 bg-white rounded-xl border border-border p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group"
+            className="flex items-center gap-4 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group"
         >
             <div className="size-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                 <span className="material-symbols-outlined text-[22px]">{icon}</span>

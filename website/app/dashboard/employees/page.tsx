@@ -61,7 +61,7 @@ export default function EmployeesPage() {
                             <span className="material-symbols-outlined text-[20px]">upload_file</span>
                             Import
                         </button>
-                        <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-border shadow-sm">
+                        <div className="flex items-center gap-2 bg-card p-1 rounded-lg border border-border shadow-sm">
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'text-primary bg-primary-light' : 'hover:bg-surface text-text-secondary'}`}
@@ -91,7 +91,7 @@ export default function EmployeesPage() {
                         />
 
                         {/* Modal */}
-                        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 animate-fade-in">
+                        <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-lg p-6 animate-fade-in">
                             {/* Modal Header */}
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
@@ -118,7 +118,7 @@ export default function EmployeesPage() {
                             />
 
                             {/* Instructions */}
-                            <div className="mt-6 bg-gray-50 rounded-lg p-4">
+                            <div className="mt-6 bg-surface rounded-lg p-4">
                                 <h3 className="font-semibold text-text-primary text-sm mb-2 flex items-center gap-2">
                                     <span className="material-symbols-outlined text-primary text-[18px]">info</span>
                                     File Format Requirements
@@ -137,7 +137,7 @@ export default function EmployeesPage() {
                 {isLoading ? (
                     <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'flex flex-col gap-2'}>
                         {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-border p-6 shadow-sm animate-pulse h-64">
+                            <div key={i} className="bg-card rounded-xl border border-border p-6 shadow-sm animate-pulse h-64">
                                 <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4" />
                                 <div className="h-5 w-3/4 bg-gray-200 rounded mb-2 mx-auto" />
                                 <div className="h-4 w-1/2 bg-gray-100 rounded mx-auto" />
@@ -145,7 +145,7 @@ export default function EmployeesPage() {
                         ))}
                     </div>
                 ) : employees.length === 0 ? (
-                    <div className="bg-white rounded-xl border border-border p-12 text-center shadow-sm">
+                    <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
                         <span className="material-symbols-outlined text-[64px] text-gray-300 mb-3 block">group_off</span>
                         <p className="text-lg font-semibold text-text-primary mb-1">No employees found</p>
                         <p className="text-sm text-text-secondary">Add employees to your team to see them here.</p>
@@ -158,7 +158,7 @@ export default function EmployeesPage() {
                                 <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
                                     <span className="material-symbols-outlined text-primary">verified_user</span>
                                     Registered Members
-                                    <span className="text-xs font-normal text-text-secondary bg-gray-100 px-2 py-0.5 rounded-full">
+                                    <span className="text-xs font-normal text-text-secondary bg-surface px-2 py-0.5 rounded-full">
                                         {employees.filter(e => !e.is_external).length}
                                     </span>
                                 </h2>
@@ -186,7 +186,7 @@ export default function EmployeesPage() {
                                 <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2 pt-6 border-t border-gray-200">
                                     <span className="material-symbols-outlined text-orange-500">person_add_disabled</span>
                                     Unregistered (Contact Only)
-                                    <span className="text-xs font-normal text-text-secondary bg-gray-100 px-2 py-0.5 rounded-full">
+                                    <span className="text-xs font-normal text-text-secondary bg-surface px-2 py-0.5 rounded-full">
                                         {employees.filter(e => e.is_external).length}
                                     </span>
                                 </h2>
@@ -234,7 +234,7 @@ function StatCard({
     const c = colorMap[color];
 
     return (
-        <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
             <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
             </div>
@@ -291,7 +291,7 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-fade-in overflow-hidden">
+                <div className="absolute right-0 top-full mt-1 w-48 bg-card rounded-lg shadow-xl border border-border z-50 animate-fade-in overflow-hidden">
                     <button
                         onClick={() => { toast('Profile view coming soon'); setIsOpen(false); }}
                         className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
@@ -301,7 +301,7 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
                     </button>
                     <button
                         onClick={handleToggleStatus}
-                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-surface flex items-center gap-2"
                     >
                         <span className="material-symbols-outlined text-[18px] text-gray-400">
                             {employee.availability === 'AVAILABLE' ? 'do_not_disturb_on' : 'check_circle'}
@@ -311,7 +311,7 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
                     <div className="h-px bg-gray-100 my-1" />
                     <button
                         onClick={handleDelete}
-                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50/50 flex items-center gap-2"
                     >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
                         Remove Member
@@ -329,7 +329,7 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                 'text-gray-500 bg-gray-50 border-gray-100';
 
     return (
-        <div className={`bg-white rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-visible ${isExternal ? 'opacity-90' : ''}`}>
+        <div className={`bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-visible ${isExternal ? 'opacity-90' : ''}`}>
             {isExternal && (
                 <div className="absolute top-0 right-0 p-2">
                     <span className="material-symbols-outlined text-orange-400 text-[18px]" title="Unregistered / External Staff">person_add_disabled</span>
@@ -347,10 +347,10 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                     src={employee.avatar_url}
                     alt={employee.name}
                     size="xl"
-                    className="ring-4 ring-gray-50"
+                    className="ring-4 ring-surface"
                 />
                 {!isExternal && (
-                    <div className={`absolute bottom-0 right-0 w-5 h-5 rounded-full border-4 border-white ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
+                    <div className={`absolute bottom-0 right-0 w-5 h-5 rounded-full border-4 border-card ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
                         employee.availability === 'BUSY' ? 'bg-red-500' : 'bg-gray-400'
                         }`}></div>
                 )}
@@ -399,7 +399,7 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
 
 function EmployeeRow({ employee, isExternal }: { employee: any; isExternal?: boolean }) {
     return (
-        <div className={`bg-white rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 group ${isExternal ? 'opacity-90' : ''}`}>
+        <div className={`bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 group ${isExternal ? 'opacity-90' : ''}`}>
             <Avatar
                 src={employee.avatar_url}
                 alt={employee.name}

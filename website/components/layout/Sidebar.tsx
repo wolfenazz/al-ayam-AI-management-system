@@ -60,7 +60,7 @@ export default function Sidebar() {
 
             <aside
                 className={`
-          w-64 bg-white border-r border-border flex-col overflow-y-auto shrink-0 z-30
+          w-64 bg-card border-r border-border flex-col overflow-y-auto shrink-0 z-30
           transition-transform duration-300 ease-in-out
           fixed md:relative md:translate-x-0 h-full
           ${sidebarOpen ? 'translate-x-0 flex' : '-translate-x-full hidden md:flex md:translate-x-0'}

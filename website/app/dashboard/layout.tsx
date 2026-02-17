@@ -21,7 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Sidebar />
 
                     {/* Main Content */}
-                    <main className="flex-1 overflow-y-auto bg-background-light scrollbar-thin relative">
+                    <main className="flex-1 overflow-y-auto bg-background scrollbar-thin relative">
                         {children}
                     </main>
 

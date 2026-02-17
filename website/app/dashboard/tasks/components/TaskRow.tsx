@@ -92,9 +92,9 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
 
     return (
         <div
-            className={`group bg-white rounded-xl border transition-all flex flex-col mb-1 ${isSelected
+            className={`group bg-card rounded-xl border transition-all flex flex-col mb-1 ${isSelected
                 ? 'border-primary bg-primary/5 shadow-sm'
-                : 'border-border hover:border-gray-300 shadow-sm'
+                : 'border-border hover:border-text-secondary/20 shadow-sm'
                 }`}
         >
             <div className="flex items-center p-4 gap-4">
@@ -121,7 +121,7 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                         <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-bold text-text-primary truncate">{task.title}</h3>
                             {task.type && (
-                                <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded uppercase font-bold tracking-wider">
+                                <span className="text-[10px] px-1.5 py-0.5 bg-surface text-text-secondary rounded uppercase font-bold tracking-wider">
                                     {task.type.replace('_', ' ')}
                                 </span>
                             )}
@@ -155,7 +155,7 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                     {/* Deadline (Col 11-12) */}
                     <div className="col-span-2 flex justify-end">
                         {scheduleInfo && (
-                            <div className={`flex items-center gap-1 font-medium text-xs px-2 py-1 rounded whitespace-nowrap ${scheduleInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-gray-100'
+                            <div className={`flex items-center gap-1 font-medium text-xs px-2 py-1 rounded whitespace-nowrap ${scheduleInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-surface'
                                 }`}>
                                 <span className="material-symbols-outlined text-[14px]">
                                     {scheduleInfo.icon}

@@ -46,7 +46,7 @@ export default function Header() {
     const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
     return (
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border bg-white px-6 py-3 shrink-0 z-20">
+        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border bg-card px-6 py-3 shrink-0 z-20">
             <div className="flex items-center gap-4 lg:gap-8">
                 {/* Mobile menu button */}
                 <button

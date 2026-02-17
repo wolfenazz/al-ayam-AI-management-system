@@ -83,7 +83,7 @@ export default function TasksPage() {
                             Track breaking news tasks and field updates.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2 bg-white p-1 rounded-lg border border-border shadow-sm">
+                    <div className="flex items-center gap-2 bg-card p-1 rounded-lg border border-border shadow-sm">
                         <button
                             onClick={() => setViewMode('grid')}
                             className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'text-primary bg-primary-light' : 'hover:bg-surface text-text-secondary'
@@ -105,7 +105,7 @@ export default function TasksPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     {isLoading ? (
                         Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm animate-pulse">
+                            <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm animate-pulse">
                                 <div className="size-10 bg-gray-200 rounded-lg" />
                                 <div>
                                     <div className="h-6 w-12 bg-gray-200 rounded mb-1" />
@@ -145,7 +145,7 @@ export default function TasksPage() {
 
                 {/* Select All Bar (List Mode Only) */}
                 {viewMode === 'list' && !isLoading && tasks.length > 0 && (
-                    <div className="flex items-center gap-3 px-4 py-2 mb-2 bg-gray-50 rounded-lg border border-transparent hover:border-border transition-colors">
+                    <div className="flex items-center gap-3 px-4 py-2 mb-2 bg-surface rounded-lg border border-transparent hover:border-border transition-colors">
                         <input
                             type="checkbox"
                             checked={selectedTaskIds.size === tasks.length && tasks.length > 0}
@@ -163,7 +163,7 @@ export default function TasksPage() {
                 {isLoading ? (
                     <div className={viewMode === 'grid' ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6' : 'flex flex-col gap-2'}>
                         {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-border p-6 shadow-sm animate-pulse">
+                            <div key={i} className="bg-card rounded-xl border border-border p-6 shadow-sm animate-pulse">
                                 <div className="h-5 w-3/4 bg-gray-200 rounded mb-3" />
                                 <div className="h-4 w-1/2 bg-gray-100 rounded mb-2" />
                                 <div className="h-4 w-2/3 bg-gray-100 rounded" />
@@ -171,7 +171,7 @@ export default function TasksPage() {
                         ))}
                     </div>
                 ) : tasks.length === 0 ? (
-                    <div className="bg-white rounded-xl border border-border p-12 text-center shadow-sm">
+                    <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
                         <span className="material-symbols-outlined text-[64px] text-gray-300 mb-3 block">task</span>
                         <p className="text-lg font-semibold text-text-primary mb-1">No tasks yet</p>
                         <p className="text-sm text-text-secondary">Create your first task or seed sample data from the dashboard.</p>
@@ -209,7 +209,7 @@ export default function TasksPage() {
 
             {/* Bulk Actions Floating Bar */}
             {selectedTaskIds.size > 0 && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-2xl border border-border p-2 px-6 flex items-center gap-4 z-40 animate-slide-up">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-card rounded-full shadow-2xl border border-border p-2 px-6 flex items-center gap-4 z-40 animate-slide-up">
                     <div className="flex items-center gap-2 pr-4 border-r border-border">
                         <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">
                             {selectedTaskIds.size}
@@ -280,7 +280,7 @@ function StatCard({
     const c = colorMap[color];
 
     return (
-        <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
             <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
             </div>

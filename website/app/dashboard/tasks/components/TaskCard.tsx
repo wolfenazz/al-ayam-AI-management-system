@@ -91,11 +91,11 @@ export default function TaskCard({ task, employee }: TaskCardProps) {
     const showWhatsAppStrip = task.status === 'IN_PROGRESS' && task.priority === 'URGENT';
 
     return (
-        <div className="task-card group bg-white rounded-xl border border-border shadow-sm hover:shadow-md transition-all flex flex-col animate-fade-in relative overflow-hidden">
+        <div className="task-card group bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition-all flex flex-col animate-fade-in relative overflow-hidden">
             {/* Priority Stripe */}
             <div className={`absolute top-0 left-0 w-1 h-full ${priorityVariant[task.priority] === 'urgent' ? 'bg-red-500' :
-                    priorityVariant[task.priority] === 'high' ? 'bg-orange-500' :
-                        priorityVariant[task.priority] === 'normal' ? 'bg-blue-500' : 'bg-gray-300'
+                priorityVariant[task.priority] === 'high' ? 'bg-orange-500' :
+                    priorityVariant[task.priority] === 'normal' ? 'bg-blue-500' : 'bg-gray-300'
                 }`} />
 
             <div className="p-5 flex flex-col gap-3 flex-1 pl-6">
@@ -118,7 +118,7 @@ export default function TaskCard({ task, employee }: TaskCardProps) {
                             {task.title}
                         </h3>
                         {task.type && (
-                            <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded uppercase font-bold tracking-wider shrink-0">
+                            <span className="text-[10px] px-1.5 py-0.5 bg-surface text-text-secondary rounded uppercase font-bold tracking-wider shrink-0">
                                 {task.type.replace('_', ' ')}
                             </span>
                         )}

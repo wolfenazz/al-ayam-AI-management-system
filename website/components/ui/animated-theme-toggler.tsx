@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-// import { Moon, Sun } from "lucide-react" // Lucide is not installed, using Material Symbols instead
+import { Moon, Sun } from "lucide-react"
 import { flushSync } from "react-dom"
 
 import { cn } from "@/lib/utils"
@@ -21,6 +21,20 @@ export const AnimatedThemeToggler = ({
     useEffect(() => {
         const updateTheme = () => {
             setIsDark(document.documentElement.classList.contains("dark"))
+        }
+
+        // Check local storage on mount
+        const storedTheme = localStorage.getItem("theme")
+        if (storedTheme === "dark") {
+            document.documentElement.classList.add("dark")
+            setIsDark(true)
+        } else if (storedTheme === "light") {
+            document.documentElement.classList.remove("dark")
+            setIsDark(false)
+        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            // Default to system preference if no storage
+            document.documentElement.classList.add("dark")
+            setIsDark(true)
         }
 
         updateTheme()
@@ -85,12 +99,10 @@ export const AnimatedThemeToggler = ({
         <button
             ref={buttonRef}
             onClick={toggleTheme}
-            className={cn("relative inline-flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface transition-colors", className)}
+            className={cn("relative inline-flex h-10 w-10 items-center justify-center rounded-full text-text-secondary hover:bg-surface transition-colors cursor-pointer select-none", className)}
             {...props}
         >
-            <span className="material-symbols-outlined text-[24px]">
-                {isDark ? 'light_mode' : 'dark_mode'}
-            </span>
+            {isDark ? <Sun className="size-6" /> : <Moon className="size-6" />}
             <span className="sr-only">Toggle theme</span>
         </button>
     )

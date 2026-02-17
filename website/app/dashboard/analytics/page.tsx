@@ -55,7 +55,7 @@ export default function AnalyticsPage() {
                             Monitor newsroom performance and task efficiency.
                         </p>
                     </div>
-                    <div className="flex gap-1 bg-white p-1 rounded-lg border border-border shadow-sm">
+                    <div className="flex gap-1 bg-card p-1 rounded-lg border border-border shadow-sm">
                         {([
                             { value: '7d', label: '7 Days' },
                             { value: '30d', label: '30 Days' },
@@ -79,7 +79,7 @@ export default function AnalyticsPage() {
                 {isLoading ? (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-border p-5 shadow-sm animate-pulse">
+                            <div key={i} className="bg-card rounded-xl border border-border p-5 shadow-sm animate-pulse">
                                 <div className="h-10 w-10 bg-gray-200 rounded-lg mb-3" />
                                 <div className="h-8 w-16 bg-gray-200 rounded mb-1" />
                                 <div className="h-4 w-24 bg-gray-100 rounded" />
@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
                 {isLoading ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                         {Array.from({ length: 2 }).map((_, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-border shadow-sm p-6 animate-pulse">
+                            <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-6 animate-pulse">
                                 <div className="h-5 w-48 bg-gray-200 rounded mb-6" />
                                 <div className="space-y-4">
                                     {Array.from({ length: 3 }).map((_, j) => (
@@ -117,7 +117,7 @@ export default function AnalyticsPage() {
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                         {/* Task Distribution by Status */}
-                        <div className="bg-white rounded-xl border border-border shadow-sm p-6">
+                        <div className="bg-card rounded-xl border border-border shadow-sm p-6">
                             <h3 className="text-base font-bold text-text-primary mb-5">Task Breakdown by Status</h3>
                             {Object.keys(tasksByStatus).length === 0 ? (
                                 <p className="text-sm text-text-secondary">No task data available.</p>
@@ -155,7 +155,7 @@ export default function AnalyticsPage() {
                         </div>
 
                         {/* Task Distribution by Type */}
-                        <div className="bg-white rounded-xl border border-border shadow-sm p-6">
+                        <div className="bg-card rounded-xl border border-border shadow-sm p-6">
                             <h3 className="text-base font-bold text-text-primary mb-5">Task Types</h3>
                             {Object.keys(tasksByType).length === 0 ? (
                                 <p className="text-sm text-text-secondary">No task data available.</p>
@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
                 )}
 
                 {/* Employee Performance */}
-                <div className="bg-white rounded-xl border border-border shadow-sm">
+                <div className="bg-card rounded-xl border border-border shadow-sm">
                     <div className="px-6 py-4 border-b border-border">
                         <h3 className="text-base font-bold text-text-primary">Team Performance</h3>
                         <p className="text-xs text-text-secondary mt-0.5">Ranked by performance score</p>
@@ -314,7 +314,7 @@ function BigMetric({ icon, label, value, subtext, color }: {
     const c = colorMap[color];
 
     return (
-        <div className="bg-white rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-3">
                 <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
                     <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
