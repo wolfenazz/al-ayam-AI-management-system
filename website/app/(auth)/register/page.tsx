@@ -309,7 +309,7 @@ function RegisterPageContent() {
     // Don't render the form if already authenticated with a complete profile
     if (authLoading || (isAuthenticated && profileComplete)) {
         return (
-            <div className="fixed inset-0 bg-white flex items-center justify-center">
+            <div className="fixed inset-0 bg-background flex items-center justify-center">
                 <div className="flex gap-1">
                     <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
                     <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -322,9 +322,9 @@ function RegisterPageContent() {
     // ─── Google Completion Form ──────────────────────────────────────
     if (googleCompleteMode) {
         return (
-            <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white">
+            <div className="flex flex-col lg:flex-row min-h-screen w-full bg-background">
                 {/* Left: Globe Panel */}
-                <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-black overflow-hidden transition-colors duration-300">
+                <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 overflow-hidden transition-colors duration-300">
                     <Globe className="top-1/2 -translate-y-1/2" />
                     <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
                         <Image
@@ -343,7 +343,7 @@ function RegisterPageContent() {
                 </div>
 
                 {/* Right: Google Completion Form */}
-                <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-white overflow-y-auto">
+                <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-background overflow-y-auto">
                     <div className="w-full max-w-[480px] flex flex-col gap-6 animate-fade-in">
 
                         {/* Mobile Logo */}
@@ -360,8 +360,8 @@ function RegisterPageContent() {
                         </div>
 
                         {/* Google account badge */}
-                        <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-xl">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-blue-100 overflow-hidden flex-shrink-0">
+                        <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-blue-100 dark:border-blue-800 overflow-hidden flex-shrink-0">
                                 {user?.photoURL ? (
                                     <Image
                                         src={user.photoURL}
@@ -418,7 +418,7 @@ function RegisterPageContent() {
                                         type="text"
                                         value={formData.fullName}
                                         onChange={(e) => update('fullName', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                         placeholder="Ahmed Al-Mansoori"
                                         autoComplete="name"
                                     />
@@ -439,7 +439,7 @@ function RegisterPageContent() {
                                         type="tel"
                                         value={formData.phone}
                                         onChange={(e) => update('phone', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none"
                                         placeholder="+973 XXXX XXXX"
                                         autoComplete="tel"
                                     />
@@ -459,7 +459,7 @@ function RegisterPageContent() {
                                         id="gc-department"
                                         value={formData.department}
                                         onChange={(e) => update('department', e.target.value)}
-                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-gray-200 bg-[#f6f6f8] text-text-primary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm outline-none appearance-none cursor-pointer"
+                                        className="block w-full pl-10 pr-3 py-3 rounded-lg border border-border bg-surface text-text-primary focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all text-sm outline-none appearance-none cursor-pointer"
                                     >
                                         <option value="">Select department...</option>
                                         <option value="News">News</option>
@@ -485,7 +485,7 @@ function RegisterPageContent() {
                                             onClick={() => update('role', role.value)}
                                             className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all text-center ${formData.role === role.value
                                                 ? 'border-primary bg-primary-light text-primary shadow-sm'
-                                                : 'border-gray-200 text-text-secondary hover:border-gray-300 hover:bg-gray-50'
+                                                : 'border-border text-text-secondary hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'
                                                 }`}
                                         >
                                             <span className="material-symbols-outlined text-[24px]">{role.icon}</span>
@@ -503,7 +503,7 @@ function RegisterPageContent() {
                                     type="checkbox"
                                     checked={acceptTerms}
                                     onChange={(e) => setAcceptTerms(e.target.checked)}
-                                    className="h-4 w-4 mt-0.5 text-primary focus:ring-primary/20 border-gray-300 rounded cursor-pointer"
+                                    className="h-4 w-4 mt-0.5 text-primary focus:ring-primary/20 border-border rounded cursor-pointer"
                                 />
                                 <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors leading-relaxed">
                                     I agree to the{' '}
@@ -555,8 +555,8 @@ function RegisterPageContent() {
     // ─── Normal Registration Form ───────────────────────────────────
     return (
         <div className="flex flex-col lg:flex-row min-h-screen w-full bg-background transition-colors duration-300">
-            {/* Left: Globe Panel */}
-            <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-60 dark:bg-black overflow-hidden transition-colors duration-300">
+                {/* Left: Globe Panel */}
+                <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 relative flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 overflow-hidden transition-colors duration-300">
                 <Globe className="top-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-24 z-10 pointer-events-none select-none w-full flex items-center justify-center gap-3">
                     <Image
@@ -604,15 +604,15 @@ function RegisterPageContent() {
                     {/* Step Indicators */}
                     <div className="flex items-center gap-3 mb-2">
                         <div className="flex items-center gap-2 flex-1">
-                            <div className={`size-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${step >= 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
+                            <div className={`size-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${step >= 1 ? 'bg-primary text-white' : 'bg-border text-text-secondary'
                                 }`}>1</div>
                             <span className={`text-xs font-medium ${step >= 1 ? 'text-primary' : 'text-text-secondary'}`}>
                                 Personal Info
                             </span>
                         </div>
-                        <div className={`flex-1 h-0.5 rounded-full transition-colors ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`} />
+                        <div className={`flex-1 h-0.5 rounded-full transition-colors ${step >= 2 ? 'bg-primary' : 'bg-border'}`} />
                         <div className="flex items-center gap-2 flex-1 justify-end">
-                            <div className={`size-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${step >= 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
+                            <div className={`size-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${step >= 2 ? 'bg-primary text-white' : 'bg-border text-text-secondary'
                                 }`}>2</div>
                             <span className={`text-xs font-medium ${step >= 2 ? 'text-primary' : 'text-text-secondary'}`}>
                                 Role & Security
@@ -624,7 +624,7 @@ function RegisterPageContent() {
                     <button
                         onClick={handleGoogleSignUp}
                         disabled={isLoading}
-                        className="flex items-center justify-center gap-3 w-full h-12 bg-surface border border-border rounded-lg hover:bg-surface/80 transition-all text-text-primary font-medium shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center gap-3 w-full h-12 bg-surface border border-border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all text-text-primary font-medium shadow-sm hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg viewBox="0 0 24 24" width="20" height="20">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -637,9 +637,9 @@ function RegisterPageContent() {
 
                     {/* Divider */}
                     <div className="relative flex py-1 items-center">
-                        <div className="flex-grow border-t border-gray-200" />
-                        <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">Or continue with email</span>
-                        <div className="flex-grow border-t border-gray-200" />
+                        <div className="flex-grow border-t border-border" />
+                        <span className="flex-shrink-0 mx-4 text-text-secondary text-sm">Or continue with email</span>
+                        <div className="flex-grow border-t border-border" />
                     </div>
 
                     {/* Error Message */}
@@ -769,7 +769,7 @@ function RegisterPageContent() {
                                             onClick={() => update('role', role.value)}
                                             className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all text-center ${formData.role === role.value
                                                 ? 'border-primary bg-primary-light text-primary shadow-sm'
-                                                : 'border-gray-200 text-text-secondary hover:border-gray-300 hover:bg-gray-50'
+                                                : 'border-border text-text-secondary hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'
                                                 }`}
                                         >
                                             <span className="material-symbols-outlined text-[24px]">{role.icon}</span>
@@ -811,7 +811,7 @@ function RegisterPageContent() {
                                 {/* Password Strength */}
                                 {formData.password && (
                                     <div className="flex items-center gap-2 mt-1">
-                                        <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                        <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
                                             <div className={`h-full ${strength.color} ${strength.width} rounded-full transition-all duration-300`} />
                                         </div>
                                         <span className={`text-xs font-medium ${strength.label === 'Weak' ? 'text-accent-red' :
@@ -878,7 +878,7 @@ function RegisterPageContent() {
                                     type="checkbox"
                                     checked={acceptTerms}
                                     onChange={(e) => setAcceptTerms(e.target.checked)}
-                                    className="h-4 w-4 mt-0.5 text-primary focus:ring-primary/20 border-gray-300 rounded cursor-pointer"
+                                    className="h-4 w-4 mt-0.5 text-primary focus:ring-primary/20 border-border rounded cursor-pointer"
                                 />
                                 <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors leading-relaxed">
                                     I agree to the{' '}
@@ -893,7 +893,7 @@ function RegisterPageContent() {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex items-center justify-center gap-1 px-5 py-3 rounded-lg text-sm font-medium text-text-secondary bg-surface hover:bg-border transition-all border border-border"
+                                    className="flex items-center justify-center gap-1 px-5 py-3 rounded-lg text-sm font-medium text-text-secondary bg-surface hover:bg-gray-100 dark:hover:bg-gray-800 transition-all border border-border"
                                 >
                                     <span className="material-symbols-outlined text-[18px]">arrow_back</span>
                                     Back
@@ -938,7 +938,7 @@ function RegisterPageContent() {
 export default function RegisterPage() {
     return (
         <Suspense fallback={
-            <div className="fixed inset-0 bg-white flex items-center justify-center">
+            <div className="fixed inset-0 bg-background flex items-center justify-center">
                 <div className="flex gap-1">
                     <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
                     <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />

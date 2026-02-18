@@ -339,35 +339,14 @@ export default function EmployeeSettingsPage() {
                             {/* Account Section */}
                             {activeSection === 'account' && (
                                 <div className="space-y-6 animate-fade-in">
-                                    <div className="flex items-center gap-3 pb-4 border-b border-border">
                                         <span className="material-symbols-outlined text-[28px] text-primary">account_circle</span>
                                         <div>
                                             <h2 className="text-xl font-bold text-text-primary">Account Settings</h2>
                                             <p className="text-sm text-text-secondary">Manage your email and password</p>
                                         </div>
-                                    </div>
+                                    
 
-                                    {/* Email Field */}
-                                    <div>
-                                        <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-                                            Email Address
-                                        </label>
-                                        <input
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => handleInputChange('email', e.target.value)}
-                                            className={`w-full px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${
-                                                errors.email
-                                                    ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
-                                                    : 'border-border focus:border-primary focus:ring-2 focus:ring-primary/20'
-                                            } outline-none bg-card`}
-                                            placeholder="your@email.com"
-                                        />
-                                        {errors.email && (
-                                            <p className="text-xs text-red-500 mt-1">{errors.email}</p>
-                                        )}
-                                    </div>
-
+                                  
                                     {/* Password Section */}
                                     <div className="pt-4 border-t border-border">
                                         <h3 className="text-sm font-bold text-text-primary mb-4">Change Password</h3>
