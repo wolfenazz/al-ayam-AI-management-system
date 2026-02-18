@@ -31,6 +31,7 @@ export default function EmployeeSidebar() {
         { href: '/employees-dashboard/tasks', icon: 'assignment', label: 'My Tasks', exact: false },
         { href: '/employees-dashboard/analytics', icon: 'bar_chart', label: 'My Stats', exact: false },
         { href: '/employees-dashboard/profile', icon: 'person', label: 'Profile', exact: false },
+        { href: '/employees-dashboard/settings', icon: 'settings', label: 'Settings', exact: false },
     ];
 
     const isActive = (item: typeof navItems[0]) => {
