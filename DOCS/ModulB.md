@@ -1382,67 +1382,7 @@ module.exports = {
 
 ---
 
-### Phase 5: Notifications & Escalation System (Weeks 11-12)
-
-**Milestone 5.1: Notification System (Week 11)**
-- [ ] Build notification center component
-- [ ] Implement in-app notifications with real-time updates
-- [ ] Add notification preferences management
-- [ ] Implement email notifications
-- [ ] Add SMS notifications for critical alerts
-- [ ] Implement browser push notifications
-- [ ] Create notification templates
-- [ ] Add notification analytics tracking
-
-**Milestone 5.2: Escalation System (Week 12)**
-- [ ] Implement task acceptance escalation logic
-- [ ] Add deadline monitoring and alerts
-- [ ] Create milestone notifications
-- [ ] Implement completion and review notifications
-- [ ] Add communication notifications
-- [ ] Create escalation rules engine
-- [ ] Implement auto-reassignment logic
-- [ ] Add manager escalation alerts
-
-**Deliverables:**
-- Complete notification system with multiple channels
-- Escalation system with configurable rules
-- Notification analytics and reporting
-- Real-time notification delivery working
-
----
-
-### Phase 6: Media Management (Weeks 13-14)
-
-**Milestone 6.1: Media Upload & Processing (Week 13)**
-- [ ] Build media gallery component
-- [ ] Implement image upload with drag-and-drop
-- [ ] Add video upload support
-- [ ] Implement audio upload with transcription
-- [ ] Add document upload handling
-- [ ] Implement image compression and optimization
-- [ ] Add watermark application
-- [ ] Create thumbnail generation
-
-**Milestone 6.2: Media Display & Management (Week 14)**
-- [ ] Build media viewer with lightbox
-- [ ] Implement media approval workflow
-- [ ] Add media tagging and metadata
-- [ ] Create media search functionality
-- [ ] Implement media sharing
-- [ ] Add media download functionality
-- [ ] Create media analytics
-- [ ] Implement media version control
-
-**Deliverables:**
-- Complete media management system
-- Image, video, audio, and document upload working
-- Media processing pipeline functional
-- Media gallery and viewer implemented
-
----
-
-### Phase 7: Employee Management (Weeks 15-16)
+### Phase 7: Employee Management (admin dashboard) (Weeks 15-16)
 
 **Milestone 7.1: Employee Profiles (Week 15)**
 - [ ] Build employee list view with filtering
@@ -1472,7 +1412,7 @@ module.exports = {
 
 ---
 
-### Phase 8: Reporting & Analytics (Weeks 17-18)
+### Phase 8: Reporting & Analytics (admin dashboard) (Weeks 17-18)
 
 **Milestone 8.1: Dashboard Analytics (Week 17)**
 - [ ] Build main analytics dashboard

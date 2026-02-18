@@ -30,22 +30,18 @@ const ReadOnlyMap = dynamic(() => import('./ReadOnlyMap'), {
 });
 
 function MapSection({ location, address, openMapsUrl, isOpen }: { location?: { lat: number; lng: number } | null; address?: string; openMapsUrl?: string | null; isOpen: boolean }) {
-    const [isMounted, setIsMounted] = useState(false);
+    // Small delay to ensure modal is rendered
+    const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
-        // Reset mounted state when modal opens/closes
-        setIsMounted(false);
-        
-        // Wait for modal animation to complete before mounting the map
-        const timer = setTimeout(() => {
-            setIsMounted(true);
-        }, 300); // Match the modal animation duration
-
-        return () => {
-            clearTimeout(timer);
-            setIsMounted(false);
-        };
-    }, [isOpen]); // Re-run effect when isOpen changes
+        if (isOpen) {
+            // Small delay to allow modal animation to start/finish
+            const timer = setTimeout(() => setShouldRender(true), 300);
+            return () => clearTimeout(timer);
+        } else {
+            setShouldRender(false);
+        }
+    }, [isOpen]);
 
     if (!location) {
         return (
@@ -58,11 +54,10 @@ function MapSection({ location, address, openMapsUrl, isOpen }: { location?: { l
 
     return (
         <div>
-            {isMounted ? (
-                <ReadOnlyMap 
-                    key={`${location.lat}-${location.lng}-${isOpen ? Date.now() : 'closed'}`}
-                    location={location} 
-                    address={address} 
+            {shouldRender ? (
+                <ReadOnlyMap
+                    location={location}
+                    address={address}
                 />
             ) : (
                 <div className="w-full h-[250px] rounded-xl bg-surface border border-border flex items-center justify-center">
