@@ -171,10 +171,10 @@ export default function WhatsAppPanel() {
                     <span className="material-symbols-outlined text-[40px] text-[#8696a0]">chat_bubble_outline</span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">No Chat Selected</h3>
-                <p className="text-sm text-[#8696a0] max-w-[280px]">
+                <p className="text-sm text-[#8696a0] max-w-70">
                     Select a task from the list to view the conversation with the reporter.
                 </p>
-                <div className="mt-8 border-t border-[#202c33] pt-6 w-full max-w-[200px]">
+                <div className="mt-8 border-t border-[#202c33] pt-6 w-full max-w-50">
                     <div className="flex items-center justify-center gap-2 text-[#8696a0]">
                         <span className="material-symbols-outlined text-[18px]">lock</span>
                         <span className="text-xs">End-to-end encrypted</span>

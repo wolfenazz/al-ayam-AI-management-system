@@ -99,7 +99,7 @@ export default function Step4Description({
                         return (
                             <div
                                 key={opt.key}
-                                className={`flex items-center justify-between p-3 sm:p-4 rounded-xl border-2 transition-all min-h-[56px] ${
+                                className={`flex items-center justify-between p-3 sm:p-4 rounded-xl border-2 transition-all min-h-14 ${
                                     count > 0
                                         ? 'border-primary bg-primary-light'
                                         : 'border-border bg-card hover:border-text-secondary/30'

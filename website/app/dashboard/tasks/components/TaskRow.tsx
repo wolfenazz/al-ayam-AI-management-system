@@ -191,7 +191,7 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                             <span className="material-symbols-outlined text-[16px]">whatsapp</span>
                             New Update
                         </span>
-                        <span className="text-green-800/70 truncate max-w-[400px]">"Photos coming in 2 mins, uploading now..."</span>
+                        <span className="text-green-800/70 truncate max-w-100">"Photos coming in 2 mins, uploading now..."</span>
                     </div>
                     <button
                         onClick={() => setActiveChatTaskId(task.id)}

@@ -175,7 +175,7 @@ export default function Step5Location({
             )}
 
             {/* Map Container */}
-            <div className="flex-1 relative rounded-xl overflow-hidden border border-border shadow-sm min-h-[200px] sm:min-h-[300px]">
+            <div className="flex-1 relative rounded-xl overflow-hidden border border-border shadow-sm min-h-50 sm:min-h-75">
                 {isClient ? (
                     <React.Suspense fallback={
                         <div className="w-full h-full flex items-center justify-center bg-surface">
@@ -202,7 +202,7 @@ export default function Step5Location({
                 )}
 
                 {/* Map Controls Overlay */}
-                <div className="absolute top-3 right-3 flex flex-col gap-2 z-[1000]">
+                <div className="absolute top-3 right-3 flex flex-col gap-2 z-1000">
                     <button
                         onClick={handleGetCurrentLocation}
                         disabled={isLocating}
@@ -277,7 +277,7 @@ export default function Step5Location({
                     <button
                         key={place.name}
                         onClick={() => handleLocationSelect(place.lat, place.lng)}
-                        className="text-xs px-3 py-2 bg-surface border border-border rounded-lg text-text-secondary hover:text-primary hover:border-primary transition-colors min-h-[36px]"
+                        className="text-xs px-3 py-2 bg-surface border border-border rounded-lg text-text-secondary hover:text-primary hover:border-primary transition-colors min-h-9"
                     >
                         {place.name}
                     </button>

@@ -20,7 +20,7 @@ interface TaskDetailModalProps {
 const ReadOnlyMap = dynamic(() => import('./ReadOnlyMap'), {
     ssr: false,
     loading: () => (
-        <div className="w-full h-[250px] rounded-xl bg-surface border border-border flex items-center justify-center">
+        <div className="w-full h-62.5 rounded-xl bg-surface border border-border flex items-center justify-center">
             <div className="flex flex-col items-center gap-2">
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
                 <span className="text-xs text-text-secondary">Loading map...</span>
@@ -45,7 +45,7 @@ function MapSection({ location, address, openMapsUrl, isOpen }: { location?: { l
 
     if (!location) {
         return (
-            <div className="h-[100px] rounded-xl bg-surface border border-border flex flex-col items-center justify-center gap-2">
+            <div className="h-25 rounded-xl bg-surface border border-border flex flex-col items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-[28px] text-text-secondary/50">location_off</span>
                 <span className="text-xs text-text-secondary italic">No location set</span>
             </div>
@@ -60,7 +60,7 @@ function MapSection({ location, address, openMapsUrl, isOpen }: { location?: { l
                     address={address}
                 />
             ) : (
-                <div className="w-full h-[250px] rounded-xl bg-surface border border-border flex items-center justify-center">
+                <div className="w-full h-62.5 rounded-xl bg-surface border border-border flex items-center justify-center">
                     <div className="flex flex-col items-center gap-2">
                         <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
                         <span className="text-xs text-text-secondary">Loading map...</span>

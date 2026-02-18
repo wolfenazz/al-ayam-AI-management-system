@@ -170,7 +170,7 @@ export default function Step6Media({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[180px] ${
+                className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center cursor-pointer transition-all min-h-45 ${
                     isDragging
                         ? 'border-primary bg-primary-light'
                         : 'border-border hover:border-primary/50 hover:bg-surface/50'
@@ -216,7 +216,7 @@ export default function Step6Media({
 
             {/* File List */}
             {mediaWithPreviews.length > 0 && (
-                <div className="mt-6 max-h-[250px] overflow-y-auto scrollbar-thin border border-border rounded-xl bg-background/50">
+                <div className="mt-6 max-h-62.5 overflow-y-auto scrollbar-thin border border-border rounded-xl bg-background/50">
                     <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 flex items-center justify-between p-3 border-b border-border">
                         <h4 className="text-sm font-semibold text-text-primary">
                             Uploaded Files ({mediaFiles.length})
@@ -236,7 +236,7 @@ export default function Step6Media({
                         {mediaWithPreviews.map((media, index) => (
                             <div
                                 key={`${media.name}-${media.size}-${index}`}
-                                className="flex items-center gap-3 p-3 bg-surface rounded-xl border border-border hover:border-primary/30 transition-colors min-h-[60px]"
+                                className="flex items-center gap-3 p-3 bg-surface rounded-xl border border-border hover:border-primary/30 transition-colors min-h-15"
                             >
                                 {/* Preview / Icon */}
                                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-background flex items-center justify-center shrink-0">

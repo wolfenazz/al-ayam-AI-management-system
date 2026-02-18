@@ -52,7 +52,7 @@ export default function TaskChat() {
     }
 
     return (
-        <div className="flex flex-col h-[600px] bg-white rounded-lg border shadow-sm">
+        <div className="flex flex-col h-150 bg-white rounded-lg border shadow-sm">
             {/* Header */}
             <div className="p-4 border-b bg-gray-50 rounded-t-lg flex justify-between items-center">
                 <h3 className="font-semibold text-gray-900">Team Chat</h3>

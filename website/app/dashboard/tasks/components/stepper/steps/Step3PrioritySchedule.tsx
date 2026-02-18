@@ -131,7 +131,7 @@ export default function Step3PrioritySchedule({
                             <button
                                 key={opt.value}
                                 onClick={() => onPriorityChange(opt.value)}
-                                className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border-2 transition-all text-left min-h-[64px] ${
+                                className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border-2 transition-all text-left min-h-16 ${
                                     isSelected
                                         ? `${opt.bgColor} ${opt.borderColor} shadow-sm`
                                         : 'border-border hover:border-text-secondary/30 bg-card'

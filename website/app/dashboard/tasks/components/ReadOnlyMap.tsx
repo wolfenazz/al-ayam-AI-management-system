@@ -97,7 +97,7 @@ export default function ReadOnlyMap({ location }: ReadOnlyMapProps) {
     const mapKey = `map-${location.lat}-${location.lng}`;
 
     return (
-        <div className="w-full h-[250px] rounded-xl overflow-hidden border border-border bg-surface relative z-0">
+        <div className="w-full h-62.5 rounded-xl overflow-hidden border border-border bg-surface relative z-0">
             <MapContainer
                 key={mapKey}
                 center={[location.lat, location.lng]}

@@ -380,7 +380,7 @@ export default function VerificationPage() {
 
             {/* Action Confirmation Dialog */}
             <Dialog open={!!selectedUser && !!actionType} onOpenChange={closeDialog}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-106.25">
                     <DialogHeader>
                         <DialogTitle className={actionType === 'delete' ? 'text-accent-red' : ''}>
                             {getDialogTitle()}

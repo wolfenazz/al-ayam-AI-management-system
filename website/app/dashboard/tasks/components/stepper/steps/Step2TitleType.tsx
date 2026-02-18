@@ -140,7 +140,7 @@ export default function Step2TitleType({
                             <button
                                 key={type.value}
                                 onClick={() => onTaskTypeChange(type.value)}
-                                className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border-2 transition-all text-left min-h-[64px] ${
+                                className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl border-2 transition-all text-left min-h-16 ${
                                     isSelected
                                         ? 'border-primary bg-primary-light shadow-sm'
                                         : 'border-border hover:border-text-secondary/30 bg-card'
