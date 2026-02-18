@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth/AuthContext';
+import { useAuth, setRegistering } from '@/lib/auth/AuthContext';
 import { loginWithEmail, loginWithGoogle, getAuthErrorMessage } from '@/lib/firebase/auth';
 import { Globe } from '@/components/ui/globe';
 import { MorphingText } from "@/components/ui/morphing-text"
 
 export default function LoginPage() {
     const router = useRouter();
-    const { isAuthenticated, loading: authLoading, profileComplete } = useAuth();
+    const { isAuthenticated, loading: authLoading, profileComplete, isApproved, employee } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -21,12 +21,23 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // If already authenticated, redirect to dashboard
+    // If already authenticated and approved, redirect based on role
+    // If authenticated but not approved, redirect to pending-approval
     useEffect(() => {
         if (!authLoading && isAuthenticated && profileComplete) {
-            router.push('/dashboard');
+            if (isApproved) {
+                // Redirect based on user role
+                // Admins and Managers go to /dashboard
+                // Other employees go to /employees-dashboard
+                const dashboardPath = employee && ['Admin', 'Manager'].includes(employee.role)
+                    ? '/dashboard'
+                    : '/employees-dashboard';
+                router.push(dashboardPath);
+            } else {
+                router.push('/pending-approval');
+            }
         }
-    }, [isAuthenticated, authLoading, profileComplete, router]);
+    }, [isAuthenticated, authLoading, profileComplete, isApproved, employee, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,9 +50,23 @@ export default function LoginPage() {
 
         setIsLoading(true);
         try {
-            await loginWithEmail(email, password);
-            router.push('/dashboard');
+            console.log('Attempting login with email:', email);
+            const credential = await loginWithEmail(email, password);
+            console.log('Login successful');
+
+            // Check if the user has an employee document in Firestore.
+            // If not (e.g. registration failed previously), redirect to complete registration.
+            const { getDocument, COLLECTIONS } = await import('@/lib/firebase/firestore');
+            const existingProfile = await getDocument(COLLECTIONS.EMPLOYEES, credential.user.uid);
+            if (!existingProfile) {
+                console.log('No employee profile found — redirecting to complete registration');
+                setRegistering(true);
+                router.push('/register?complete=email');
+                return;
+            }
+            // If user has a profile, let the useEffect handle routing based on approval status
         } catch (err: unknown) {
+            console.error('Login error:', err);
             const firebaseError = err as { code?: string };
             setError(getAuthErrorMessage(firebaseError.code || ''));
         } finally {
@@ -57,12 +82,12 @@ export default function LoginPage() {
             // Check if user has an employee profile
             const { getDocument, COLLECTIONS } = await import('@/lib/firebase/firestore');
             const existingProfile = await getDocument(COLLECTIONS.EMPLOYEES, credential.user.uid);
-            if (existingProfile) {
-                router.push('/dashboard');
-            } else {
+            if (!existingProfile) {
                 // First-time Google user — redirect to complete registration
+                setRegistering(true); // Prevent AuthContext from logging out new Google user
                 router.push('/register?complete=google');
             }
+            // If user has a profile, let's useEffect handle routing based on approval status
         } catch (err: unknown) {
             const firebaseError = err as { code?: string };
             setError(getAuthErrorMessage(firebaseError.code || ''));
@@ -138,20 +163,20 @@ export default function LoginPage() {
                     )}
                     {/* Form */}
                     <form className="flex flex-col gap-5 text-[#3498d1]" onSubmit={handleSubmit}>
-                        <MorphingText 
-  texts={[
-    "Truth",
-    "Integrity",
-    "Insight",
-    "Accountability",
-    "Heritage",
-    "Credibility",
-    "Perspective",
-    "Authority",
-    "Clarity",
-    "Legacy"
-  ]} 
-/>
+                        <MorphingText
+                            texts={[
+                                "Truth",
+                                "Integrity",
+                                "Insight",
+                                "Accountability",
+                                "Heritage",
+                                "Credibility",
+                                "Perspective",
+                                "Authority",
+                                "Clarity",
+                                "Legacy"
+                            ]}
+                        />
                         {/* Email */}
                         <div className="flex flex-col gap-2">
                             <label className="text-sm font-medium text-text-primary" htmlFor="login-email">
@@ -270,7 +295,7 @@ export default function LoginPage() {
 
                     {/* Registration Link */}
                     <p className="text-center text-sm text-text-secondary">
-                        Don&apos;t have an account?{' '}
+                        Don't have an account?{' '}
                         <Link
                             href="/register"
                             className="font-semibold text-primary hover:text-primary/80 hover:underline transition-colors"
@@ -283,5 +308,3 @@ export default function LoginPage() {
         </div>
     );
 }
-
-

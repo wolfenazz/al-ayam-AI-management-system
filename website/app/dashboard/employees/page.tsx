@@ -11,9 +11,33 @@ import { toast } from 'react-hot-toast';
 export default function EmployeesPage() {
     const { employees, isLoading } = useEmployees();
     const addEmployees = useAddEmployees();
+    const deleteEmployee = useDeleteEmployee();
     const stats = useEmployeeStats(employees);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [showImportModal, setShowImportModal] = useState(false);
+    const [selectedExternalIds, setSelectedExternalIds] = useState<Set<string>>(new Set());
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    const externalEmployees = employees.filter(e => e.is_external);
+    const isAllExternalSelected = externalEmployees.length > 0 && externalEmployees.every(e => selectedExternalIds.has(e.id));
+
+    const toggleSelectAll = () => {
+        if (isAllExternalSelected) {
+            setSelectedExternalIds(new Set());
+        } else {
+            setSelectedExternalIds(new Set(externalEmployees.map(e => e.id)));
+        }
+    };
+
+    const toggleSelectOne = (id: string) => {
+        const newSet = new Set(selectedExternalIds);
+        if (newSet.has(id)) {
+            newSet.delete(id);
+        } else {
+            newSet.add(id);
+        }
+        setSelectedExternalIds(newSet);
+    };
 
     const handleImport = async (data: any[]) => {
         try {
@@ -133,6 +157,81 @@ export default function EmployeesPage() {
                     </div>
                 )}
 
+                {/* Bulk Delete Confirmation Modal */}
+                {showDeleteConfirm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        <div
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                            onClick={() => setShowDeleteConfirm(false)}
+                        />
+                        <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md p-6 animate-fade-in">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="size-12 bg-red-100 rounded-full flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-red-600 text-[24px]">warning</span>
+                                </div>
+                                <div>
+                                    <h2 className="font-bold text-text-primary text-lg">Delete Selected Contacts</h2>
+                                    <p className="text-sm text-text-secondary">This action cannot be undone</p>
+                                </div>
+                            </div>
+                            <p className="text-text-secondary mb-6">
+                                Are you sure you want to delete <span className="font-semibold text-text-primary">{selectedExternalIds.size}</span> selected contact{selectedExternalIds.size > 1 ? 's' : ''}? 
+                                These are unregistered contacts that were imported from files.
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={() => setShowDeleteConfirm(false)}
+                                    className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        const ids = Array.from(selectedExternalIds);
+                                        try {
+                                            await Promise.all(ids.map(id => deleteEmployee.mutateAsync(id)));
+                                            toast.success(`Deleted ${ids.length} contact${ids.length > 1 ? 's' : ''}`);
+                                            setSelectedExternalIds(new Set());
+                                            setShowDeleteConfirm(false);
+                                        } catch (error) {
+                                            console.error('Bulk delete failed:', error);
+                                            toast.error('Failed to delete some contacts');
+                                        }
+                                    }}
+                                    className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors flex items-center gap-2"
+                                >
+                                    <span className="material-symbols-outlined text-[18px]">delete</span>
+                                    Delete {selectedExternalIds.size} Contact{selectedExternalIds.size > 1 ? 's' : ''}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Selection Action Bar */}
+                {selectedExternalIds.size > 0 && (
+                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-card border border-border rounded-xl shadow-2xl px-6 py-4 flex items-center gap-4 animate-fade-in">
+                        <div className="flex items-center gap-2">
+                            <span className="material-symbols-outlined text-primary">checklist</span>
+                            <span className="font-semibold text-text-primary">{selectedExternalIds.size} selected</span>
+                        </div>
+                        <div className="w-px h-6 bg-border" />
+                        <button
+                            onClick={() => setSelectedExternalIds(new Set())}
+                            className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+                        >
+                            Clear selection
+                        </button>
+                        <button
+                            onClick={() => setShowDeleteConfirm(true)}
+                            className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                            Delete Selected
+                        </button>
+                    </div>
+                )}
+
                 {/* Employees Content */}
                 {isLoading ? (
                     <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8' : 'flex flex-col gap-3'}>
@@ -183,13 +282,26 @@ export default function EmployeesPage() {
                         {/* External Employees */}
                         {employees.filter(e => e.is_external).length > 0 && (
                             <div>
-                                <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-3 pt-8 border-t border-gray-200">
-                                    <span className="material-symbols-outlined text-orange-500 text-[24px]">person_add_disabled</span>
-                                    Unregistered (Contact Only)
-                                    <span className="text-sm font-normal text-text-secondary bg-surface px-3 py-1 rounded-full">
-                                        {employees.filter(e => e.is_external).length}
-                                    </span>
-                                </h2>
+                                <div className="flex items-center justify-between mb-6 pt-8 border-t border-gray-200">
+                                    <h2 className="text-xl font-bold text-text-primary flex items-center gap-3">
+                                        <span className="material-symbols-outlined text-orange-100 text-[24px]">person_add_disabled</span>
+                                        Unregistered (Contact Only)
+                                        <span className="text-sm font-normal text-text-secondary bg-surface px-3 py-1 rounded-full">
+                                            {employees.filter(e => e.is_external).length}
+                                        </span>
+                                    </h2>
+                                    <button
+                                        onClick={toggleSelectAll}
+                                        className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
+                                    >
+                                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${isAllExternalSelected ? 'bg-primary border-primary' : 'border-gray-300 hover:border-primary'}`}>
+                                            {isAllExternalSelected && (
+                                                <span className="material-symbols-outlined text-white text-[14px]">check</span>
+                                            )}
+                                        </div>
+                                        Select All
+                                    </button>
+                                </div>
                                 <div
                                     className={
                                         viewMode === 'grid'
@@ -199,9 +311,21 @@ export default function EmployeesPage() {
                                 >
                                     {employees.filter(e => e.is_external).map((employee) => (
                                         viewMode === 'grid' ? (
-                                            <EmployeeCard key={employee.id} employee={employee} isExternal />
+                                            <EmployeeCard 
+                                                key={employee.id} 
+                                                employee={employee} 
+                                                isExternal 
+                                                isSelected={selectedExternalIds.has(employee.id)}
+                                                onSelect={(id) => toggleSelectOne(id)}
+                                            />
                                         ) : (
-                                            <EmployeeRow key={employee.id} employee={employee} isExternal />
+                                            <EmployeeRow 
+                                                key={employee.id} 
+                                                employee={employee} 
+                                                isExternal 
+                                                isSelected={selectedExternalIds.has(employee.id)}
+                                                onSelect={(id) => toggleSelectOne(id)}
+                                            />
                                         )
                                     ))}
                                 </div>
@@ -246,7 +370,7 @@ function StatCard({
     );
 }
 
-function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isExternal?: boolean }) {
+function EmployeeActionMenu({ employee, isExternal, onDelete }: { employee: Employee; isExternal?: boolean; onDelete?: () => void }) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const deleteEmployee = useDeleteEmployee();
@@ -265,9 +389,13 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
     }, [menuRef]);
 
     const handleDelete = () => {
-        if (window.confirm(`Are you sure you want to remove ${employee.name}?`)) {
-            deleteEmployee.mutate(employee.id);
-            toast.success('Member removed');
+        if (onDelete) {
+            onDelete();
+        } else {
+            if (window.confirm(`Are you sure you want to remove ${employee.name}?`)) {
+                deleteEmployee.mutate(employee.id);
+                toast.success('Member removed');
+            }
         }
         setIsOpen(false);
     };
@@ -278,8 +406,6 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
         toast.success(`Marked as ${newStatus}`);
         setIsOpen(false);
     };
-
-    if (isExternal) return null;
 
     return (
         <div className="relative" ref={menuRef}>
@@ -292,29 +418,38 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
 
             {isOpen && (
                 <div className="absolute right-0 top-full mt-1 w-48 bg-card rounded-lg shadow-xl border border-border z-50 animate-fade-in overflow-hidden">
-                    <button
-                        onClick={() => { toast('Profile view coming soon'); setIsOpen(false); }}
-                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    >
-                        <span className="material-symbols-outlined text-[18px] text-gray-400">person</span>
-                        View Profile
-                    </button>
-                    <button
-                        onClick={handleToggleStatus}
-                        className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-surface flex items-center gap-2"
-                    >
-                        <span className="material-symbols-outlined text-[18px] text-gray-400">
-                            {employee.availability === 'AVAILABLE' ? 'do_not_disturb_on' : 'check_circle'}
-                        </span>
-                        {employee.availability === 'AVAILABLE' ? 'Mark as Busy' : 'Mark as Available'}
-                    </button>
-                    <div className="h-px bg-gray-100 my-1" />
+                    {!isExternal && (
+                        <>
+                            <button
+                                onClick={() => { toast('Profile view coming soon'); setIsOpen(false); }}
+                                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[18px] text-gray-400">person</span>
+                                View Profile
+                            </button>
+                            <button
+                                onClick={handleToggleStatus}
+                                className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-surface flex items-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[18px] text-gray-400">
+                                    {employee.availability === 'AVAILABLE' ? 'do_not_disturb_on' : 'check_circle'}
+                                </span>
+                                {employee.availability === 'AVAILABLE' ? 'Mark as Busy' : 'Mark as Available'}
+                            </button>
+                            <div className="h-px bg-gray-100 my-1" />
+                        </>
+                    )}
+                    {isExternal && (
+                        <div className="px-4 py-2 text-xs text-text-secondary bg-white-50 border-b border-white-100">
+                            Unregistered Contact
+                        </div>
+                    )}
                     <button
                         onClick={handleDelete}
                         className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50/50 flex items-center gap-2"
                     >
                         <span className="material-symbols-outlined text-[18px]">delete</span>
-                        Remove Member
+                        {isExternal ? 'Remove Contact' : 'Remove Member'}
                     </button>
                 </div>
             )}
@@ -322,16 +457,52 @@ function EmployeeActionMenu({ employee, isExternal }: { employee: Employee, isEx
     );
 }
 
-function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: boolean }) {
+function EmployeeCard({
+    employee,
+    isExternal,
+    isSelected,
+    onSelect
+}: {
+    employee: any;
+    isExternal?: boolean;
+    isSelected?: boolean;
+    onSelect?: (id: string) => void;
+}) {
     const statusColor =
         employee.availability === 'AVAILABLE' ? 'text-emerald-600 bg-emerald-50 border-emerald-100' :
             employee.availability === 'BUSY' ? 'text-red-600 bg-red-50 border-red-100' :
                 'text-gray-500 bg-gray-50 border-gray-100';
 
     return (
-        <div className={`bg-card rounded-2xl border border-border p-8 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-visible ${isExternal ? 'opacity-90' : ''}`}>
+        <div
+            className={`bg-card rounded-2xl border shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group relative ${
+                isExternal
+                    ? `border-orange-200 ${isSelected ? 'ring-2 ring-primary ring-offset-2 bg-primary/5' : ''}`
+                    : 'border-border'
+            } ${isExternal && isSelected ? 'bg-primary/5' : ''}`}
+        >
             {isExternal && (
-                <div className="absolute top-2 right-2 p-3">
+                <div className="absolute top-3 left-3 flex items-center gap-2">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onSelect?.(employee.id);
+                        }}
+                        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                            isSelected
+                                ? 'bg-primary border-primary'
+                                : 'border-gray-300 bg-white hover:border-primary'
+                        }`}
+                    >
+                        {isSelected && (
+                            <span className="material-symbols-outlined text-white text-[16px]">check</span>
+                        )}
+                    </button>
+                </div>
+            )}
+
+            {isExternal && (
+                <div className="absolute top-3 right-3">
                     <span className="material-symbols-outlined text-orange-400 text-[20px]" title="Unregistered / External Staff">person_add_disabled</span>
                 </div>
             )}
@@ -342,12 +513,17 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                 </div>
             )}
 
-            <div className={`mb-5 relative inline-block ${!isExternal ? 'mt-3' : ''}`}>
+            {isExternal && (
+                <div className="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <EmployeeActionMenu employee={employee} isExternal />
+                </div>
+            )}
+
+            <div className={`mb-5 relative inline-block ${!isExternal ? 'mt-3' : 'mt-6'}`}>
                 <Avatar
                     src={employee.avatar_url}
                     alt={employee.name}
                     size="xl"
-                    className="ring-4 ring-surface"
                 />
                 {!isExternal && (
                     <div className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-4 border-card ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
@@ -397,9 +573,45 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
     );
 }
 
-function EmployeeRow({ employee, isExternal }: { employee: any; isExternal?: boolean }) {
+function EmployeeRow({
+    employee,
+    isExternal,
+    isSelected,
+    onSelect
+}: {
+    employee: any;
+    isExternal?: boolean;
+    isSelected?: boolean;
+    onSelect?: (id: string) => void;
+}) {
     return (
-        <div className={`bg-card rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-5 group ${isExternal ? 'opacity-90' : ''}`}>
+        <div
+            className={`bg-card rounded-2xl border shadow-sm hover:shadow-md transition-all flex items-center gap-5 group ${
+                isExternal
+                    ? `border-orange-200 ${isSelected ? 'ring-2 ring-primary ring-offset-2 bg-primary/5' : ''}`
+                    : 'border-border'
+            } ${isExternal ? 'opacity-90' : ''}`}
+        >
+            {isExternal && (
+                <div className="pl-4">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onSelect?.(employee.id);
+                        }}
+                        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                            isSelected
+                                ? 'bg-primary border-primary'
+                                : 'border-gray-300 bg-white hover:border-primary'
+                        }`}
+                    >
+                        {isSelected && (
+                            <span className="material-symbols-outlined text-white text-[16px]">check</span>
+                        )}
+                    </button>
+                </div>
+            )}
+
             <Avatar
                 src={employee.avatar_url}
                 alt={employee.name}
@@ -455,8 +667,14 @@ function EmployeeRow({ employee, isExternal }: { employee: any; isExternal?: boo
             </div>
 
             {!isExternal && (
-                <div className="opacity-0 group-hover:opacity-100 transition-all">
+                <div className="opacity-0 group-hover:opacity-100 transition-all pr-4">
                     <EmployeeActionMenu employee={employee} />
+                </div>
+            )}
+
+            {isExternal && (
+                <div className="opacity-0 group-hover:opacity-100 transition-all pr-4">
+                    <EmployeeActionMenu employee={employee} isExternal />
                 </div>
             )}
         </div>

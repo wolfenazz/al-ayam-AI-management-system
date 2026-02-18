@@ -1,10 +1,18 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { User } from 'firebase/auth';
 import { onAuthChange, logout } from '@/lib/firebase/auth';
 import { listenToDocument, setDocument, COLLECTIONS, serverTimestamp } from '@/lib/firebase/firestore';
 import { Employee } from '@/types/employee';
+
+// Global flag to signal that a registration is in progress.
+// This prevents the auth listener from logging out the user
+// when the employee document doesn't exist yet (race condition).
+let _isRegistering = false;
+export function setRegistering(value: boolean) {
+    _isRegistering = value;
+}
 
 // ─── Types ───────────────────────────────────────────────────────
 
@@ -40,15 +48,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isApproved, setIsApproved] = useState(false);
     const [employeeListenerUnsubscribe, setEmployeeListenerUnsubscribe] = useState<(() => void) | null>(null);
 
+    // Track whether we've ever seen a profile for this user session.
+    // If we have, and then the document becomes null, it really was deleted.
+    const hasSeenProfile = useRef(false);
+
     // Function to handle employee document updates (including deletion)
     const handleEmployeeUpdate = useCallback(async (employeeProfile: Employee | null, firebaseUser: User) => {
         if (!employeeProfile) {
-            // Employee document was deleted (admin deleted user) - log out immediately
-            console.log('Employee document deleted - logging out user');
+            // If registration is in progress, the document hasn't been created yet.
+            // Don't log out — just wait for the document to appear.
+            if (_isRegistering) {
+                console.log('Employee document not found, but registration is in progress — waiting...');
+                setEmployee(null);
+                setProfileComplete(false);
+                setIsApproved(false);
+                return;
+            }
+
+            // If we never saw a profile for this user, it could be:
+            // 1. A brand-new user whose document hasn't been written yet
+            // 2. A user who somehow has Auth but no Firestore doc
+            // In either case, give a small grace period before logging out.
+            if (!hasSeenProfile.current) {
+                console.log('Employee document not found for new session — waiting for creation...');
+                setEmployee(null);
+                setProfileComplete(false);
+                setIsApproved(false);
+                // Don't logout — let the registration flow or listener handle it.
+                return;
+            }
+
+            // We previously had a profile, but now it's gone → admin deleted user.
+            console.log('Employee document deleted — logging out user');
             setEmployee(null);
             setProfileComplete(false);
             setIsApproved(false);
-            
+
             // Log out the user and redirect to login
             try {
                 await logout();
@@ -59,12 +94,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return;
         }
 
+        // Mark that we've seen a valid profile at least once in this session.
+        hasSeenProfile.current = true;
+
         // Update last_active timestamp periodically (not on every listener update to avoid loops)
-        const shouldUpdateLastActive = !employeeProfile.last_active || 
+        const shouldUpdateLastActive = !employeeProfile.last_active ||
             (new Date().getTime() - new Date(employeeProfile.last_active).getTime() > 60000); // Only update if > 1 min old
 
         const updates: Record<string, unknown> = {};
-        
+
         if (shouldUpdateLastActive) {
             updates.last_active = serverTimestamp();
         }
@@ -131,6 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     employeeListenerUnsubscribe();
                     setEmployeeListenerUnsubscribe(null);
                 }
+                hasSeenProfile.current = false;
                 setEmployee(null);
                 setProfileComplete(false);
                 setIsApproved(false);

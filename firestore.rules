@@ -28,8 +28,17 @@ service cloud.firestore {
       // Any authenticated user can read employee profiles
       allow read: if isAuthenticated();
 
-      // Users can write their own profile, Managers/Admins can create/update any
-      allow create, update: if isAuthenticated() && (isOwner(employeeId) || isManagerOrAdmin());
+      // Users can create their own profile (new registration) - document ID must match their UID.
+      // Managers/Admins can also create profiles with any ID (e.g. importing employees).
+      // Note: We check if the user's own employee doc exists and has manager/admin role.
+      allow create: if isAuthenticated() && (
+        isOwner(employeeId) ||
+        exists(/databases/$(database)/documents/employees/$(request.auth.uid)) &&
+        (get(/databases/$(database)/documents/employees/$(request.auth.uid)).data.role in ['Manager', 'Admin'])
+      );
+
+      // Users can update their own profile, Managers/Admins can update any
+      allow update: if isAuthenticated() && (isOwner(employeeId) || isManagerOrAdmin());
 
       // Only admins can delete employees
       allow delete: if isAuthenticated() && hasRole('Admin');

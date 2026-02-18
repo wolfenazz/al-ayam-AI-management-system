@@ -35,13 +35,20 @@ export default function PendingApprovalPage() {
                     if (updatedEmployee.approvalStatus === 'approved') {
                         // Prevent multiple redirects
                         hasRedirected.current = true;
-                        
+
                         // First refresh the auth context to update isApproved state
                         await refreshEmployee();
-                        
+
+                        // Redirect based on user role
+                        // Admins and Managers go to /dashboard
+                        // Other employees go to /employees-dashboard
+                        const dashboardPath = ['Admin', 'Manager'].includes(updatedEmployee.role)
+                            ? '/dashboard'
+                            : '/employees-dashboard';
+
                         // Use window.location for a full page reload to ensure
                         // all components get fresh auth state
-                        window.location.href = '/employees-dashboard';
+                        window.location.href = dashboardPath;
                     } else if (updatedEmployee.approvalStatus === 'rejected') {
                         // User has been rejected
                         setIsRejected(true);
@@ -194,10 +201,7 @@ export default function PendingApprovalPage() {
                                         <span className="text-accent-green mt-0.5">✓</span>
                                         <span>You will be automatically redirected once approved</span>
                                     </li>
-                                    <li className="flex items-start gap-2">
-                                        <span className="text-accent-green mt-0.5">✓</span>
-                                        <span>This page checks for updates every few seconds</span>
-                                    </li>
+                                  
                                 </ul>
                             </div>
 

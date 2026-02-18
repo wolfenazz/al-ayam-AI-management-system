@@ -54,7 +54,7 @@ export default function EmployeeAnalyticsPage() {
                             <h3 className="text-lg font-bold text-text-primary mb-6">Completion Rate</h3>
                             <div className="flex items-center justify-center mb-6">
                                 <div className="relative size-40">
-                                    <svg className="size-full rotate-[-90deg]" viewBox="0 0 36 36">
+                                    <svg className="size-full rotate-90d" viewBox="0 0 36 36">
                                         <path
                                             d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                                             fill="none"

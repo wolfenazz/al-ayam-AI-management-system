@@ -5,8 +5,8 @@ import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/lib/auth/AuthContext';
-import { registerWithEmail, loginWithGoogle, getAuthErrorMessage } from '@/lib/firebase/auth';
+import { useAuth, setRegistering } from '@/lib/auth/AuthContext';
+import { registerWithEmail, loginWithGoogle, logout, getAuthErrorMessage } from '@/lib/firebase/auth';
 import { setDocument, getDocument, COLLECTIONS, serverTimestamp } from '@/lib/firebase/firestore';
 import { Globe } from '@/components/ui/globe';
 import Image from 'next/image';
@@ -20,7 +20,7 @@ const roleOptions = [
 function RegisterPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { user, isAuthenticated, loading: authLoading, profileComplete, refreshEmployee } = useAuth();
+    const { user, employee, isAuthenticated, loading: authLoading, profileComplete, isApproved, refreshEmployee } = useAuth();
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -41,7 +41,8 @@ function RegisterPageContent() {
     // Google completion mode: user is authenticated via Google but has no profile
     const [googleCompleteMode, setGoogleCompleteMode] = useState(false);
 
-    // Check if we're in Google completion mode
+    // Check if we're in Google or email completion mode
+    // (user has a Firebase Auth account but no Firestore employee document)
     useEffect(() => {
         const completeParam = searchParams.get('complete');
         if (completeParam === 'google' && isAuthenticated && !profileComplete && user) {
@@ -52,15 +53,33 @@ function RegisterPageContent() {
                 fullName: user.displayName || '',
                 email: user.email || '',
             }));
+        } else if (completeParam === 'email' && isAuthenticated && !profileComplete && user) {
+            // Email user with Auth but no Firestore doc — use same completion form
+            setGoogleCompleteMode(true);
+            setFormData((prev) => ({
+                ...prev,
+                fullName: user.displayName || '',
+                email: user.email || '',
+            }));
         }
     }, [searchParams, isAuthenticated, profileComplete, user]);
 
-    // If already authenticated AND has a complete profile, redirect to dashboard
+    // If already authenticated AND has a complete profile, redirect based on approval status and role
     useEffect(() => {
         if (!authLoading && isAuthenticated && profileComplete) {
-            router.push('/dashboard');
+            if (isApproved) {
+                // Redirect based on user role
+                // Admins and Managers go to /dashboard
+                // Other employees go to /employees-dashboard
+                const dashboardPath = employee && ['Admin', 'Manager'].includes(employee.role)
+                    ? '/dashboard'
+                    : '/employees-dashboard';
+                router.push(dashboardPath);
+            } else {
+                router.push('/pending-approval');
+            }
         }
-    }, [isAuthenticated, authLoading, profileComplete, router]);
+    }, [isAuthenticated, authLoading, profileComplete, isApproved, employee, router]);
 
     const update = (field: string, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -102,38 +121,68 @@ function RegisterPageContent() {
         }
 
         setIsLoading(true);
+        setRegistering(true); // Prevent AuthContext from logging out during doc creation
+        let credential: any = null;
         try {
             // Create Firebase Auth account
-            const credential = await registerWithEmail(
+            console.log('Creating Firebase Auth account...');
+            credential = await registerWithEmail(
                 formData.email,
                 formData.password,
                 formData.fullName
             );
+            console.log('Firebase Auth account created:', credential.user?.uid);
 
             // Create employee profile in Firestore
             if (credential.user) {
-                await setDocument(COLLECTIONS.EMPLOYEES, credential.user.uid, {
-                    name: formData.fullName,
-                    email: formData.email,
-                    phone_number: formData.phone || null,
-                    role: formData.role,
-                    department: formData.department || null,
-                    status: 'INACTIVE',
-                    availability: 'AVAILABLE',
-                    approvalStatus: 'pending',
-                    avatar_url: credential.user.photoURL || '',
-                    created_at: serverTimestamp(),
-                    last_active: serverTimestamp(),
-                });
+                try {
+                    console.log('Creating employee document in Firestore...');
+                    const employeeData = {
+                        name: formData.fullName,
+                        email: formData.email,
+                        phone_number: formData.phone || null,
+                        role: formData.role,
+                        department: formData.department || null,
+                        status: 'INACTIVE',
+                        availability: 'AVAILABLE',
+                        approvalStatus: 'pending',
+                        avatar_url: credential.user.photoURL || '',
+                        created_at: serverTimestamp(),
+                        last_active: serverTimestamp(),
+                    };
+                    console.log('Employee data:', employeeData);
+                    await setDocument(COLLECTIONS.EMPLOYEES, credential.user.uid, employeeData);
+                    console.log('Employee document created successfully');
+                } catch (firestoreError: any) {
+                    // If Firestore document creation fails, delete the Firebase Auth account
+                    // to prevent incomplete registration
+                    console.error('Failed to create employee document:', firestoreError);
+                    console.error('Error code:', firestoreError.code);
+                    console.error('Error message:', firestoreError.message);
+                    if (credential.user) {
+                        try {
+                            console.log('Deleting Firebase Auth user due to Firestore error...');
+                            await credential.user.delete();
+                            console.log('Firebase Auth user deleted');
+                        } catch (deleteError) {
+                            console.error('Failed to delete Firebase Auth user:', deleteError);
+                        }
+                    }
+                    throw new Error('Failed to create your profile. Please try again.');
+                }
             }
 
+            setRegistering(false); // Registration complete, allow normal auth flow
             await refreshEmployee();
+            console.log('Refreshing employee data...');
             // Redirect to pending approval page instead of dashboard
             router.push('/pending-approval');
         } catch (err: unknown) {
-            const firebaseError = err as { code?: string };
-            setError(getAuthErrorMessage(firebaseError.code || ''));
+            console.error('Registration error:', err);
+            const firebaseError = err as { code?: string; message?: string };
+            setError(firebaseError.message || getAuthErrorMessage(firebaseError.code || ''));
         } finally {
+            setRegistering(false); // Always clear the flag
             setIsLoading(false);
         }
     };
@@ -165,30 +214,55 @@ function RegisterPageContent() {
         }
 
         setIsLoading(true);
+        setRegistering(true); // Prevent AuthContext from logging out during doc creation
         try {
             if (!user) throw new Error('User not found');
 
-            await setDocument(COLLECTIONS.EMPLOYEES, user.uid, {
-                name: formData.fullName,
-                email: user.email || '',
-                phone_number: formData.phone,
-                role: formData.role,
-                department: formData.department,
-                status: 'INACTIVE',
-                availability: 'AVAILABLE',
-                approvalStatus: 'pending',
-                avatar_url: user.photoURL || '',
-                created_at: serverTimestamp(),
-                last_active: serverTimestamp(),
-            });
+            try {
+                console.log('Creating employee document for Google user:', user.uid);
+                const employeeData = {
+                    name: formData.fullName,
+                    email: user.email || '',
+                    phone_number: formData.phone,
+                    role: formData.role,
+                    department: formData.department,
+                    status: 'INACTIVE',
+                    availability: 'AVAILABLE',
+                    approvalStatus: 'pending',
+                    avatar_url: user.photoURL || '',
+                    created_at: serverTimestamp(),
+                    last_active: serverTimestamp(),
+                };
+                console.log('Employee data:', employeeData);
+                await setDocument(COLLECTIONS.EMPLOYEES, user.uid, employeeData);
+                console.log('Employee document created successfully');
+            } catch (firestoreError: any) {
+                // If Firestore document creation fails, log out the user
+                // to prevent incomplete registration
+                console.error('Failed to create employee document:', firestoreError);
+                console.error('Error code:', firestoreError.code);
+                console.error('Error message:', firestoreError.message);
+                try {
+                    console.log('Logging out user due to Firestore error...');
+                    await logout();
+                    console.log('User logged out');
+                } catch (logoutError) {
+                    console.error('Failed to logout user:', logoutError);
+                }
+                throw new Error('Failed to create your profile. Please try again.');
+            }
 
+            setRegistering(false); // Registration complete, allow normal auth flow
             await refreshEmployee();
+            console.log('Refreshing employee data...');
             // Redirect to pending approval page instead of dashboard
             router.push('/pending-approval');
         } catch (err: unknown) {
-            const firebaseError = err as { code?: string };
-            setError(getAuthErrorMessage(firebaseError.code || 'unknown'));
+            console.error('Google completion error:', err);
+            const firebaseError = err as { code?: string; message?: string };
+            setError(firebaseError.message || getAuthErrorMessage(firebaseError.code || 'unknown'));
         } finally {
+            setRegistering(false); // Always clear the flag
             setIsLoading(false);
         }
     };
@@ -201,11 +275,11 @@ function RegisterPageContent() {
             // Check if user already has a profile
             const existingProfile = await getDocument(COLLECTIONS.EMPLOYEES, credential.user.uid);
             if (existingProfile) {
-                // Returning user — go to dashboard
+                // Returning user — refresh employee data and let useEffect handle routing based on approval status
                 await refreshEmployee();
-                router.push('/dashboard');
             } else {
                 // First-time Google user — show completion form
+                setRegistering(true); // Signal that registration is in progress
                 setGoogleCompleteMode(true);
                 setFormData((prev) => ({
                     ...prev,
