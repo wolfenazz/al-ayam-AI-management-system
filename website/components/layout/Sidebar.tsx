@@ -47,7 +47,10 @@ export default function Sidebar() {
         { href: '/dashboard/tasks', icon: 'assignment', label: 'Tasks', exact: false },
         { href: '/dashboard/analytics', icon: 'bar_chart', label: 'Analytics', exact: false },
         { href: '/dashboard/employees', icon: 'group', label: 'Team', exact: false, hasSubmenu: isAdminOrManager },
-        ...(isAdminOrManager ? [{ href: '/dashboard/verification', icon: 'verified_user', label: 'Verification', exact: false, badge: pendingCount > 0 ? pendingCount : undefined, isSubmenu: true }] : []),
+        ...(isAdminOrManager ? [
+            { href: '/dashboard/verification', icon: 'verified_user', label: 'Verification', exact: false, badge: pendingCount > 0 ? pendingCount : undefined, isSubmenu: true },
+            { href: '/dashboard/settings', icon: 'settings', label: 'Settings', exact: false }
+        ] : []),
     ];
 
     const isActive = (item: typeof navItems[0]) => {
@@ -94,11 +97,10 @@ export default function Sidebar() {
                             key={item.href}
                             href={item.href}
                             onClick={() => setSidebarOpen(false)}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
-                                item.isSubmenu ? 'ml-4' : ''
-                            } ${isActive(item)
-                                ? 'bg-primary-light text-primary font-medium'
-                                : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${item.isSubmenu ? 'ml-4' : ''
+                                } ${isActive(item)
+                                    ? 'bg-primary-light text-primary font-medium'
+                                    : 'text-text-secondary hover:bg-surface hover:text-text-primary'
                                 }`}
                         >
                             <span className={`material-symbols-outlined ${item.isSubmenu ? 'text-[18px]' : 'text-[20px]'}`}>{item.icon}</span>
