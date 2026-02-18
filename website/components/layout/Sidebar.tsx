@@ -6,11 +6,17 @@ import { usePathname } from 'next/navigation';
 import { useUIStore } from '@/stores/uiStore';
 import { TaskStatus, Priority } from '@/types/common';
 import { useTasks, useTaskStats } from '@/hooks/useTasks';
+import { usePendingUsersCount } from '@/hooks/useVerification';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function Sidebar() {
     const pathname = usePathname();
     const { tasks } = useTasks();
     const stats = useTaskStats(tasks);
+    const { employee } = useAuth();
+    const { count: pendingCount } = usePendingUsersCount();
+
+    const isAdminOrManager = employee?.role === 'Admin' || employee?.role === 'Manager';
 
     const {
         sidebarOpen,
@@ -40,7 +46,8 @@ export default function Sidebar() {
         { href: '/dashboard', icon: 'dashboard', label: 'Dashboard', exact: true },
         { href: '/dashboard/tasks', icon: 'assignment', label: 'Tasks', exact: false },
         { href: '/dashboard/analytics', icon: 'bar_chart', label: 'Analytics', exact: false },
-        { href: '/dashboard/employees', icon: 'group', label: 'Team', exact: false },
+        { href: '/dashboard/employees', icon: 'group', label: 'Team', exact: false, hasSubmenu: isAdminOrManager },
+        ...(isAdminOrManager ? [{ href: '/dashboard/verification', icon: 'verified_user', label: 'Verification', exact: false, badge: pendingCount > 0 ? pendingCount : undefined, isSubmenu: true }] : []),
     ];
 
     const isActive = (item: typeof navItems[0]) => {
@@ -87,16 +94,23 @@ export default function Sidebar() {
                             key={item.href}
                             href={item.href}
                             onClick={() => setSidebarOpen(false)}
-                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${isActive(item)
+                            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
+                                item.isSubmenu ? 'ml-4' : ''
+                            } ${isActive(item)
                                 ? 'bg-primary-light text-primary font-medium'
                                 : 'text-text-secondary hover:bg-surface hover:text-text-primary'
                                 }`}
                         >
-                            <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                            <span className={`material-symbols-outlined ${item.isSubmenu ? 'text-[18px]' : 'text-[20px]'}`}>{item.icon}</span>
                             <span className="text-sm">{item.label}</span>
                             {item.label === 'Tasks' && (
                                 <span className="ml-auto text-xs bg-border px-1.5 py-0.5 rounded text-text-secondary">
                                     {stats.total}
+                                </span>
+                            )}
+                            {item.badge && (
+                                <span className="ml-auto text-xs bg-accent-orange text-white px-1.5 py-0.5 rounded-full font-medium">
+                                    {item.badge}
                                 </span>
                             )}
                         </Link>

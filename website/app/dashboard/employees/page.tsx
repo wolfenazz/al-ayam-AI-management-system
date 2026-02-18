@@ -41,19 +41,19 @@ export default function EmployeesPage() {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Page Header */}
-                <div className="flex justify-between items-end mb-6">
+                <div className="flex justify-between items-end mb-10">
                     <div>
-                        <h1 className="text-2xl font-bold text-text-primary mb-1">
+                        <h1 className="text-3xl font-bold text-text-primary tracking-tight">
                             Team Management
                         </h1>
-                        <p className="text-text-secondary text-sm">
+                        <p className="text-text-secondary text-base mt-2">
                             Manage your newsroom staff and view their current status.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         <button
                             onClick={() => setShowImportModal(true)}
                             className="bg-primary hover:bg-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -135,38 +135,38 @@ export default function EmployeesPage() {
 
                 {/* Employees Content */}
                 {isLoading ? (
-                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'flex flex-col gap-2'}>
+                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8' : 'flex flex-col gap-3'}>
                         {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border p-6 shadow-sm animate-pulse h-64">
-                                <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4" />
-                                <div className="h-5 w-3/4 bg-gray-200 rounded mb-2 mx-auto" />
+                            <div key={i} className="bg-card rounded-2xl border border-border p-8 shadow-sm animate-pulse h-72">
+                                <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-5" />
+                                <div className="h-6 w-3/4 bg-gray-200 rounded mb-3 mx-auto" />
                                 <div className="h-4 w-1/2 bg-gray-100 rounded mx-auto" />
                             </div>
                         ))}
                     </div>
                 ) : employees.length === 0 ? (
-                    <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
-                        <span className="material-symbols-outlined text-[64px] text-gray-300 mb-3 block">group_off</span>
-                        <p className="text-lg font-semibold text-text-primary mb-1">No employees found</p>
-                        <p className="text-sm text-text-secondary">Add employees to your team to see them here.</p>
+                    <div className="bg-card rounded-2xl border border-border p-16 text-center shadow-sm">
+                        <span className="material-symbols-outlined text-[72px] text-gray-300 mb-4 block">group_off</span>
+                        <p className="text-xl font-semibold text-text-primary mb-2">No employees found</p>
+                        <p className="text-base text-text-secondary">Add employees to your team to see them here.</p>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-10">
+                    <div className="flex flex-col gap-12">
                         {/* Registered Employees */}
                         {employees.filter(e => !e.is_external).length > 0 && (
                             <div>
-                                <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-primary">verified_user</span>
+                                <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary text-[24px]">verified_user</span>
                                     Registered Members
-                                    <span className="text-xs font-normal text-text-secondary bg-surface px-2 py-0.5 rounded-full">
+                                    <span className="text-sm font-normal text-text-secondary bg-surface px-3 py-1 rounded-full">
                                         {employees.filter(e => !e.is_external).length}
                                     </span>
                                 </h2>
                                 <div
                                     className={
                                         viewMode === 'grid'
-                                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                                            : 'flex flex-col gap-2'
+                                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
+                                            : 'flex flex-col gap-3'
                                     }
                                 >
                                     {employees.filter(e => !e.is_external).map((employee) => (
@@ -183,18 +183,18 @@ export default function EmployeesPage() {
                         {/* External Employees */}
                         {employees.filter(e => e.is_external).length > 0 && (
                             <div>
-                                <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2 pt-6 border-t border-gray-200">
-                                    <span className="material-symbols-outlined text-orange-500">person_add_disabled</span>
+                                <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-3 pt-8 border-t border-gray-200">
+                                    <span className="material-symbols-outlined text-orange-500 text-[24px]">person_add_disabled</span>
                                     Unregistered (Contact Only)
-                                    <span className="text-xs font-normal text-text-secondary bg-surface px-2 py-0.5 rounded-full">
+                                    <span className="text-sm font-normal text-text-secondary bg-surface px-3 py-1 rounded-full">
                                         {employees.filter(e => e.is_external).length}
                                     </span>
                                 </h2>
                                 <div
                                     className={
                                         viewMode === 'grid'
-                                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                                            : 'flex flex-col gap-2'
+                                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
+                                            : 'flex flex-col gap-3'
                                     }
                                 >
                                     {employees.filter(e => e.is_external).map((employee) => (
@@ -234,13 +234,13 @@ function StatCard({
     const c = colorMap[color];
 
     return (
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
-                <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
+        <div className="bg-card rounded-2xl border border-border p-5 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`size-11 rounded-xl ${c.bg} flex items-center justify-center`}>
+                <span className={`material-symbols-outlined text-[24px] ${c.icon}`}>{icon}</span>
             </div>
             <div>
                 <p className={`text-2xl font-bold ${c.text}`}>{value}</p>
-                <p className="text-xs text-text-secondary font-medium">{label}</p>
+                <p className="text-sm text-text-secondary font-medium">{label}</p>
             </div>
         </div>
     );
@@ -329,20 +329,20 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                 'text-gray-500 bg-gray-50 border-gray-100';
 
     return (
-        <div className={`bg-card rounded-xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-visible ${isExternal ? 'opacity-90' : ''}`}>
+        <div className={`bg-card rounded-2xl border border-border p-8 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center group relative overflow-visible ${isExternal ? 'opacity-90' : ''}`}>
             {isExternal && (
-                <div className="absolute top-0 right-0 p-2">
-                    <span className="material-symbols-outlined text-orange-400 text-[18px]" title="Unregistered / External Staff">person_add_disabled</span>
+                <div className="absolute top-2 right-2 p-3">
+                    <span className="material-symbols-outlined text-orange-400 text-[20px]" title="Unregistered / External Staff">person_add_disabled</span>
                 </div>
             )}
 
             {!isExternal && (
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <EmployeeActionMenu employee={employee} />
                 </div>
             )}
 
-            <div className={`mb-4 relative inline-block ${!isExternal ? 'mt-2' : ''}`}>
+            <div className={`mb-5 relative inline-block ${!isExternal ? 'mt-3' : ''}`}>
                 <Avatar
                     src={employee.avatar_url}
                     alt={employee.name}
@@ -350,13 +350,13 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                     className="ring-4 ring-surface"
                 />
                 {!isExternal && (
-                    <div className={`absolute bottom-0 right-0 w-5 h-5 rounded-full border-4 border-card ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
+                    <div className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-4 border-card ${employee.availability === 'AVAILABLE' ? 'bg-emerald-500' :
                         employee.availability === 'BUSY' ? 'bg-red-500' : 'bg-gray-400'
                         }`}></div>
                 )}
             </div>
 
-            <h3 className="font-bold text-text-primary text-lg mb-1">{employee.name}</h3>
+            <h3 className="font-bold text-text-primary text-xl mb-2">{employee.name}</h3>
 
             {isExternal && employee.phone_number && (
                 <p className="text-xs text-text-secondary mb-2 flex items-center gap-1">
@@ -379,18 +379,18 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
                 </div>
             )}
 
-            <div className="w-full border-t border-gray-100 pt-4 mt-auto flex justify-between px-2 text-text-secondary text-sm">
+            <div className="w-full border-t border-gray-100 pt-5 mt-auto flex justify-between px-4 text-text-secondary text-sm">
                 <div className="flex flex-col items-center">
-                    <span className="font-bold text-text-primary">{employee.performance_score || 'N/A'}</span>
-                    <span className="text-[10px] uppercase">Score</span>
+                    <span className="font-bold text-text-primary text-base">{employee.performance_score || 'N/A'}</span>
+                    <span className="text-[11px] uppercase tracking-wide">Score</span>
                 </div>
                 <div className="flex flex-col items-center">
-                    <span className="font-bold text-text-primary">{employee.completed_tasks || 0}</span>
-                    <span className="text-[10px] uppercase">Tasks</span>
+                    <span className="font-bold text-text-primary text-base">{employee.completed_tasks || 0}</span>
+                    <span className="text-[11px] uppercase tracking-wide">Tasks</span>
                 </div>
                 <div className="flex flex-col items-center">
-                    <span className="font-bold text-text-primary">{employee.monthly_score || 'N/A'}</span>
-                    <span className="text-[10px] uppercase">Month</span>
+                    <span className="font-bold text-text-primary text-base">{employee.monthly_score || 'N/A'}</span>
+                    <span className="text-[11px] uppercase tracking-wide">Month</span>
                 </div>
             </div>
         </div>
@@ -399,7 +399,7 @@ function EmployeeCard({ employee, isExternal }: { employee: any; isExternal?: bo
 
 function EmployeeRow({ employee, isExternal }: { employee: any; isExternal?: boolean }) {
     return (
-        <div className={`bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 group ${isExternal ? 'opacity-90' : ''}`}>
+        <div className={`bg-card rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-5 group ${isExternal ? 'opacity-90' : ''}`}>
             <Avatar
                 src={employee.avatar_url}
                 alt={employee.name}
@@ -412,16 +412,16 @@ function EmployeeRow({ employee, isExternal }: { employee: any; isExternal?: boo
                 }
             />
 
-            <div className="flex-1 min-w-0 grid grid-cols-12 gap-4 items-center">
+            <div className="flex-1 min-w-0 grid grid-cols-12 gap-5 items-center">
                 <div className="col-span-4">
-                    <h3 className="font-bold text-text-primary truncate flex items-center gap-2">
+                    <h3 className="font-bold text-text-primary truncate flex items-center gap-2 text-base">
                         {employee.name}
-                        {isExternal && <span className="material-symbols-outlined text-orange-400 text-[16px]" title="Unregistered">person_add_disabled</span>}
+                        {isExternal && <span className="material-symbols-outlined text-orange-400 text-[18px]" title="Unregistered">person_add_disabled</span>}
                     </h3>
-                    <p className="text-xs text-text-secondary truncate">{employee.email}</p>
+                    <p className="text-sm text-text-secondary truncate">{employee.email}</p>
                     {isExternal && employee.phone_number && (
-                        <p className="text-[10px] text-text-secondary flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[10px]">call</span> {employee.phone_number}
+                        <p className="text-xs text-text-secondary flex items-center gap-1.5 mt-1">
+                            <span className="material-symbols-outlined text-[14px]">call</span> {employee.phone_number}
                         </p>
                     )}
                 </div>

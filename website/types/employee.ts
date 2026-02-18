@@ -1,4 +1,4 @@
-import { EmployeeRole, EmployeeStatus, Availability } from './common';
+import { EmployeeRole, EmployeeStatus, Availability, ApprovalStatus } from './common';
 
 export interface Employee {
     id: string;
@@ -10,6 +10,7 @@ export interface Employee {
     department?: string;
     status: EmployeeStatus;
     availability: Availability;
+    approvalStatus?: ApprovalStatus;
     current_location?: {
         lat: number;
         lng: number;

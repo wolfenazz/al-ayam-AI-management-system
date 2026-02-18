@@ -92,12 +92,12 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
 
     return (
         <div
-            className={`group bg-card rounded-xl border transition-all flex flex-col mb-1 ${isSelected
+            className={`group bg-card rounded-2xl border transition-all flex flex-col mb-1.5 ${isSelected
                 ? 'border-primary bg-primary/5 shadow-sm'
                 : 'border-border hover:border-text-secondary/20 shadow-sm'
                 }`}
         >
-            <div className="flex items-center p-4 gap-4">
+            <div className="flex items-center p-5 gap-5">
                 {/* Checkbox */}
                 <div className="flex items-center justify-center shrink-0">
                     <input
@@ -109,19 +109,19 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                 </div>
 
                 {/* Priority Indicator Line */}
-                <div className={`w-1 h-12 rounded-full shrink-0 ${task.priority === 'URGENT' ? 'bg-red-500' :
+                <div className={`w-1.5 h-14 rounded-full shrink-0 ${task.priority === 'URGENT' ? 'bg-red-500' :
                     task.priority === 'HIGH' ? 'bg-orange-500' :
                         task.priority === 'NORMAL' ? 'bg-blue-500' : 'bg-gray-300'
                     }`} />
 
                 {/* Task Info */}
-                <div className="flex-1 min-w-0 grid grid-cols-12 gap-4 items-center">
+                <div className="flex-1 min-w-0 grid grid-cols-12 gap-5 items-center">
                     {/* Title & Type (Col 1-5) */}
                     <div className="col-span-5">
-                        <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-bold text-text-primary truncate">{task.title}</h3>
+                        <div className="flex items-center gap-2.5 mb-1.5">
+                            <h3 className="font-bold text-text-primary truncate text-base">{task.title}</h3>
                             {task.type && (
-                                <span className="text-[10px] px-1.5 py-0.5 bg-surface text-text-secondary rounded uppercase font-bold tracking-wider">
+                                <span className="text-[11px] px-2 py-0.5 bg-surface text-text-secondary rounded uppercase font-bold tracking-wider">
                                     {task.type.replace('_', ' ')}
                                 </span>
                             )}
@@ -130,13 +130,13 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                     </div>
 
                     {/* Status & Priority (Col 6-8) */}
-                    <div className="col-span-3 flex flex-wrap gap-2 items-center">
+                    <div className="col-span-3 flex flex-wrap gap-2.5 items-center">
                         <Badge variant={priorityVariant[task.priority]}>{task.priority}</Badge>
                         <Badge variant={statusVariant[task.status]}>{statusLabel[task.status]}</Badge>
                     </div>
 
                     {/* Assignee (Col 9-10) */}
-                    <div className="col-span-2 flex items-center gap-2 overflow-hidden">
+                    <div className="col-span-2 flex items-center gap-2.5 overflow-hidden">
                         {employee ? (
                             <>
                                 <Avatar
@@ -155,9 +155,9 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                     {/* Deadline (Col 11-12) */}
                     <div className="col-span-2 flex justify-end">
                         {scheduleInfo && (
-                            <div className={`flex items-center gap-1 font-medium text-xs px-2 py-1 rounded whitespace-nowrap ${scheduleInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-surface'
+                            <div className={`flex items-center gap-1.5 font-medium text-sm px-3 py-1.5 rounded-lg whitespace-nowrap ${scheduleInfo.urgent ? 'text-accent-red bg-accent-red/5' : 'text-text-secondary bg-surface'
                                 }`}>
-                                <span className="material-symbols-outlined text-[14px]">
+                                <span className="material-symbols-outlined text-[16px]">
                                     {scheduleInfo.icon}
                                 </span>
                                 <span>{scheduleInfo.text}</span>
@@ -167,35 +167,35 @@ export default function TaskRow({ task, employee, isSelected, onSelect }: TaskRo
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center pl-2 border-l border-border shrink-0 gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center pl-3 border-l border-border shrink-0 gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                         onClick={(e) => { e.stopPropagation(); setActiveChatTaskId(task.id); }}
-                        className="p-1.5 hover:bg-surface rounded text-text-secondary hover:text-primary transition-colors"
+                        className="p-2 hover:bg-surface rounded-lg text-text-secondary hover:text-primary transition-colors"
                         title="Chat"
                     >
-                        <span className="material-symbols-outlined text-[20px]">chat</span>
+                        <span className="material-symbols-outlined text-[22px]">chat</span>
                     </button>
                     <button
-                        className="p-1.5 hover:bg-surface rounded text-text-secondary hover:text-text-primary transition-colors"
+                        className="p-2 hover:bg-surface rounded-lg text-text-secondary hover:text-text-primary transition-colors"
                     >
-                        <span className="material-symbols-outlined text-[20px]">more_vert</span>
+                        <span className="material-symbols-outlined text-[22px]">more_vert</span>
                     </button>
                 </div>
             </div>
 
             {/* WhatsApp Integration Strip (Condensed for Row) */}
             {showWhatsAppStrip && (
-                <div className="bg-green-50 px-12 py-1.5 flex items-center justify-between gap-3 text-xs border-t border-green-100 rounded-b-xl mx-0.5 mb-0.5">
-                    <div className="flex items-center gap-2">
-                        <span className="text-green-700 font-bold flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">whatsapp</span>
+                <div className="bg-green-50 px-14 py-2 flex items-center justify-between gap-3 text-sm border-t border-green-100 rounded-b-2xl mx-1 mb-1">
+                    <div className="flex items-center gap-2.5">
+                        <span className="text-green-700 font-bold flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-[16px]">whatsapp</span>
                             New Update
                         </span>
                         <span className="text-green-800/70 truncate max-w-[400px]">"Photos coming in 2 mins, uploading now..."</span>
                     </div>
                     <button
                         onClick={() => setActiveChatTaskId(task.id)}
-                        className="font-bold text-green-700 hover:text-green-900 hover:underline"
+                        className="font-bold text-green-700 hover:text-green-900 hover:underline px-2 py-1 rounded hover:bg-green-100 transition-colors"
                     >
                         View
                     </button>

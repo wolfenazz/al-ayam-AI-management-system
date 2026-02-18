@@ -2,8 +2,10 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { EmployeeRole } from '@/types/common';
+import { Ripple } from '@/components/ui/ripple';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -18,7 +20,7 @@ interface ProtectedRouteProps {
  * optional: allowedRoles - restricts access to specific employee roles.
  */
 export default function ProtectedRoute({ children, fallback, allowedRoles }: ProtectedRouteProps) {
-    const { isAuthenticated, loading, profileComplete, employee } = useAuth();
+    const { isAuthenticated, loading, profileComplete, employee, isApproved } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const hasNavigated = useRef(false);
@@ -32,6 +34,14 @@ export default function ProtectedRoute({ children, fallback, allowedRoles }: Pro
                 // Authenticated but no employee profile — redirect to complete registration
                 hasNavigated.current = true;
                 router.push('/register?complete=google');
+            } else if (!isApproved && employee?.approvalStatus === 'pending') {
+                // User is pending approval — redirect to pending approval page
+                hasNavigated.current = true;
+                router.push('/pending-approval');
+            } else if (!isApproved && employee?.approvalStatus === 'rejected') {
+                // User is rejected — redirect to pending approval page (shows rejected state)
+                hasNavigated.current = true;
+                router.push('/pending-approval');
             } else if (allowedRoles && employee && !allowedRoles.includes(employee.role)) {
                 // User has a profile but not the required role
                 hasNavigated.current = true;
@@ -54,10 +64,15 @@ export default function ProtectedRoute({ children, fallback, allowedRoles }: Pro
                 }
             }
         }
-    }, [isAuthenticated, loading, profileComplete, employee, router, allowedRoles, pathname]);
+    }, [isAuthenticated, loading, profileComplete, employee, router, allowedRoles, pathname, isApproved]);
 
     if (loading || !isAuthenticated || !profileComplete) {
         return fallback || <LoadingScreen />;
+    }
+
+    // Approval check for rendering (double check to prevent flash)
+    if (!isApproved && (employee?.approvalStatus === 'pending' || employee?.approvalStatus === 'rejected')) {
+        return fallback || <LoadingScreen />; // Keep loading state until redirect happens
     }
 
     // Role check for rendering (double check to prevent flash)
@@ -70,21 +85,36 @@ export default function ProtectedRoute({ children, fallback, allowedRoles }: Pro
 
 function LoadingScreen() {
     return (
-        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center gap-4 z-50">
-            <div className="relative">
-                <div className="size-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                    <span className="material-symbols-outlined text-[28px]">newspaper</span>
+        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center gap-4 z-50 overflow-hidden">
+            {/* MagicUI Ripple Effect - Full Page Background */}
+            <div className="absolute inset-0 flex items-center justify-center">
+                <Ripple mainCircleSize={300} mainCircleOpacity={0.12} numCircles={8} />
+            </div>
+            
+            {/* Content - Logo and Text */}
+            <div className="relative z-10 flex flex-col items-center gap-4">
+                {/* Logo */}
+                <div className="relative">
+                    <Image
+                        src="/images/alayam-logo-small.webp"
+                        alt="Al-Ayyam Logo"
+                        width={120}
+                        height={48}
+                        priority
+                        className="object-contain"
+                    />
                 </div>
-                <div className="absolute -inset-2 rounded-xl border-2 border-primary/20 animate-ping" />
-            </div>
-            <div className="flex flex-col items-center gap-1 mt-2">
-                <h3 className="text-text-primary font-bold text-sm">Al-Ayyam AI Platform</h3>
-                <p className="text-text-secondary text-xs">Loading your workspace...</p>
-            </div>
-            <div className="flex gap-1 mt-2">
-                <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+                
+                <div className="flex flex-col items-center gap-1">
+                    <h3 className="text-text-primary font-bold text-sm">AI Platform</h3>
+                    <p className="text-text-secondary text-xs">Loading your workspace...</p>
+                </div>
+                
+                <div className="flex gap-1 mt-2">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
             </div>
         </div>
     );

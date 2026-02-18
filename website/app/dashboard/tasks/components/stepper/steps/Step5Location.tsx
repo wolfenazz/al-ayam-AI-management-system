@@ -126,15 +126,15 @@ export default function Step5Location({
     };
 
     return (
-        <div className="h-full flex flex-col p-4 sm:p-6">
+        <div className="h-full flex flex-col p-6 sm:p-8">
             {/* Step Header */}
-            <div className="mb-4">
-                <div className="flex items-center gap-2 mb-1">
-                    <span className="material-symbols-outlined text-[20px] text-primary">location_on</span>
-                    <h3 className="font-bold text-text-primary text-lg">Task Location</h3>
+            <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                    <span className="material-symbols-outlined text-[24px] text-primary">location_on</span>
+                    <h3 className="font-bold text-text-primary text-xl">Task Location</h3>
                 </div>
-                <p className="text-sm text-text-secondary">
-                    Click on the map to pin the task location in Bahrain.
+                <p className="text-base text-text-secondary">
+                    Pin the location on the map where the task needs to be performed. Click on the map to pin the task location in Bahrain.
                 </p>
             </div>
 
@@ -239,28 +239,31 @@ export default function Step5Location({
             </div>
 
             {/* Location Details */}
-            {location && (
-                <div className="mt-4 p-4 bg-primary-light rounded-xl border border-primary/20">
-                    <div className="flex items-start gap-3">
-                        <div className="size-10 bg-primary rounded-lg flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined text-white text-[20px]">location_on</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-primary mb-1">Location Pinned</p>
-                            <p className="text-xs text-text-secondary break-all">
-                                {location.address || `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`}
-                            </p>
-                            <p className="text-xs text-text-secondary/70 mt-1">
-                                Coordinates: {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-1 text-accent-green">
-                            <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                            <span className="text-xs font-medium">Set</span>
+            {location && (() => {
+                const loc = location; // Capture location in a local variable for TypeScript narrowing
+                return (
+                    <div className="mt-4 p-4 bg-primary-light rounded-xl border border-primary/20">
+                        <div className="flex items-start gap-3">
+                            <div className="size-10 bg-primary rounded-lg flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-white text-[20px]">location_on</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-primary mb-1">Location Pinned</p>
+                                <p className="text-xs text-text-secondary break-all">
+                                    {loc.address || `${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}`}
+                                </p>
+                                <p className="text-xs text-text-secondary/70 mt-1">
+                                    Coordinates: {loc.lat.toFixed(6)}, {loc.lng.toFixed(6)}
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-1 text-accent-green">
+                                <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                                <span className="text-xs font-medium">Set</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
 
             {/* Quick Location Buttons */}
             <div className="mt-4 flex flex-wrap items-center gap-2">

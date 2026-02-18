@@ -47,31 +47,31 @@ export default function DashboardOverviewPage() {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Welcome Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-text-primary mb-1">
-                        {greeting}, {firstName} 
+                <div className="mb-10">
+                    <h1 className="text-3xl font-bold text-text-primary tracking-tight">
+                        {greeting}, {firstName}
                     </h1>
-                    <p className="text-text-secondary">
+                    <p className="text-text-secondary mt-2 text-base">
                         Here&apos;s an overview of your newsroom activity today.
                     </p>
                 </div>
 
                 {/* Key Metrics */}
                 {isLoading ? (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border p-5 shadow-sm animate-pulse">
-                                <div className="h-10 w-10 bg-surface rounded-lg mb-3" />
-                                <div className="h-8 w-16 bg-surface rounded mb-1" />
-                                <div className="h-4 w-24 bg-surface rounded" />
+                            <div key={i} className="bg-card rounded-2xl border border-border p-6 shadow-sm animate-pulse">
+                                <div className="h-11 w-11 bg-surface rounded-xl mb-4" />
+                                <div className="h-9 w-20 bg-surface rounded-lg mb-2" />
+                                <div className="h-4 w-28 bg-surface rounded" />
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
                         <MetricCard
                             icon="task"
                             label="Total Tasks"
@@ -104,10 +104,10 @@ export default function DashboardOverviewPage() {
                 )}
 
                 {/* Two-Column Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Recent Activity */}
-                    <div className="lg:col-span-2 bg-card rounded-xl border border-border shadow-sm">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                    <div className="lg:col-span-2 bg-card rounded-2xl border border-border shadow-sm">
+                        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
                             <h2 className="text-lg font-bold text-text-primary">Recent Tasks</h2>
                             <Link
                                 href="/dashboard/tasks"
@@ -178,8 +178,8 @@ export default function DashboardOverviewPage() {
                     </div>
 
                     {/* Team Overview */}
-                    <div className="bg-card rounded-xl border border-border shadow-sm">
-                        <div className="px-6 py-4 border-b border-border">
+                    <div className="bg-card rounded-2xl border border-border shadow-sm">
+                        <div className="px-6 py-5 border-b border-border">
                             <h2 className="text-lg font-bold text-text-primary">Team Status</h2>
                         </div>
                         <div className="divide-y divide-border">
@@ -256,15 +256,15 @@ function MetricCard({ icon, label, value, change, color }: {
     const c = colorMap[color];
 
     return (
-        <div className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-3">
-                <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
-                    <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+                <div className={`size-11 rounded-xl ${c.bg} flex items-center justify-center`}>
+                    <span className={`material-symbols-outlined text-[24px] ${c.icon}`}>{icon}</span>
                 </div>
             </div>
-            <p className={`text-3xl font-bold ${c.text} mb-0.5`}>{value}</p>
-            <p className="text-xs text-text-secondary font-medium">{label}</p>
-            <p className="text-[11px] text-text-secondary mt-1">{change}</p>
+            <p className={`text-3xl font-bold ${c.text} mb-1`}>{value}</p>
+            <p className="text-sm text-text-secondary font-medium">{label}</p>
+            <p className="text-xs text-text-secondary mt-2 opacity-80">{change}</p>
         </div>
     );
 }

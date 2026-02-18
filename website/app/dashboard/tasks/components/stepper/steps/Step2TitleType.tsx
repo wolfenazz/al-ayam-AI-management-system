@@ -58,22 +58,22 @@ export default function Step2TitleType({
     };
 
     return (
-        <div className="h-full flex flex-col p-4 sm:p-6">
+        <div className="h-full flex flex-col p-6 sm:p-8">
             {/* Step Header */}
-            <div className="mb-6">
-                <div className="flex items-center gap-2 mb-1">
-                    <span className="material-symbols-outlined text-[20px] text-primary">edit_note</span>
-                    <h3 className="font-bold text-text-primary text-lg">Define Task</h3>
+            <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                    <span className="material-symbols-outlined text-[24px] text-primary">edit_note</span>
+                    <h3 className="font-bold text-text-primary text-xl">Define Task</h3>
                 </div>
-                <p className="text-sm text-text-secondary">
+                <p className="text-base text-text-secondary">
                     Give your task a clear title and select the appropriate type.
                 </p>
             </div>
 
             {/* Template Selector */}
             {templates.length > 0 && (
-                <div className="mb-6">
-                    <label className="block text-xs font-semibold text-text-secondary mb-2">
+                <div className="mb-8">
+                    <label className="block text-sm font-semibold text-text-secondary mb-3">
                         Load from Template
                     </label>
                     <select

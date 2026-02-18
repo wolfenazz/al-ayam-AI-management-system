@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const response = NextResponse.next();
 
     // Content Security Policy headers
@@ -9,12 +9,12 @@ export function middleware(request: NextRequest) {
     // that use eval() internally for certain operations
     const cspHeader = `
         default-src 'self';
-        script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live;
+        script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://apis.google.com https://*.gstatic.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         img-src 'self' data: https: blob:;
-        font-src 'self' https://fonts.gstatic.com;
-        connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://nominatim.openstreetmap.org https://*.tile.openstreetmap.org;
-        frame-src 'self' https://vercel.live;
+        font-src 'self' https://fonts.gstatic.com https://*.gstatic.com;
+        connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://nominatim.openstreetmap.org https://*.tile.openstreetmap.org https://*.gstatic.com https://apis.google.com;
+        frame-src 'self' https://vercel.live https://*.firebaseapp.com;
         object-src 'none';
         base-uri 'self';
         form-action 'self';
@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
     return response;
 }
 
-// Configure which routes use this middleware
+// Configure which routes use this proxy
 export const config = {
     matcher: [
         /*

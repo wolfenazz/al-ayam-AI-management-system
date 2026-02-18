@@ -176,12 +176,12 @@ export default function TaskStepperModal() {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Overlay */}
             <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={handleClose}
             />
 
             {/* Modal */}
-            <div className="relative bg-card sm:rounded-2xl shadow-2xl w-full sm:w-[95vw] max-w-[1400px] h-[100dvh] sm:h-[90vh] max-h-[800px] flex flex-col animate-fade-in overflow-hidden">
+            <div className="relative bg-card sm:rounded-3xl shadow-2xl w-full sm:w-[95vw] max-w-[1400px] h-[100dvh] sm:h-[90vh] max-h-[800px] flex flex-col animate-fade-in overflow-hidden">
                 {/* Stepper Header */}
                 <StepperHeader
                     currentStep={currentStep}

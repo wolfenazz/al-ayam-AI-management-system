@@ -3,13 +3,13 @@
 import React from 'react';
 
 interface BadgeProps {
-    variant: 'urgent' | 'high' | 'normal' | 'low' | 'status' | 'whatsapp' | 'neutral';
+    variant?: 'urgent' | 'high' | 'normal' | 'low' | 'status' | 'whatsapp' | 'neutral' | 'secondary' | 'default';
     children: React.ReactNode;
     className?: string;
     pulse?: boolean;
 }
 
-const variantStyles: Record<BadgeProps['variant'], string> = {
+const variantStyles: Record<NonNullable<BadgeProps['variant']>, string> = {
     urgent: 'bg-accent-red/10 text-accent-red border border-accent-red/20',
     high: 'bg-accent-orange/10 text-accent-orange border border-accent-orange/20',
     normal: 'bg-accent-green/10 text-accent-green border border-accent-green/20',
@@ -17,9 +17,11 @@ const variantStyles: Record<BadgeProps['variant'], string> = {
     status: 'bg-primary/10 text-primary border border-primary/20',
     whatsapp: 'bg-green-50 text-green-700 border border-green-200',
     neutral: 'bg-[#e8eaf2] text-[#536293] border border-[#d1d6e5]',
+    secondary: 'bg-surface text-text-secondary border border-border',
+    default: 'bg-primary/10 text-primary border border-primary/20',
 };
 
-export default function Badge({ variant, children, className = '', pulse = false }: BadgeProps) {
+function Badge({ variant = 'default', children, className = '', pulse = false }: BadgeProps) {
     return (
         <span
             className={`
@@ -33,3 +35,6 @@ export default function Badge({ variant, children, className = '', pulse = false
         </span>
     );
 }
+
+export { Badge };
+export default Badge;

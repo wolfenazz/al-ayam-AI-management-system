@@ -118,8 +118,9 @@ function RegisterPageContent() {
                     phone_number: formData.phone || null,
                     role: formData.role,
                     department: formData.department || null,
-                    status: 'ACTIVE',
+                    status: 'INACTIVE',
                     availability: 'AVAILABLE',
+                    approvalStatus: 'pending',
                     avatar_url: credential.user.photoURL || '',
                     created_at: serverTimestamp(),
                     last_active: serverTimestamp(),
@@ -127,7 +128,8 @@ function RegisterPageContent() {
             }
 
             await refreshEmployee();
-            router.push('/dashboard');
+            // Redirect to pending approval page instead of dashboard
+            router.push('/pending-approval');
         } catch (err: unknown) {
             const firebaseError = err as { code?: string };
             setError(getAuthErrorMessage(firebaseError.code || ''));
@@ -172,15 +174,17 @@ function RegisterPageContent() {
                 phone_number: formData.phone,
                 role: formData.role,
                 department: formData.department,
-                status: 'ACTIVE',
+                status: 'INACTIVE',
                 availability: 'AVAILABLE',
+                approvalStatus: 'pending',
                 avatar_url: user.photoURL || '',
                 created_at: serverTimestamp(),
                 last_active: serverTimestamp(),
             });
 
             await refreshEmployee();
-            router.push('/dashboard');
+            // Redirect to pending approval page instead of dashboard
+            router.push('/pending-approval');
         } catch (err: unknown) {
             const firebaseError = err as { code?: string };
             setError(getAuthErrorMessage(firebaseError.code || 'unknown'));

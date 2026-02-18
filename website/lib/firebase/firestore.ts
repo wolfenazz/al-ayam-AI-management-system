@@ -125,16 +125,27 @@ export async function queryDocuments<T>(
 export function listenToDocument<T>(
     collectionName: string,
     docId: string,
-    callback: (data: T | null) => void
+    callback: (data: T | null) => void,
+    onError?: (error: Error) => void
 ): Unsubscribe {
     const docRef = doc(db, collectionName, docId);
-    return onSnapshot(docRef, (docSnap) => {
-        if (docSnap.exists()) {
-            callback({ id: docSnap.id, ...docSnap.data() } as T);
-        } else {
-            callback(null);
+    return onSnapshot(
+        docRef,
+        (docSnap) => {
+            if (docSnap.exists()) {
+                callback({ id: docSnap.id, ...docSnap.data() } as T);
+            } else {
+                callback(null);
+            }
+        },
+        (error) => {
+            if (onError) {
+                onError(error);
+            } else {
+                console.error(`Error listening to document ${collectionName}/${docId}:`, error);
+            }
         }
-    });
+    );
 }
 
 /**

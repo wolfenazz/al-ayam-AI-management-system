@@ -41,14 +41,14 @@ export default function Step4Description({
     const totalDeliverables = Object.values(deliverables).reduce((sum, count) => sum + count, 0);
 
     return (
-        <div className="h-full flex flex-col p-4 sm:p-6">
+        <div className="h-full flex flex-col p-6 sm:p-8">
             {/* Step Header */}
-            <div className="mb-6">
-                <div className="flex items-center gap-2 mb-1">
-                    <span className="material-symbols-outlined text-[20px] text-primary">description</span>
-                    <h3 className="font-bold text-text-primary text-lg">Description & Deliverables</h3>
+            <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                    <span className="material-symbols-outlined text-[24px] text-primary">description</span>
+                    <h3 className="font-bold text-text-primary text-xl">Description & Deliverables</h3>
                 </div>
-                <p className="text-sm text-text-secondary">
+                <p className="text-base text-text-secondary">
                     Provide detailed instructions and specify what needs to be delivered.
                 </p>
             </div>

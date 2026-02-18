@@ -45,17 +45,17 @@ export default function AnalyticsPage() {
         .sort((a, b) => (b.performance_score || 0) - (a.performance_score || 0));
 
     return (
-        <div className="p-6">
+        <div className="p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Page Header */}
-                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
                     <div>
-                        <h1 className="text-2xl font-bold text-text-primary mb-1">Analytics</h1>
-                        <p className="text-text-secondary text-sm">
+                        <h1 className="text-3xl font-bold text-text-primary tracking-tight">Analytics</h1>
+                        <p className="text-text-secondary text-base mt-2">
                             Monitor newsroom performance and task efficiency.
                         </p>
                     </div>
-                    <div className="flex gap-1 bg-card p-1 rounded-lg border border-border shadow-sm">
+                    <div className="flex gap-2 bg-card p-1.5 rounded-xl border border-border shadow-sm">
                         {([
                             { value: '7d', label: '7 Days' },
                             { value: '30d', label: '30 Days' },
@@ -64,7 +64,7 @@ export default function AnalyticsPage() {
                             <button
                                 key={p.value}
                                 onClick={() => setPeriod(p.value)}
-                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${period === p.value
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${period === p.value
                                     ? 'bg-primary text-white'
                                     : 'text-text-secondary hover:bg-surface hover:text-text-primary'
                                     }`}
@@ -77,17 +77,17 @@ export default function AnalyticsPage() {
 
                 {/* Top Metrics */}
                 {isLoading ? (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border p-5 shadow-sm animate-pulse">
-                                <div className="h-10 w-10 bg-gray-200 rounded-lg mb-3" />
-                                <div className="h-8 w-16 bg-gray-200 rounded mb-1" />
-                                <div className="h-4 w-24 bg-gray-100 rounded" />
+                            <div key={i} className="bg-card rounded-2xl border border-border p-6 shadow-sm animate-pulse">
+                                <div className="h-11 w-11 bg-gray-200 rounded-xl mb-4" />
+                                <div className="h-9 w-20 bg-gray-200 rounded-lg mb-2" />
+                                <div className="h-4 w-28 bg-gray-100 rounded" />
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
                         <BigMetric icon="speed" label="Completion Rate" value={`${completionRate}%`} subtext={`${completedTasks} of ${totalTasks} tasks`} color="primary" />
                         <BigMetric icon="timer" label="Avg Response" value={`${avgResponseTime}m`} subtext="Time to accept tasks" color="blue" />
                         <BigMetric icon="warning" label="Urgent Tasks" value={urgentTasks.toString()} subtext="Requiring immediate attention" color="red" />
@@ -96,18 +96,18 @@ export default function AnalyticsPage() {
                 )}
 
                 {isLoading ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
                         {Array.from({ length: 2 }).map((_, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-6 animate-pulse">
-                                <div className="h-5 w-48 bg-gray-200 rounded mb-6" />
-                                <div className="space-y-4">
+                            <div key={i} className="bg-card rounded-2xl border border-border shadow-sm p-8 animate-pulse">
+                                <div className="h-6 w-56 bg-gray-200 rounded-lg mb-8" />
+                                <div className="space-y-5">
                                     {Array.from({ length: 3 }).map((_, j) => (
                                         <div key={j}>
-                                            <div className="flex justify-between mb-1.5">
-                                                <div className="h-4 w-24 bg-gray-200 rounded" />
-                                                <div className="h-4 w-16 bg-gray-100 rounded" />
+                                            <div className="flex justify-between mb-2">
+                                                <div className="h-4 w-28 bg-gray-200 rounded" />
+                                                <div className="h-4 w-20 bg-gray-100 rounded" />
                                             </div>
-                                            <div className="h-2.5 bg-gray-100 rounded-full" />
+                                            <div className="h-3 bg-gray-100 rounded-full" />
                                         </div>
                                     ))}
                                 </div>
@@ -115,10 +115,10 @@ export default function AnalyticsPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
                         {/* Task Distribution by Status */}
-                        <div className="bg-card rounded-xl border border-border shadow-sm p-6">
-                            <h3 className="text-base font-bold text-text-primary mb-5">Task Breakdown by Status</h3>
+                        <div className="bg-card rounded-2xl border border-border shadow-sm p-8">
+                            <h3 className="text-lg font-bold text-text-primary mb-6">Task Breakdown by Status</h3>
                             {Object.keys(tasksByStatus).length === 0 ? (
                                 <p className="text-sm text-text-secondary">No task data available.</p>
                             ) : (
@@ -155,8 +155,8 @@ export default function AnalyticsPage() {
                         </div>
 
                         {/* Task Distribution by Type */}
-                        <div className="bg-card rounded-xl border border-border shadow-sm p-6">
-                            <h3 className="text-base font-bold text-text-primary mb-5">Task Types</h3>
+                        <div className="bg-card rounded-2xl border border-border shadow-sm p-8">
+                            <h3 className="text-lg font-bold text-text-primary mb-6">Task Types</h3>
                             {Object.keys(tasksByType).length === 0 ? (
                                 <p className="text-sm text-text-secondary">No task data available.</p>
                             ) : (
@@ -199,36 +199,36 @@ export default function AnalyticsPage() {
                 )}
 
                 {/* Employee Performance */}
-                <div className="bg-card rounded-xl border border-border shadow-sm">
-                    <div className="px-6 py-4 border-b border-border">
-                        <h3 className="text-base font-bold text-text-primary">Team Performance</h3>
-                        <p className="text-xs text-text-secondary mt-0.5">Ranked by performance score</p>
+                <div className="bg-card rounded-2xl border border-border shadow-sm">
+                    <div className="px-8 py-5 border-b border-border">
+                        <h3 className="text-lg font-bold text-text-primary">Team Performance</h3>
+                        <p className="text-sm text-text-secondary mt-1">Ranked by performance score</p>
                     </div>
                     <div className="divide-y divide-border">
                         {isLoading ? (
                             Array.from({ length: 4 }).map((_, i) => (
-                                <div key={i} className="flex items-center gap-4 px-6 py-4 animate-pulse">
-                                    <div className="size-8 bg-gray-200 rounded-lg" />
-                                    <div className="size-10 bg-gray-200 rounded-full" />
+                                <div key={i} className="flex items-center gap-5 px-8 py-5 animate-pulse">
+                                    <div className="size-9 bg-gray-200 rounded-xl" />
+                                    <div className="size-11 bg-gray-200 rounded-full" />
                                     <div className="flex-1">
-                                        <div className="h-4 w-32 bg-gray-200 rounded mb-1" />
-                                        <div className="h-3 w-20 bg-gray-100 rounded" />
+                                        <div className="h-5 w-40 bg-gray-200 rounded-lg mb-2" />
+                                        <div className="h-4 w-24 bg-gray-100 rounded" />
                                     </div>
-                                    <div className="h-4 w-12 bg-gray-200 rounded" />
+                                    <div className="h-5 w-16 bg-gray-200 rounded" />
                                 </div>
                             ))
                         ) : employeePerformance.length === 0 ? (
-                            <div className="px-6 py-8 text-center">
-                                <p className="text-sm text-text-secondary">No performance data available.</p>
+                            <div className="px-8 py-10 text-center">
+                                <p className="text-base text-text-secondary">No performance data available.</p>
                             </div>
                         ) : (
                             employeePerformance.map((emp, index) => (
                                 <div
                                     key={emp.id}
-                                    className="flex items-center gap-4 px-6 py-4 hover:bg-surface/30 transition-colors"
+                                    className="flex items-center gap-5 px-8 py-5 hover:bg-surface/30 transition-colors"
                                 >
                                     {/* Rank */}
-                                    <div className={`size-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${index === 0 ? 'bg-amber-100 text-amber-700' :
+                                    <div className={`size-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 ${index === 0 ? 'bg-amber-100 text-amber-700' :
                                         index === 1 ? 'bg-gray-100 text-gray-600' :
                                             index === 2 ? 'bg-orange-100 text-orange-700' :
                                                 'bg-surface text-text-secondary'
@@ -242,18 +242,18 @@ export default function AnalyticsPage() {
                                             src={emp.avatar_url}
                                             alt={emp.name}
                                             referrerPolicy="no-referrer"
-                                            className="size-10 rounded-full object-cover shrink-0"
+                                            className="size-11 rounded-full object-cover shrink-0"
                                         />
                                     ) : (
-                                        <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                                        <div className="size-11 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold shrink-0">
                                             {emp.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                                         </div>
                                     )}
 
                                     {/* Info */}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-text-primary truncate">{emp.name}</p>
-                                        <p className="text-xs text-text-secondary">{emp.role} · {emp.department}</p>
+                                        <p className="text-base font-semibold text-text-primary truncate">{emp.name}</p>
+                                        <p className="text-sm text-text-secondary">{emp.role} · {emp.department}</p>
                                     </div>
 
                                     {/* Stats */}
@@ -314,16 +314,16 @@ function BigMetric({ icon, label, value, subtext, color }: {
     const c = colorMap[color];
 
     return (
-        <div className="bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-3">
-                <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
-                    <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+                <div className={`size-11 rounded-xl ${c.bg} flex items-center justify-center`}>
+                    <span className={`material-symbols-outlined text-[24px] ${c.icon}`}>{icon}</span>
                 </div>
-                <span className="material-symbols-outlined text-[16px] text-text-secondary">trending_up</span>
+                <span className="material-symbols-outlined text-[18px] text-text-secondary">trending_up</span>
             </div>
-            <p className={`text-3xl font-bold ${c.text} mb-0.5`}>{value}</p>
-            <p className="text-xs font-medium text-text-secondary">{label}</p>
-            <p className="text-[11px] text-text-secondary mt-1.5">{subtext}</p>
+            <p className={`text-3xl font-bold ${c.text} mb-1`}>{value}</p>
+            <p className="text-sm font-medium text-text-secondary">{label}</p>
+            <p className="text-xs text-text-secondary mt-2 opacity-80">{subtext}</p>
         </div>
     );
 }

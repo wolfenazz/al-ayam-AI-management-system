@@ -63,6 +63,7 @@ export default function Header() {
                             src="/images/alayam-logo-small.webp"
                             alt="Al-Ayyam Logo"
                             fill
+                            sizes="32px"
                             className="object-contain"
                             priority
                         />
@@ -73,7 +74,7 @@ export default function Header() {
                 </div>
 
                 {/* Search Bar */}
-                <label className="hidden md:flex flex-col min-w-40 !h-10 max-w-96 w-full lg:w-96">
+                <label className="hidden md:flex flex-col min-w-40 h-10 max-w-96 w-full lg:w-96">
                     <div className="flex w-full flex-1 items-stretch rounded-lg h-full relative group">
                         <div className="text-text-secondary absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none transition-colors group-focus-within:text-primary">
                             <span className="material-symbols-outlined text-[20px]">search</span>

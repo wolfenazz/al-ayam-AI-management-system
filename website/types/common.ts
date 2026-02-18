@@ -35,6 +35,8 @@ export type EmployeeStatus = 'ACTIVE' | 'ON_LEAVE' | 'INACTIVE';
 
 export type Availability = 'AVAILABLE' | 'BUSY' | 'OFF_DUTY';
 
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
 export type MessageType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' | 'LOCATION' | 'SYSTEM';
 
 export type MessageDirection = 'OUTBOUND' | 'INBOUND';

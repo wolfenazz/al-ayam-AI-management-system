@@ -152,14 +152,14 @@ export default function Step6Media({
     const totalSize = mediaFiles.reduce((sum, file) => sum + file.size, 0);
 
     return (
-        <div className="h-full flex flex-col p-6">
+        <div className="h-full flex flex-col p-6 sm:p-8">
             {/* Step Header */}
-            <div className="mb-6">
-                <div className="flex items-center gap-2 mb-1">
-                    <span className="material-symbols-outlined text-[20px] text-primary">attach_file</span>
-                    <h3 className="font-bold text-text-primary text-lg">Media Attachments</h3>
+            <div className="mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                    <span className="material-symbols-outlined text-[24px] text-primary">attach_file</span>
+                    <h3 className="font-bold text-text-primary text-xl">Media Attachments</h3>
                 </div>
-                <p className="text-sm text-text-secondary">
+                <p className="text-base text-text-secondary">
                     Upload images or documents to include with the task. This step is optional.
                 </p>
             </div>
@@ -170,7 +170,7 @@ export default function Step6Media({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-6 sm:p-8 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[160px] ${
+                className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-10 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[180px] ${
                     isDragging
                         ? 'border-primary bg-primary-light'
                         : 'border-border hover:border-primary/50 hover:bg-surface/50'

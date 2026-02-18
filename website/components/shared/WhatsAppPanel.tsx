@@ -166,16 +166,16 @@ export default function WhatsAppPanel() {
     // 1. Empty State: No Task Selected
     if (!activeChatTaskId) {
         return (
-            <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center text-center p-6 overflow-hidden bg-background">
-                <div className="w-20 h-20 bg-surface rounded-full flex items-center justify-center mb-4 shadow-sm">
-                    <span className="material-symbols-outlined text-[40px] text-text-secondary">chat_bubble_outline</span>
+            <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center text-center p-6 overflow-hidden bg-[#0b141a] dark:bg-[#0b141a]">
+                <div className="w-20 h-20 bg-[#202c33] rounded-full flex items-center justify-center mb-4 shadow-lg">
+                    <span className="material-symbols-outlined text-[40px] text-[#8696a0]">chat_bubble_outline</span>
                 </div>
-                <h3 className="text-lg font-bold text-text-primary mb-2">No Chat Selected</h3>
-                <p className="text-sm text-text-secondary">
+                <h3 className="text-lg font-bold text-white mb-2">No Chat Selected</h3>
+                <p className="text-sm text-[#8696a0] max-w-[280px]">
                     Select a task from the list to view the conversation with the reporter.
                 </p>
-                <div className="mt-8 border-t border-border pt-6 w-full max-w-[200px]">
-                    <div className="flex items-center justify-center gap-2 text-text-secondary">
+                <div className="mt-8 border-t border-[#202c33] pt-6 w-full max-w-[200px]">
+                    <div className="flex items-center justify-center gap-2 text-[#8696a0]">
                         <span className="material-symbols-outlined text-[18px]">lock</span>
                         <span className="text-xs">End-to-end encrypted</span>
                     </div>
@@ -187,15 +187,15 @@ export default function WhatsAppPanel() {
     // 2. Loading State
     if (taskLoading) {
         return (
-            <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center bg-card">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="w-full flex-1 min-h-0 flex flex-col items-center justify-center bg-[#0b141a]">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00a884]"></div>
             </div>
         );
     }
 
     // 3. Active Chat View - Same pattern as CreateTaskModal (which works)
     return (
-        <div className="w-full flex-1 min-h-0 flex flex-col bg-card overflow-hidden">
+        <div className="w-full flex-1 min-h-0 flex flex-col bg-[#0b141a] overflow-hidden">
             {/* Header - shrink-0 keeps it pinned at top */}
             <div className="bg-primary dark:bg-card-dark dark:border-b dark:border-border flex items-center justify-between px-3 pt-9 pb-2 text-white dark:text-text-primary shadow-md z-30 shrink-0">
                 <div className="flex items-center gap-3">

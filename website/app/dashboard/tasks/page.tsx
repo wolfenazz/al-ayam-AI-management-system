@@ -71,19 +71,19 @@ export default function TasksPage() {
     };
 
     return (
-        <div className="p-6 relative min-h-screen">
+        <div className="p-8 relative min-h-screen">
             <div className="max-w-7xl mx-auto pb-24">
                 {/* Page Header */}
-                <div className="flex justify-between items-end mb-6">
+                <div className="flex justify-between items-end mb-10">
                     <div>
-                        <h1 className="text-2xl font-bold text-text-primary mb-1">
+                        <h1 className="text-3xl font-bold text-text-primary tracking-tight">
                             Task Management
                         </h1>
-                        <p className="text-text-secondary text-sm">
+                        <p className="text-text-secondary text-base mt-2">
                             Track breaking news tasks and field updates.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2 bg-card p-1 rounded-lg border border-border shadow-sm">
+                    <div className="flex items-center gap-3 bg-card p-1.5 rounded-xl border border-border shadow-sm">
                         <button
                             onClick={() => setViewMode('grid')}
                             className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'text-primary bg-primary-light' : 'hover:bg-surface text-text-secondary'
@@ -102,14 +102,14 @@ export default function TasksPage() {
                 </div>
 
                 {/* Stats Bar */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
                     {isLoading ? (
                         Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm animate-pulse">
-                                <div className="size-10 bg-gray-200 rounded-lg" />
+                            <div key={i} className="bg-card rounded-2xl border border-border p-5 flex items-center gap-5 shadow-sm animate-pulse">
+                                <div className="size-11 bg-gray-200 rounded-xl" />
                                 <div>
-                                    <div className="h-6 w-12 bg-gray-200 rounded mb-1" />
-                                    <div className="h-3 w-16 bg-gray-100 rounded" />
+                                    <div className="h-7 w-16 bg-gray-200 rounded-lg mb-2" />
+                                    <div className="h-4 w-20 bg-gray-100 rounded" />
                                 </div>
                             </div>
                         ))
@@ -161,27 +161,27 @@ export default function TasksPage() {
 
                 {/* Tasks Content */}
                 {isLoading ? (
-                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6' : 'flex flex-col gap-2'}>
+                    <div className={viewMode === 'grid' ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8' : 'flex flex-col gap-3'}>
                         {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border p-6 shadow-sm animate-pulse">
-                                <div className="h-5 w-3/4 bg-gray-200 rounded mb-3" />
-                                <div className="h-4 w-1/2 bg-gray-100 rounded mb-2" />
-                                <div className="h-4 w-2/3 bg-gray-100 rounded" />
+                            <div key={i} className="bg-card rounded-2xl border border-border p-8 shadow-sm animate-pulse">
+                                <div className="h-6 w-3/4 bg-gray-200 rounded-lg mb-4" />
+                                <div className="h-5 w-1/2 bg-gray-100 rounded mb-3" />
+                                <div className="h-5 w-2/3 bg-gray-100 rounded" />
                             </div>
                         ))}
                     </div>
                 ) : tasks.length === 0 ? (
-                    <div className="bg-card rounded-xl border border-border p-12 text-center shadow-sm">
-                        <span className="material-symbols-outlined text-[64px] text-gray-300 mb-3 block">task</span>
-                        <p className="text-lg font-semibold text-text-primary mb-1">No tasks yet</p>
-                        <p className="text-sm text-text-secondary">Create your first task or seed sample data from the dashboard.</p>
+                    <div className="bg-card rounded-2xl border border-border p-16 text-center shadow-sm">
+                        <span className="material-symbols-outlined text-[72px] text-gray-300 mb-4 block">task</span>
+                        <p className="text-xl font-semibold text-text-primary mb-2">No tasks yet</p>
+                        <p className="text-base text-text-secondary">Create your first task or seed sample data from the dashboard.</p>
                     </div>
                 ) : (
                     <div
                         className={
                             viewMode === 'grid'
-                                ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6'
-                                : 'flex flex-col gap-2'
+                                ? 'grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8'
+                                : 'flex flex-col gap-3'
                         }
                     >
                         {viewMode === 'grid' ? (
@@ -280,13 +280,13 @@ function StatCard({
     const c = colorMap[color];
 
     return (
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div className={`size-10 rounded-lg ${c.bg} flex items-center justify-center`}>
-                <span className={`material-symbols-outlined text-[22px] ${c.icon}`}>{icon}</span>
+        <div className="bg-card rounded-2xl border border-border p-5 flex items-center gap-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`size-11 rounded-xl ${c.bg} flex items-center justify-center`}>
+                <span className={`material-symbols-outlined text-[24px] ${c.icon}`}>{icon}</span>
             </div>
             <div>
                 <p className={`text-2xl font-bold ${c.text}`}>{value}</p>
-                <p className="text-xs text-text-secondary font-medium">{label}</p>
+                <p className="text-sm text-text-secondary font-medium">{label}</p>
             </div>
         </div>
     );

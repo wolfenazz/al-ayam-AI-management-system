@@ -25,21 +25,21 @@ interface StepperHeaderProps {
 
 export default function StepperHeader({ currentStep, completedSteps, onStepClick }: StepperHeaderProps) {
     return (
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border bg-surface/50">
-            <div className="flex items-center justify-between gap-2">
+        <div className="px-6 sm:px-8 py-4 sm:py-5 border-b border-border bg-surface/50">
+            <div className="flex items-center justify-between gap-3">
                 {/* Logo and Title - Hidden on very small screens */}
-                <div className="hidden sm:flex items-center gap-3">
-                    <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                        <span className="material-symbols-outlined text-[18px]">newspaper</span>
+                <div className="hidden sm:flex items-center gap-4">
+                    <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white">
+                        <span className="material-symbols-outlined text-[20px]">newspaper</span>
                     </div>
                     <div>
-                        <h2 className="font-bold text-text-primary text-sm">Task Manager</h2>
-                        <span className="text-xs text-text-secondary">News Desk / tasks</span>
+                        <h2 className="font-bold text-text-primary text-base">Task Manager</h2>
+                        <span className="text-sm text-text-secondary">News Desk / tasks</span>
                     </div>
                 </div>
 
                 {/* Step Indicators */}
-                <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide pb-1 sm:pb-0">
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1 sm:pb-0">
                     {steps.map((step, index) => {
                         const isCompleted = completedSteps.has(step.number);
                         const isCurrent = currentStep === step.number;
@@ -50,7 +50,7 @@ export default function StepperHeader({ currentStep, completedSteps, onStepClick
                                 <button
                                     onClick={() => isClickable && onStepClick?.(step.number)}
                                     disabled={!isClickable}
-                                    className={`flex items-center justify-center gap-1 sm:gap-2 min-w-[44px] min-h-[44px] px-2 sm:px-3 py-2 rounded-lg transition-all shrink-0 ${
+                                    className={`flex items-center justify-center gap-1.5 sm:gap-2.5 min-w-[48px] min-h-[48px] px-2.5 sm:px-4 py-2.5 rounded-xl transition-all shrink-0 ${
                                         isCurrent
                                             ? 'bg-primary text-white shadow-md'
                                             : isCompleted
@@ -59,22 +59,22 @@ export default function StepperHeader({ currentStep, completedSteps, onStepClick
                                     } ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                                     aria-label={`Step ${step.number}: ${step.title}`}
                                 >
-                                    <span className={`material-symbols-outlined text-[18px] ${
+                                    <span className={`material-symbols-outlined text-[20px] ${
                                         isCompleted && !isCurrent ? 'text-accent-green' : ''
                                     }`}>
                                         {isCompleted && !isCurrent ? 'check_circle' : step.icon}
                                     </span>
-                                    <span className="text-xs font-semibold hidden xl:inline">
+                                    <span className="text-sm font-semibold hidden xl:inline">
                                         {step.title}
                                     </span>
-                                    <span className="text-xs font-semibold hidden sm:inline xl:hidden">
+                                    <span className="text-sm font-semibold hidden sm:inline xl:hidden">
                                         {step.number}
                                     </span>
                                 </button>
 
                                 {/* Connector Line - Hidden on mobile */}
                                 {index < steps.length - 1 && (
-                                    <div className={`hidden sm:block w-4 lg:w-6 h-0.5 mx-1 rounded-full transition-colors shrink-0 ${
+                                    <div className={`hidden sm:block w-5 lg:w-7 h-0.5 mx-1.5 rounded-full transition-colors shrink-0 ${
                                         completedSteps.has(step.number) || currentStep > step.number
                                             ? 'bg-accent-green'
                                             : 'bg-border'
@@ -86,15 +86,15 @@ export default function StepperHeader({ currentStep, completedSteps, onStepClick
                 </div>
 
                 {/* Status Badge - Hidden on mobile */}
-                <div className="hidden md:flex items-center gap-2 text-xs text-accent-green font-medium shrink-0">
-                    <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
+                <div className="hidden md:flex items-center gap-2.5 text-sm text-accent-green font-medium shrink-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-accent-green animate-pulse" />
                     <span className="hidden lg:inline">WhatsApp API Connected</span>
                 </div>
             </div>
 
             {/* Mobile Step Title */}
-            <div className="mt-2 sm:mt-3 text-center">
-                <p className="text-sm font-semibold text-text-primary">
+            <div className="mt-3 sm:mt-4 text-center">
+                <p className="text-base font-semibold text-text-primary">
                     Step {currentStep}: {steps[currentStep - 1]?.title}
                 </p>
             </div>
