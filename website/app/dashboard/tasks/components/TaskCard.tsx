@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Task } from '@/types/task';
 import { Employee } from '@/types/employee';
 import { Priority, TaskStatus } from '@/types/common';
@@ -86,8 +86,30 @@ function getScheduleDisplay(task: Task): { text: string; urgent: boolean; icon: 
 export default function TaskCard({ task, employee }: TaskCardProps) {
     const { setActiveChatTaskId } = useUIStore();
     const scheduleInfo = getScheduleDisplay(task);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Show WhatsApp strip for in-progress tasks
+    const openModal = useCallback(() => setIsModalOpen(true), []);
+    const closeModal = useCallback(() => setIsModalOpen(false), []);
+
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = '';
+            };
+        }
+    }, [isModalOpen]);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isModalOpen) {
+                closeModal();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isModalOpen, closeModal]);
+
     const showWhatsAppStrip = task.status === 'IN_PROGRESS' && task.priority === 'URGENT';
 
     return (
@@ -167,7 +189,11 @@ export default function TaskCard({ task, employee }: TaskCardProps) {
                             >
                                 <span className="material-symbols-outlined text-[22px]">chat</span>
                             </button>
-                            <button className="p-2.5 rounded-xl bg-surface hover:bg-gray-200 text-text-secondary hover:text-text-primary transition-colors">
+                            <button
+                                onClick={openModal}
+                                className="p-2.5 rounded-xl bg-surface hover:bg-gray-200 text-text-secondary hover:text-text-primary transition-colors"
+                                aria-label="View task details"
+                            >
                                 <span className="material-symbols-outlined text-[22px]">visibility</span>
                             </button>
                         </div>
