@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import TaskCard from './components/TaskCard';
-import TaskRow from './components/TaskRow'; // Import new component
+import TaskRow from './components/TaskRow';
+import TaskDetailModal from './components/TaskDetailModal';
 import { useUIStore } from '@/stores/uiStore';
 import { useTasks, useTaskStats, useBulkUpdateTasks, useBulkDeleteTasks } from '@/hooks/useTasks';
 import { useEmployees, getEmployeeById } from '@/hooks/useEmployees';
@@ -17,11 +18,24 @@ export default function TasksPage() {
     const bulkDelete = useBulkDeleteTasks();
 
     const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set());
+    const [modalTaskId, setModalTaskId] = useState<string | null>(null);
 
     const isLoading = tasksLoading || employeesLoading;
 
     const getEmployee = (assigneeId?: string) =>
         getEmployeeById(employees, assigneeId);
+
+    const selectedTask = tasks.find(t => t.id === modalTaskId) || null;
+    const selectedTaskEmployee = selectedTask ? getEmployee(selectedTask.assignee_id) : undefined;
+    const selectedTaskCreator = selectedTask ? getEmployee(selectedTask.creator_id) : undefined;
+
+    const handleViewTaskDetails = (taskId: string) => {
+        setModalTaskId(taskId);
+    };
+
+    const handleCloseModal = () => {
+        setModalTaskId(null);
+    };
 
     // Selection Handlers
     const handleSelectTask = (taskId: string) => {
@@ -190,6 +204,7 @@ export default function TasksPage() {
                                     key={task.id}
                                     task={task}
                                     employee={getEmployee(task.assignee_id)}
+                                    onViewDetails={handleViewTaskDetails}
                                 />
                             ))
                         ) : (
@@ -256,6 +271,15 @@ export default function TasksPage() {
                     </div>
                 </div>
             )}
+
+            {/* Task Detail Modal */}
+            <TaskDetailModal
+                task={selectedTask}
+                employee={selectedTaskEmployee}
+                creator={selectedTaskCreator}
+                isOpen={modalTaskId !== null}
+                onClose={handleCloseModal}
+            />
         </div>
     );
 }
