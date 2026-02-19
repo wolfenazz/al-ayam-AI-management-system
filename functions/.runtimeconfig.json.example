@@ -1,0 +1,31 @@
+{
+  "whatsapp": {
+    "access_token": "YOUR_WHATSAPP_ACCESS_TOKEN_HERE",
+    "phone_number_id": "YOUR_PHONE_NUMBER_ID_HERE",
+    "business_account_id": "YOUR_BUSINESS_ACCOUNT_ID_HERE",
+    "webhook_verify_token": "YOUR_WEBHOOK_VERIFY_TOKEN_HERE",
+    "api_version": "v18.0"
+  },
+  "deepseek": {
+    "api_key": "YOUR_DEEPSEEK_API_KEY_HERE",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-chat"
+  },
+  "notifications": {
+    "email_from": "noreply@alayam.com",
+    "sms_provider": "twilio",
+    "sms_api_key": "YOUR_SMS_API_KEY_HERE"
+  },
+  "features": {
+    "enable_whatsapp": "true",
+    "enable_ai": "true",
+    "enable_notifications": "true",
+    "enable_analytics": "true"
+  },
+  "escalation": {
+    "first_reminder_minutes": "15",
+    "second_reminder_minutes": "30",
+    "escalation_minutes": "60",
+    "auto_reassign_minutes": "120"
+  }
+}

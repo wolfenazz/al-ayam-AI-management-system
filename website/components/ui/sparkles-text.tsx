@@ -1,6 +1,6 @@
 "use client"
 
-import { CSSProperties, ReactElement, useEffect, useState } from "react"
+import { CSSProperties, ReactElement, useEffect, useState, useMemo, useRef } from "react"
 import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
@@ -89,12 +89,16 @@ export const SparklesText: React.FC<SparklesTextProps> = ({
   ...props
 }) => {
   const [sparkles, setSparkles] = useState<Sparkle[]>([])
+  const isInitializedRef = useRef(false)
+
+  // Memoize colors to avoid creating new object references
+  const memoizedColors = useMemo(() => colors, [colors.first, colors.second])
 
   useEffect(() => {
     const generateStar = (): Sparkle => {
       const starX = `${Math.random() * 100}%`
       const starY = `${Math.random() * 100}%`
-      const color = Math.random() > 0.5 ? colors.first : colors.second
+      const color = Math.random() > 0.5 ? memoizedColors.first : memoizedColors.second
       const delay = Math.random() * 2
       const scale = Math.random() * 1 + 0.3
       const lifespan = Math.random() * 10 + 5
@@ -119,11 +123,16 @@ export const SparklesText: React.FC<SparklesTextProps> = ({
       )
     }
 
-    initializeStars()
+    // Only initialize once
+    if (!isInitializedRef.current) {
+      initializeStars()
+      isInitializedRef.current = true
+    }
+
     const interval = setInterval(updateStars, 100)
 
     return () => clearInterval(interval)
-  }, [colors.first, colors.second, sparklesCount])
+  }, [memoizedColors.first, memoizedColors.second, sparklesCount])
 
   return (
     <div
@@ -131,8 +140,8 @@ export const SparklesText: React.FC<SparklesTextProps> = ({
       {...props}
       style={
         {
-          "--sparkles-first-color": `${colors.first}`,
-          "--sparkles-second-color": `${colors.second}`,
+          "--sparkles-first-color": `${memoizedColors.first}`,
+          "--sparkles-second-color": `${memoizedColors.second}`,
         } as CSSProperties
       }
     >

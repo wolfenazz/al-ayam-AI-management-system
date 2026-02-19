@@ -6,7 +6,7 @@ import { SparklesText } from '@/components/ui/sparkles-text';
 import { MagicCard } from '@/components/ui/magic-card';
 import { ShimmerButton } from '@/components/ui/shimmer-button';
 import Avatar from '@/components/ui/Avatar';
-import { toast } from 'react-hot-toast';
+import WhatsAppIntegrationSettings from './components/WhatsAppIntegrationSettings';
 
 type AdminSettingsSection = 'system' | 'security' | 'users' | 'integrations' | 'billing';
 
@@ -641,108 +641,52 @@ export default function AdminSettingsPage() {
                                         </div>
                                     </div>
 
-                                    {/* API Keys Management */}
-                                    <div>
-                                        <h3 className="text-sm font-bold text-text-primary mb-4">API Keys</h3>
-                                        
-                                        {/* WhatsApp Configuration */}
-                                        <div className="mb-6 p-4 bg-surface rounded-lg border border-border">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="size-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                                    <span className="material-symbols-outlined text-green-600 text-[24px]">chat</span>
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-semibold text-text-primary">WhatsApp Business API</p>
-                                                    <p className="text-xs text-text-secondary">Configure WhatsApp integration for notifications</p>
-                                                </div>
+                                    {/* WhatsApp Integration Settings */}
+                                    <div className="p-4 bg-surface rounded-lg border border-border">
+                                        <WhatsAppIntegrationSettings />
+                                    </div>
+
+                                    {/* DeepSeek AI Configuration */}
+                                    <div className="p-4 bg-surface rounded-lg border border-border">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="size-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                <span className="material-symbols-outlined text-purple-600 text-[24px]">psychology</span>
                                             </div>
-                                            
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-                                                        WhatsApp Number
-                                                    </label>
-                                                    <input
-                                                        type="tel"
-                                                        value={integrationKeys.whatsappNumber}
-                                                        onChange={(e) => handleIntegrationKeyChange('whatsappNumber', e.target.value)}
-                                                        className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-card text-sm font-medium"
-                                                        placeholder="+973 1234 5678"
-                                                    />
-                                                </div>
-                                                
-                                                <div>
-                                                    <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-                                                        WhatsApp API Key
-                                                    </label>
-                                                    <div className="relative">
-                                                        <input
-                                                            type={showKeys.whatsappApiKey ? 'text' : 'password'}
-                                                            value={integrationKeys.whatsappApiKey}
-                                                            onChange={(e) => handleIntegrationKeyChange('whatsappApiKey', e.target.value)}
-                                                            className="w-full px-4 pr-24 py-3 rounded-lg border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-card text-sm font-medium font-mono"
-                                                            placeholder="Enter your WhatsApp API key"
-                                                        />
-                                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => toggleKeyVisibility('whatsappApiKey')}
-                                                                className="p-1.5 text-text-secondary hover:text-text-primary rounded transition-colors"
-                                                                title={showKeys.whatsappApiKey ? 'Hide' : 'Show'}
-                                                            >
-                                                                <span className="material-symbols-outlined text-[20px]">
-                                                                    {showKeys.whatsappApiKey ? 'visibility_off' : 'visibility'}
-                                                                </span>
-                                                            </button>
-                                                          
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div>
+                                                <p className="text-sm font-semibold text-text-primary">DeepSeek AI Model</p>
+                                                <p className="text-xs text-text-secondary">Configure AI-powered features and analytics</p>
                                             </div>
                                         </div>
-
-                                        {/* DeepSeek AI Configuration */}
-                                        <div className="p-4 bg-surface rounded-lg border border-border">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="size-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                                                    <span className="material-symbols-outlined text-purple-600 text-[24px]">psychology</span>
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-semibold text-text-primary">DeepSeek AI Model</p>
-                                                    <p className="text-xs text-text-secondary">Configure AI-powered features and analytics</p>
+                                        
+                                        <div>
+                                            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
+                                                DeepSeek API Key
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    type={showKeys.deepSeekApiKey ? 'text' : 'password'}
+                                                    value={integrationKeys.deepSeekApiKey}
+                                                    onChange={(e) => handleIntegrationKeyChange('deepSeekApiKey', e.target.value)}
+                                                    className="w-full px-4 pr-24 py-3 rounded-lg border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-card text-sm font-medium font-mono"
+                                                    placeholder="Enter your DeepSeek API key"
+                                                />
+                                                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => toggleKeyVisibility('deepSeekApiKey')}
+                                                        className="p-1.5 text-text-secondary hover:text-text-primary rounded transition-colors"
+                                                        title={showKeys.deepSeekApiKey ? 'Hide' : 'Show'}
+                                                    >
+                                                        <span className="material-symbols-outlined text-[20px]">
+                                                            {showKeys.deepSeekApiKey ? 'visibility_off' : 'visibility'}
+                                                        </span>
+                                                    </button>
+                                                   
                                                 </div>
                                             </div>
-                                            
-                                            <div>
-                                                <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-                                                    DeepSeek API Key
-                                                </label>
-                                                <div className="relative">
-                                                    <input
-                                                        type={showKeys.deepSeekApiKey ? 'text' : 'password'}
-                                                        value={integrationKeys.deepSeekApiKey}
-                                                        onChange={(e) => handleIntegrationKeyChange('deepSeekApiKey', e.target.value)}
-                                                        className="w-full px-4 pr-24 py-3 rounded-lg border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none bg-card text-sm font-medium font-mono"
-                                                        placeholder="Enter your DeepSeek API key"
-                                                    />
-                                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => toggleKeyVisibility('deepSeekApiKey')}
-                                                            className="p-1.5 text-text-secondary hover:text-text-primary rounded transition-colors"
-                                                            title={showKeys.deepSeekApiKey ? 'Hide' : 'Show'}
-                                                        >
-                                                            <span className="material-symbols-outlined text-[20px]">
-                                                                {showKeys.deepSeekApiKey ? 'visibility_off' : 'visibility'}
-                                                            </span>
-                                                        </button>
-                                                       
-                                                    </div>
-                                                </div>
-                                                <p className="text-xs text-text-secondary mt-2">
-                                                    This key is used for AI-powered task suggestions, analytics, and smart features.
-                                                </p>
-                                            </div>
+                                            <p className="text-xs text-text-secondary mt-2">
+                                                This key is used for AI-powered task suggestions, analytics, and smart features.
+                                            </p>
                                         </div>
                                     </div>
 
@@ -757,10 +701,10 @@ export default function AdminSettingsPage() {
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-semibold text-text-primary">WhatsApp Business API</p>
-                                                        <p className="text-xs text-text-secondary">Connected and active</p>
+                                                        <p className="text-xs text-text-secondary">Meta Cloud API Integration</p>
                                                     </div>
                                                 </div>
-                                                <span className="px-2 py-1 text-xs font-medium bg-green-50 text-green-700 rounded-full">Connected</span>
+                                                <span className="px-2 py-1 text-xs font-medium bg-green-50 text-green-700 rounded-full">Available</span>
                                             </div>
                                             <div className="flex items-center justify-between p-4 bg-surface rounded-lg border border-border">
                                                 <div className="flex items-center gap-3">
