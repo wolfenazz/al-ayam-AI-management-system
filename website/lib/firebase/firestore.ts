@@ -29,6 +29,7 @@ export const COLLECTIONS = {
     NOTIFICATIONS: 'notifications',
     TASK_TEMPLATES: 'task_templates',
     PERFORMANCE_METRICS: 'performance_metrics',
+    SYSTEM_SETTINGS: 'system_settings',
 } as const;
 
 // ─── Generic CRUD Operations ─────────────────────────────────────

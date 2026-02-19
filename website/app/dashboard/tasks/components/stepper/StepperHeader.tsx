@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useWhatsAppStatus } from '@/hooks/useWhatsApp';
 
 interface StepConfig {
     number: number;
@@ -24,6 +25,8 @@ interface StepperHeaderProps {
 }
 
 export default function StepperHeader({ currentStep, completedSteps, onStepClick }: StepperHeaderProps) {
+    const { isConnected, isLoading } = useWhatsAppStatus();
+
     return (
         <div className="px-6 sm:px-8 py-4 sm:py-5 border-b border-border bg-surface/50">
             <div className="flex items-center justify-between gap-3">
@@ -86,9 +89,23 @@ export default function StepperHeader({ currentStep, completedSteps, onStepClick
                 </div>
 
                 {/* Status Badge - Hidden on mobile */}
-                <div className="hidden md:flex items-center gap-2.5 text-sm text-accent-green font-medium shrink-0">
-                    <span className="w-2.5 h-2.5 rounded-full bg-accent-green animate-pulse" />
-                    <span className="hidden lg:inline">WhatsApp API Connected</span>
+                <div className={`hidden md:flex items-center gap-2.5 text-sm font-medium shrink-0 ${isConnected ? 'text-accent-green' : 'text-accent-red'}`}>
+                    {isLoading ? (
+                        <>
+                            <span className="w-2.5 h-2.5 rounded-full bg-gray-400 animate-pulse" />
+                            <span className="hidden lg:inline">Checking...</span>
+                        </>
+                    ) : isConnected ? (
+                        <>
+                            <span className="w-2.5 h-2.5 rounded-full bg-accent-green animate-pulse" />
+                            <span className="hidden lg:inline">WhatsApp API Connected</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="w-2.5 h-2.5 rounded-full bg-accent-red" />
+                            <span className="hidden lg:inline">WhatsApp Not Configured</span>
+                        </>
+                    )}
                 </div>
             </div>
 

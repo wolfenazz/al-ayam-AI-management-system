@@ -17,7 +17,7 @@ export type ParsedAction =
     | { type: 'UNKNOWN'; rawText: string };
 
 export interface ParsedMessage {
-    action: ParsedAction;
+    parsedAction: ParsedAction;
     originalText: string;
     confidence: 'high' | 'medium' | 'low';
     extractedData?: {
@@ -196,28 +196,28 @@ export function parseTextMessage(text: string, taskId?: string): ParsedMessage {
     const trimmedText = text.trim();
     const extractedTaskId = taskId || extractTaskId(trimmedText) || 'unknown';
 
-    let action: ParsedAction;
+    let parsedAction: ParsedAction;
     let confidence: 'high' | 'medium' | 'low' = 'high';
 
     if (matchKeywords(trimmedText, ACCEPTANCE_KEYWORDS)) {
-        action = { type: 'ACCEPT', taskId: extractedTaskId };
+        parsedAction = { type: 'ACCEPT', taskId: extractedTaskId };
     } else if (matchKeywords(trimmedText, DECLINE_KEYWORDS)) {
-        action = { type: 'DECLINE', taskId: extractedTaskId };
+        parsedAction = { type: 'DECLINE', taskId: extractedTaskId };
     } else if (matchKeywords(trimmedText, DONE_KEYWORDS)) {
-        action = { type: 'DONE', taskId: extractedTaskId };
+        parsedAction = { type: 'DONE', taskId: extractedTaskId };
     } else if (matchKeywords(trimmedText, STARTED_KEYWORDS)) {
-        action = { type: 'STARTED', taskId: extractedTaskId };
+        parsedAction = { type: 'STARTED', taskId: extractedTaskId };
     } else if (matchKeywords(trimmedText, ARRIVED_KEYWORDS)) {
-        action = { type: 'ARRIVED', taskId: extractedTaskId };
+        parsedAction = { type: 'ARRIVED', taskId: extractedTaskId };
     } else if (matchKeywords(trimmedText, ON_WAY_KEYWORDS)) {
-        action = { type: 'ON_WAY', taskId: extractedTaskId };
+        parsedAction = { type: 'ON_WAY', taskId: extractedTaskId };
     } else if (matchKeywords(trimmedText, DELAY_KEYWORDS)) {
         const minutes = extractTimeEstimate(trimmedText);
-        action = { type: 'DELAY', taskId: extractedTaskId, minutes };
+        parsedAction = { type: 'DELAY', taskId: extractedTaskId, minutes };
     } else if (matchKeywords(trimmedText, ISSUE_KEYWORDS)) {
-        action = { type: 'ISSUE', taskId: extractedTaskId, description: trimmedText };
+        parsedAction = { type: 'ISSUE', taskId: extractedTaskId, description: trimmedText };
     } else {
-        action = { type: 'UNKNOWN', rawText: trimmedText };
+        parsedAction = { type: 'UNKNOWN', rawText: trimmedText };
         confidence = 'low';
     }
 
@@ -235,7 +235,7 @@ export function parseTextMessage(text: string, taskId?: string): ParsedMessage {
     }
 
     return {
-        action,
+        parsedAction,
         originalText: trimmedText,
         confidence,
         extractedData: Object.keys(extractedData).length > 0 ? extractedData : undefined,
@@ -286,7 +286,7 @@ export function parseWhatsAppMessage(message: WhatsAppIncomingMessage): ParsedWh
         case 'text':
             if (message.text?.body) {
                 const textResult = parseTextMessage(message.text.body);
-                parsed.parsedAction = textResult.action;
+                parsed.parsedAction = textResult.parsedAction;
                 parsed.extractedData = textResult.extractedData || {};
             }
             break;
@@ -296,7 +296,7 @@ export function parseWhatsAppMessage(message: WhatsAppIncomingMessage): ParsedWh
                 parsed.parsedAction = parseButtonResponse(message.button.payload);
             } else if (message.button?.text) {
                 const buttonResult = parseTextMessage(message.button.text);
-                parsed.parsedAction = buttonResult.action;
+                parsed.parsedAction = buttonResult.parsedAction;
             }
             break;
 
@@ -323,13 +323,12 @@ export function parseWhatsAppMessage(message: WhatsAppIncomingMessage): ParsedWh
                     mediaUrls: [mediaId],
                 };
             }
-            // Only image, video, and document have caption property
             if (message.type !== 'audio') {
                 const caption = (message[message.type] as { caption?: string })?.caption;
                 if (caption) {
                     const captionResult = parseTextMessage(caption);
-                    if (captionResult.action.type !== 'UNKNOWN') {
-                        parsed.parsedAction = captionResult.action;
+                    if (captionResult.parsedAction.type !== 'UNKNOWN') {
+                        parsed.parsedAction = captionResult.parsedAction;
                     }
                 }
             }

@@ -8,13 +8,65 @@ import {
     where,
     serverTimestamp,
 } from '@/lib/firebase/firestore';
-import { parseWhatsAppMessage, getTaskStatusFromAction } from '@/lib/whatsapp/parser';
-import { markMessageAsRead, getWhatsAppConfig } from '@/lib/whatsapp/api';
-import type { WhatsAppWebhookPayload } from '@/lib/validation/schemas';
+import { parseWhatsAppMessage, getTaskStatusFromAction, isValidTaskStatusTransition } from '@/lib/whatsapp/parser';
+import { markMessageAsRead, getWhatsAppConfig, configureWhatsApp } from '@/lib/whatsapp/api';
+import type { WhatsAppWebhookPayload, IntegrationKeys } from '@/lib/validation/schemas';
+import { createHmac } from 'crypto';
+
+// ─── Config Initialization ────────────────────────────────────────
+
+let configInitialized = false;
+
+async function ensureWhatsAppConfig() {
+    if (configInitialized) return;
+
+    try {
+        const settings = await getDocument<IntegrationKeys>(
+            COLLECTIONS.SYSTEM_SETTINGS,
+            'integrations'
+        );
+
+        if (settings?.whatsappApiKey && settings?.whatsappPhoneNumberId) {
+            configureWhatsApp({
+                accessToken: settings.whatsappApiKey,
+                phoneNumberId: settings.whatsappPhoneNumberId,
+                businessAccountId: settings.whatsappBusinessAccountId || undefined,
+                webhookVerifyToken: settings.whatsappWebhookSecret || undefined,
+            });
+            configInitialized = true;
+            console.log('[WhatsApp] Configuration loaded from Firebase');
+        }
+    } catch (error) {
+        console.error('[WhatsApp] Failed to load configuration:', error);
+    }
+}
+
+// ─── Webhook Signature Verification ────────────────────────────────
+
+function verifyWebhookSignature(body: string, signature: string | null, appSecret: string | undefined): boolean {
+    if (!signature || !appSecret) {
+        console.warn('[WhatsApp] Missing signature or app secret');
+        return false;
+    }
+
+    const [algorithm, hash] = signature.split('=');
+    if (algorithm !== 'sha256') {
+        console.error('[WhatsApp] Invalid signature algorithm');
+        return false;
+    }
+
+    const expectedSignature = createHmac('sha256', appSecret)
+        .update(body)
+        .digest('hex');
+
+    return hash === expectedSignature;
+}
 
 // ─── Webhook Verification (GET) ────────────────────────────────────
 
 export async function GET(request: NextRequest) {
+    await ensureWhatsAppConfig();
+
     const searchParams = request.nextUrl.searchParams;
     const mode = searchParams.get('hub.mode');
     const token = searchParams.get('hub.verify_token');
@@ -22,14 +74,22 @@ export async function GET(request: NextRequest) {
 
     const config = getWhatsAppConfig();
 
-    if (mode === 'subscribe' && token === config?.webhookVerifyToken) {
+    if (!config) {
+        console.error('[WhatsApp] Configuration not loaded');
+        return NextResponse.json(
+            { error: 'WhatsApp not configured' },
+            { status: 503 }
+        );
+    }
+
+    if (mode === 'subscribe' && token === config.webhookVerifyToken) {
         console.log('[WhatsApp] Webhook verified successfully');
         return new NextResponse(challenge, { status: 200 });
     }
 
-    console.log('[WhatsApp] Webhook verification failed');
+    console.error('[WhatsApp] Webhook verification failed - Invalid token');
     return NextResponse.json(
-        { error: 'Verification failed' },
+        { error: 'Verification failed', details: 'Invalid verify token' },
         { status: 403 }
     );
 }
@@ -37,9 +97,31 @@ export async function GET(request: NextRequest) {
 // ─── Webhook Handler (POST) ────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
+    await ensureWhatsAppConfig();
+
+    const signature = request.headers.get('x-hub-signature-256');
+    const config = getWhatsAppConfig();
+
+    if (!config) {
+        console.error('[WhatsApp] Configuration not loaded');
+        return NextResponse.json(
+            { error: 'WhatsApp not configured' },
+            { status: 503 }
+        );
+    }
+
     try {
-        const body = await request.json();
+        const rawBody = await request.text();
+        const body = JSON.parse(rawBody);
         const payload = body as WhatsAppWebhookPayload;
+
+        if (!verifyWebhookSignature(rawBody, signature, config.webhookVerifyToken)) {
+            console.error('[WhatsApp] Invalid webhook signature');
+            return NextResponse.json(
+                { error: 'Invalid signature' },
+                { status: 403 }
+            );
+        }
 
         console.log('[WhatsApp] Webhook received:', JSON.stringify(payload, null, 2));
 
@@ -59,7 +141,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('[WhatsApp] Webhook error:', error);
         return NextResponse.json(
-            { error: 'Internal server error' },
+            { error: 'Internal server error', message: error instanceof Error ? error.message : 'Unknown error' },
             { status: 500 }
         );
     }
@@ -148,9 +230,13 @@ async function handleIncomingMessage(message: any, contacts: any[], metadata: an
 
         await createTaskMessage(message, employee, parsedMessage);
 
-        const config = getWhatsAppConfig();
-        if (config) {
-            await markMessageAsRead(parsedMessage.messageId);
+        try {
+            const config = getWhatsAppConfig();
+            if (config) {
+                await markMessageAsRead(parsedMessage.messageId);
+            }
+        } catch (readError) {
+            console.error('[WhatsApp] Error marking message as read:', readError);
         }
 
     } catch (error) {
@@ -163,8 +249,8 @@ async function handleIncomingMessage(message: any, contacts: any[], metadata: an
 async function handleTaskAction(action: any, employee: any, parsedMessage: any) {
     const taskId = action.taskId;
 
-    if (taskId === 'unknown') {
-        console.log('[WhatsApp] Cannot process action without task ID');
+    if (taskId === 'unknown' || !taskId) {
+        console.log('[WhatsApp] Cannot process action without valid task ID');
         return;
     }
 
@@ -184,6 +270,11 @@ async function handleTaskAction(action: any, employee: any, parsedMessage: any) 
         const newStatus = getTaskStatusFromAction(action);
         if (!newStatus) {
             console.log('[WhatsApp] No status change for action:', action.type);
+            return;
+        }
+
+        if (!isValidTaskStatusTransition(task.status, action.type)) {
+            console.log('[WhatsApp] Invalid status transition:', task.status, '->', action.type);
             return;
         }
 

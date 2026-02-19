@@ -64,17 +64,17 @@ export function useWhatsAppConfig() {
     useEffect(() => {
         async function loadConfig() {
             try {
-                const settings = await getDocument<{ integrations?: IntegrationKeys }>(
-                    COLLECTIONS.TASK_TEMPLATES,
-                    'system_settings'
+                const settings = await getDocument<IntegrationKeys>(
+                    COLLECTIONS.SYSTEM_SETTINGS,
+                    'integrations'
                 );
 
-                if (settings?.integrations) {
-                    initializeFromIntegrationKeys(settings.integrations);
+                if (settings) {
+                    initializeFromIntegrationKeys(settings);
                     setConfig({
                         isConfigured: isWhatsAppConfigured(),
-                        phoneNumber: settings.integrations.whatsappNumber || undefined,
-                        businessAccountId: settings.integrations.whatsappBusinessAccountId || undefined,
+                        phoneNumber: settings.whatsappNumber || undefined,
+                        businessAccountId: settings.whatsappBusinessAccountId || undefined,
                     });
                 }
             } catch (error) {
@@ -206,7 +206,7 @@ export function useWhatsAppSettings() {
         queryKey: [SETTINGS_KEY, 'integrations'],
         queryFn: async () => {
             const doc = await getDocument<IntegrationKeys>(
-                'system_settings',
+                COLLECTIONS.SYSTEM_SETTINGS,
                 'integrations'
             );
             return doc;
@@ -215,7 +215,7 @@ export function useWhatsAppSettings() {
 
     const saveSettingsMutation = useMutation({
         mutationFn: async (newSettings: IntegrationKeys) => {
-            await setDocument('system_settings', 'integrations', {
+            await setDocument(COLLECTIONS.SYSTEM_SETTINGS, 'integrations', {
                 ...newSettings,
                 updated_at: serverTimestamp(),
             });

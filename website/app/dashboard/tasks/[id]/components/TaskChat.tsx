@@ -122,7 +122,7 @@ export default function TaskChat({ taskId: externalTaskId }: TaskChatProps = {})
 
     if (isLoading) {
         return (
-            <div className="flex flex-col h-[400px] bg-white rounded-lg border shadow-sm">
+            <div className="flex flex-col h-100 bg-white rounded-lg border shadow-sm">
                 <div className="p-4 text-center text-gray-500 flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-2">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
@@ -134,7 +134,7 @@ export default function TaskChat({ taskId: externalTaskId }: TaskChatProps = {})
     }
 
     return (
-        <div className="flex flex-col h-[400px] bg-white rounded-lg border shadow-sm">
+        <div className="flex flex-col h-100 bg-white rounded-lg border shadow-sm">
             {/* Header */}
             <div className="p-4 border-b bg-gray-50 rounded-t-lg flex justify-between items-center">
                 <div className="flex items-center gap-2">

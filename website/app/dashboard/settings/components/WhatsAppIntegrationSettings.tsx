@@ -362,12 +362,12 @@ export default function WhatsAppIntegrationSettings() {
                 </div>
 
                 {/* Webhook URL Display */}
-                <div className="p-3 bg-gray-100 rounded-lg">
+                <div className="p-3 bg-surface rounded-lg">
                     <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
                         Your Webhook URL
                     </label>
                     <div className="flex items-center gap-2">
-                        <code className="flex-1 text-xs font-mono bg-white px-3 py-2 rounded border border-gray-300 text-text-primary truncate">
+                        <code className="flex-1 text-xs font-mono bg-card px-3 py-2 rounded border border-border text-text-primary truncate">
                             {typeof window !== 'undefined' ? window.location.origin : ''}/api/webhooks/whatsapp
                         </code>
                         <button

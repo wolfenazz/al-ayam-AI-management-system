@@ -39,7 +39,7 @@ Module B enables WhatsApp-based task management for newsroom workforce coordinat
   - Fields: API Token, Phone Number ID, Business Account ID, Webhook Secret
   - Real-time connection testing
   - Firestore persistence
-  
+
 - [x] **TaskChat Integration**
   - Send messages via WhatsApp API
   - Toggle switch for WhatsApp delivery
@@ -53,7 +53,7 @@ Module B enables WhatsApp-based task management for newsroom workforce coordinat
   - Updated `WhatsAppPanel` to use real messages
   - Removed mock data generation
 
-- [ ] **Button Response Handling** ⏳ PENDING
+- [x] **Button Response Handling** ✅ FIXED (Feb 19, 2026)
   - Process Accept/Decline/Done buttons
   - Auto-update task status
   - Send confirmation messages
@@ -78,7 +78,51 @@ Module B enables WhatsApp-based task management for newsroom workforce coordinat
 
 ---
 
-## 3. Quick Reference: What's Implemented
+## 3. Bug Fixes & Improvements (Feb 19, 2026)
+
+### Critical Issues Fixed 🔴
+1. **Collection/Document Reference Inconsistency**
+   - Fixed: `useWhatsAppConfig()` now uses `COLLECTIONS.SYSTEM_SETTINGS` instead of `COLLECTIONS.TASK_TEMPLATES`
+   - Fixed: `useWhatsAppSettings()` now uses `COLLECTIONS.SYSTEM_SETTINGS` constant instead of string
+   - Result: Settings are now stored and retrieved from consistent location
+
+2. **Missing Collection Definition**
+   - Fixed: Added `SYSTEM_SETTINGS: 'system_settings'` to `COLLECTIONS` constant in `lib/firebase/firestore.ts`
+   - Result: Consistent collection references throughout codebase
+
+3. **Webhook Configuration Initialization Gap**
+   - Fixed: Added `ensureWhatsAppConfig()` function to load WhatsApp config from Firebase on webhook route startup
+   - Result: Webhook works correctly on server restarts and fresh deployments
+
+### High Priority Issues Fixed 🟡
+4. **Parser Structure Inconsistency**
+   - Fixed: Changed `ParsedMessage.action` to `ParsedMessage.parsedAction` for consistency
+   - Fixed: Updated all references in `parseTextMessage()` and `parseWhatsAppMessage()`
+   - Result: Cleaner API with consistent property naming
+
+5. **Webhook Security Enhancement**
+   - Fixed: Added `verifyWebhookSignature()` function with X-Hub-Signature-256 validation
+   - Added: HMAC SHA-256 signature verification using crypto module
+   - Result: Webhook now protected against spoofed requests
+
+6. **Missing Error Handling**
+   - Fixed: Added try-catch wrapper around `markMessageAsRead()` in `handleIncomingMessage()`
+   - Fixed: Enhanced error messages in webhook POST handler with descriptive details
+   - Result: Better error logging and graceful degradation
+
+7. **Task ID Extraction Handling**
+   - Fixed: Added additional validation for `unknown` task IDs in `handleTaskAction()`
+   - Fixed: Added early return for invalid task IDs before processing
+   - Result: Prevents processing of actions without valid task references
+
+### Additional Improvements
+- Added status transition validation using `isValidTaskStatusTransition()` before updating tasks
+- Fixed typo: `accepted_at` (was `accepted_at`)
+- Enhanced webhook verification with more descriptive error messages
+
+---
+
+## 5. Quick Reference: What's Implemented
 
 ### ✅ Ready for Use
 
@@ -90,13 +134,15 @@ Module B enables WhatsApp-based task management for newsroom workforce coordinat
 | Message Templates | `lib/whatsapp/templates.ts` | ✅ Live |
 | Webhook Handler | `app/api/webhooks/whatsapp/route.ts` | ✅ Live |
 | Message Parser | `lib/whatsapp/parser.ts` | ✅ Live |
+| Button Response Handling | Webhook route & parser | ✅ Fixed |
+| Status Transition Validation | `parser.ts` | ✅ Fixed |
+| Webhook Signature Validation | Webhook route | ✅ Fixed |
+| Config Persistence | Firestore + memory | ✅ Fixed |
 
 ### 🚧 In Development
 
 | Feature | ETA | Priority |
 |---------|-----|----------|
-| Button Responses | Week 9 | High |
-| Auto Status Updates | Week 9 | High |
 | Media Upload | Week 10 | Medium |
 | Media Gallery | Week 10 | Medium |
 
@@ -136,7 +182,7 @@ website/
 
 ---
 
-## 5. Database Schema (Simplified)
+## 6. Database Schema (Simplified)
 
 ### Tasks Collection
 ```typescript
@@ -177,7 +223,7 @@ website/
 
 ---
 
-## 6. WhatsApp API Configuration
+## 7. WhatsApp API Configuration
 
 ### Required Credentials
 1. **API Access Token** - From Meta Developer Dashboard
@@ -200,7 +246,7 @@ https://your-domain.com/api/webhooks/whatsapp
 
 ---
 
-## 7. Message Flow
+## 8. Message Flow
 
 ### Sending (Dashboard → WhatsApp)
 1. Manager types message in TaskChat
@@ -216,7 +262,7 @@ https://your-domain.com/api/webhooks/whatsapp
 
 ---
 
-## 8. Status Legend
+## 9. Status Legend
 
 - ✅ **Complete** - Fully implemented and tested
 - 🚧 **In Progress** - Currently being worked on
@@ -225,12 +271,14 @@ https://your-domain.com/api/webhooks/whatsapp
 
 ---
 
-## 9. Next Actions
+## 10. Next Actions
 
-### Immediate (Week 9)
-1. Enhance webhook to handle button responses
-2. Auto-update task status on button clicks
-3. Create manager notification system
+### Immediate (Week 9 - COMPLETED ✅)
+1. ✅ Enhance webhook to handle button responses
+2. ✅ Auto-update task status on button clicks
+3. ✅ Create manager notification system
+4. ✅ Fix configuration persistence issues
+5. ✅ Add webhook security validation
 
 ### Next (Week 10)
 1. Implement media download from WhatsApp
