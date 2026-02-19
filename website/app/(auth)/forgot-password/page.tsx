@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
                         priority
                         style={{ width: 'auto', height: 'auto' }}
                     />
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                         AI Platform
                     </h1>
                 </div>
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
                 <div className="absolute top-4 right-4">
                     <AnimatedThemeToggler />
                 </div>
-                <div className="w-full max-w-[480px] flex flex-col gap-8 animate-fade-in">
+                <div className="w-full max-w-120 flex flex-col gap-8 animate-fade-in">
 
                     {/* Mobile Logo */}
                     <div className="flex lg:hidden items-center gap-2 mb-4 text-primary">

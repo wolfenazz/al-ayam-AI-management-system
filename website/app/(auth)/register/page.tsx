@@ -336,7 +336,7 @@ function RegisterPageContent() {
                             priority
                             style={{ width: 'auto', height: 'auto' }}
                         />
-                        <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                        <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                             AI Platform
                         </h1>
                     </div>
@@ -344,7 +344,7 @@ function RegisterPageContent() {
 
                 {/* Right: Google Completion Form */}
                 <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 lg:px-16 xl:px-24 bg-background overflow-y-auto">
-                    <div className="w-full max-w-[480px] flex flex-col gap-6 animate-fade-in">
+                    <div className="w-full max-w-120 flex flex-col gap-6 animate-fade-in">
 
                         {/* Mobile Logo */}
                         <div className="lg:hidden flex flex-col items-center gap-4">
@@ -361,7 +361,7 @@ function RegisterPageContent() {
 
                         {/* Google account badge */}
                         <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-blue-100 dark:border-blue-800 overflow-hidden flex-shrink-0">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-blue-100 dark:border-blue-800 overflow-hidden shrink-0">
                                 {user?.photoURL ? (
                                     <Image
                                         src={user.photoURL}
@@ -378,7 +378,7 @@ function RegisterPageContent() {
                                 <span className="text-sm font-semibold text-text-primary truncate">{user?.displayName || 'Google User'}</span>
                                 <span className="text-xs text-text-secondary truncate">{user?.email}</span>
                             </div>
-                            <span className="ml-auto flex-shrink-0">
+                            <span className="ml-auto shrink-0">
                                 <svg viewBox="0 0 24 24" width="18" height="18">
                                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -568,7 +568,7 @@ function RegisterPageContent() {
                         priority
                         style={{ width: 'auto', height: 'auto' }}
                     />
-                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
+                    <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-b from-neutral-500 to-neutral-800 dark:from-white dark:to-neutral-400 bg-opacity-50 text-center whitespace-nowrap">
                         AI Platform
                     </h1>
                 </div>
@@ -579,7 +579,7 @@ function RegisterPageContent() {
                 <div className="absolute top-4 right-4">
                     <AnimatedThemeToggler />
                 </div>
-                <div className="w-full max-w-[480px] flex flex-col gap-6 animate-fade-in">
+                <div className="w-full max-w-120 flex flex-col gap-6 animate-fade-in">
 
                     {/* Mobile Logo */}
                     <div className="lg:hidden flex flex-col items-center gap-4">
@@ -637,9 +637,9 @@ function RegisterPageContent() {
 
                     {/* Divider */}
                     <div className="relative flex py-1 items-center">
-                        <div className="flex-grow border-t border-border" />
-                        <span className="flex-shrink-0 mx-4 text-text-secondary text-sm">Or continue with email</span>
-                        <div className="flex-grow border-t border-border" />
+                        <div className="grow border-t border-border" />
+                        <span className="shrink-0 mx-4 text-text-secondary text-sm">Or continue with email</span>
+                        <div className="grow border-t border-border" />
                     </div>
 
                     {/* Error Message */}
